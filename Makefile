@@ -41,10 +41,10 @@ byte: magick.cma
 opt: magick.cmxa
 
 imagemagick_wrap.o: imagemagick_wrap.c imagemagick_list.h imagemagick.h
-	gcc -c -I"$(OCAML_LIB_DIR)" $(MAGICK_CFLAGS) imagemagick_wrap.c
+	gcc -fPIC -c -I"$(OCAML_LIB_DIR)" $(MAGICK_CFLAGS) imagemagick_wrap.c
 
 imagemagick_list.o: imagemagick_list.c imagemagick.h
-	gcc -c -I"$(OCAML_LIB_DIR)" $(MAGICK_CFLAGS) imagemagick_list.c
+	gcc -fPIC -c -I"$(OCAML_LIB_DIR)" $(MAGICK_CFLAGS) imagemagick_list.c
 
 dllimagemagick_stubs.so: imagemagick_wrap.o imagemagick_list.o
 	ocamlmklib  -o  imagemagick_stubs  $^  \
