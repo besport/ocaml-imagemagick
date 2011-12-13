@@ -32,7 +32,7 @@ MAGICK_CLIBS_ := $(shell ocaml mlarg.ml $(MAGICK_CLIBS))
 
 MAGICK_CFLAGS := $(shell $(MAGICK_INSTALLED_DIR)MagickCore-config --cflags)
 
-OCAML_LIB_DIR := $(shell ocamlc -where)
+OCAML_LIB_DIR := $(shell ocamlfind printconf destdir)
 
 MLIM_PREFIX := $(OCAML_LIB_DIR)/libMagick
 
