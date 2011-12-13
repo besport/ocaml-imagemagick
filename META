@@ -1,0 +1,7 @@
+name = "libMagick"
+version = "0.33"
+description = "OCaml interface for the libMagickCore (ImageMagick)"
+license = "GPL"
+requires = "bigarray.cma"
+archive(byte) = "magick.cma"
+archive(native) = "magick.cmxa"
