@@ -87,8 +87,7 @@ install:
 	    $(MLIM_PREFIX)/
 
 uninstall:
-	rm -f $(MLIM_PREFIX)/*
-	rmdir $(MLIM_PREFIX)
+	rm -Rf $(MLIM_PREFIX)
 
 IMAGE := image.png
 
