@@ -22,17 +22,18 @@
 # +-----------------------------------------------------------------+
 
 # path to the MagickCore-config utility
-MAGICK_INSTALLED_DIR='/usr/bin/'
+MAGICK_INSTALLED_BIN := $(shell which MagickCore-config)
 
-MAGICK_PREFIX := $(shell $(MAGICK_INSTALLED_DIR)MagickCore-config --prefix)
+MAGICK_PREFIX := $(shell $(MAGICK_INSTALLED_BIN) --prefix)
 
-MAGICK_CLIBS := $(shell $(MAGICK_INSTALLED_DIR)MagickCore-config --libs)
+MAGICK_CLIBS := $(shell $(MAGICK_INSTALLED_BIN) --libs)
 
 MAGICK_CLIBS_ := $(shell ocaml mlarg.ml $(MAGICK_CLIBS))
 
-MAGICK_CFLAGS := $(shell $(MAGICK_INSTALLED_DIR)MagickCore-config --cflags)
+MAGICK_CFLAGS := $(shell $(MAGICK_INSTALLED_BIN) --cflags)
 
 OCAML_LIB_DIR := $(shell ocamlfind printconf destdir)
+OCAML_DIR := $(shell ocamlfind printconf stdlib)
 
 MLIM_PREFIX := $(OCAML_LIB_DIR)/libMagick
 
@@ -41,10 +42,10 @@ byte: magick.cma
 opt: magick.cmxa
 
 imagemagick_wrap.o: imagemagick_wrap.c imagemagick_list.h imagemagick.h
-	gcc -fPIC -c -I"$(OCAML_LIB_DIR)" $(MAGICK_CFLAGS) imagemagick_wrap.c
+	gcc -fPIC -c -I"$(OCAML_DIR)" $(MAGICK_CFLAGS) imagemagick_wrap.c
 
 imagemagick_list.o: imagemagick_list.c imagemagick.h
-	gcc -fPIC -c -I"$(OCAML_LIB_DIR)" $(MAGICK_CFLAGS) imagemagick_list.c
+	gcc -fPIC -c -I"$(OCAML_DIR)" $(MAGICK_CFLAGS) imagemagick_list.c
 
 dllimagemagick_stubs.so: imagemagick_wrap.o imagemagick_list.o
 	ocamlmklib  -o  imagemagick_stubs  $^  \
