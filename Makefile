@@ -32,10 +32,7 @@ MAGICK_CLIBS_ := $(shell ocaml mlarg.ml $(MAGICK_CLIBS))
 
 MAGICK_CFLAGS := $(shell $(MAGICK_INSTALLED_BIN) --cflags)
 
-OCAML_LIB_DIR := $(shell ocamlfind printconf destdir)
 OCAML_DIR := $(shell ocamlfind printconf stdlib)
-
-MLIM_PREFIX := $(OCAML_LIB_DIR)/libMagick
 
 all: byte opt
 byte: magick.cma
@@ -48,8 +45,7 @@ imagemagick_list.o: imagemagick_list.c imagemagick.h
 	gcc -fPIC -c -I"$(OCAML_DIR)" $(MAGICK_CFLAGS) imagemagick_list.c
 
 dllimagemagick_stubs.so: imagemagick_wrap.o imagemagick_list.o
-	ocamlmklib  -o  imagemagick_stubs  $^  \
-	     $(MAGICK_CLIBS)
+	ocamlmklib  -o  imagemagick_stubs  $^  $(MAGICK_CLIBS)
 
 magick.mli: magick.ml
 	ocamlc -i $< > $@
@@ -61,34 +57,29 @@ magick.cmo: magick.ml magick.cmi
 	ocamlc -c $<
 
 magick.cma:  magick.cmo  dllimagemagick_stubs.so
-	ocamlc -a  -o $@  $<  -dllib -limagemagick_stubs \
-	     $(MAGICK_CLIBS_)
+	ocamlc -a  -o $@  $<  -dllib -limagemagick_stubs $(MAGICK_CLIBS_)
 
 magick.cmx: magick.ml magick.cmi
 	ocamlopt -c $<
 
 magick.cmxa:  magick.cmx  dllimagemagick_stubs.so
-	ocamlopt -a  -o $@  $<  -cclib -limagemagick_stubs \
-	     $(MAGICK_CLIBS_)
+	ocamlopt -a  -o $@  $<  -cclib -limagemagick_stubs $(MAGICK_CLIBS_)
 
 clean:
 	rm -f *.[oa] *.so *.cm[ixoa] *.cmxa
 
 install:
-	if [ ! -d $(MLIM_PREFIX) ]; then install -d $(MLIM_PREFIX) ; fi
-	install	-m 0755	 dllimagemagick_stubs.so  $(MLIM_PREFIX)/
-	install	-m 0644 \
-	    META        \
+	ocamlfind install magick META \
 	    magick.mli	\
 	    magick.cmi	\
 	    magick.cma	\
 	    magick.cmxa	\
 	    magick.a	\
-	    libimagemagick_stubs.a	\
-	    $(MLIM_PREFIX)/
+	    dllimagemagick_stubs.so \
+	    libimagemagick_stubs.a 
 
 uninstall:
-	rm -Rf $(MLIM_PREFIX)
+	ocamlfind remove magick
 
 IMAGE := image.png
 
