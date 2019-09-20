@@ -3,14 +3,7 @@ WHAT:
       This binding is an ImageMagick interface for Objective Caml.
 
 AUTHOR:
-      Copyright (C) 2004 2005 2006 2010 Florent Monnier <fmonnier@linux-nantes.org>
-
-
-LICENSE:
-      This binding is released under the GNU General Public Licence.
-      (The ImageMagick's license is compatible with the GPL.)
-      The licence is in the file "LICENSE_GPL.txt" or on the web:
-        http://www.fsf.org/licensing/licenses/gpl.html
+      Copyright (C) 2004 2005 2006 2010 Florent Monnier
 
 
 NOTICE:
