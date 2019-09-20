@@ -141,7 +141,7 @@ type magick_boolean =
  | MagickTrue
 
 let magick_boolean_of_string str =
-  match String.lowercase str with
+  match String.lowercase_ascii str with
   | "false" | "magick-false" | "magickfalse" -> MagickFalse
   | "true"  | "magick-true"  | "magicktrue"  -> MagickTrue
   | _ -> raise Not_found
@@ -178,7 +178,7 @@ type resize_filter =
 
 
 let resize_filter_of_string str =
-  match String.lowercase str with
+  match String.lowercase_ascii str with
   | "undefined" -> Undefined_resize_filter
   | "point"     -> Point
   | "box"       -> Box
@@ -198,7 +198,7 @@ let resize_filter_of_string str =
   | _           -> Undefined_resize_filter
 
 let resize_filter_of_string' str =
-  match String.lowercase str with
+  match String.lowercase_ascii str with
   | "undefined" -> Undefined_resize_filter
   | "point"     -> Point
   | "box"       -> Box
@@ -255,7 +255,7 @@ type channel_type =
 
 
 let channel_type_of_string str =
-  match String.lowercase str with
+  match String.lowercase_ascii str with
   | "default_channels"
   | "default"   -> Default_Channels
   | "red"       -> Red
@@ -276,7 +276,7 @@ let channel_type_of_string str =
   | _           -> Default_Channels
 
 let channel_type_of_string' str =
-  match String.lowercase str with
+  match String.lowercase_ascii str with
   | "default_channels"
   | "default"   -> Default_Channels
   | "red"       -> Red
@@ -372,7 +372,7 @@ type composite_operator =
 
 
 let composite_operator_of_string str_op =
-  match String.lowercase str_op with
+  match String.lowercase_ascii str_op with
   | "undefined"   -> Undefined_composite_operator
   | "no"          -> No_composite_operator
   | "add"         -> Add
@@ -441,7 +441,7 @@ let composite_operator_of_string str_op =
   | _             -> Undefined_composite_operator
 
 let composite_operator_of_string' str_op =
-  match String.lowercase str_op with
+  match String.lowercase_ascii str_op with
   | "undefined"   -> Undefined_composite_operator
   | "no"          -> No_composite_operator
   | "add"         -> Add
@@ -922,7 +922,7 @@ let color_of_hex str_color =
   if str_len = 0 then
     invalid_arg "empty string";
 
-  (* remove the strating char '#' *)
+  (* remove the starting char '#' *)
   let str_color =
     if str_color.[0] = '#'
     then String.sub str_color 1 (str_len - 1)
@@ -950,9 +950,7 @@ let color_of_hex str_color =
 
   (* convert a char to a string *)
   let string_of_char my_char =
-    let str = " " in
-    str.[0] <- my_char;
-    str
+    String.make 1 my_char
   in
 
   (* cast and check the values of the color for IM *)
@@ -1775,7 +1773,7 @@ type stack =
   | Top_to_bottom
 
 let stack_dir_of_string ~stack =
-  match String.lowercase stack with
+  match String.lowercase_ascii stack with
   | "left to right"
   | "left-to-right"
   | "left_to_right" -> Left_to_right
