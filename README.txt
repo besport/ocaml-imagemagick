@@ -149,21 +149,21 @@ HOW TO USE WITH THIS LIBRARY INSTALLED:
 
 
 
-COPYING:
-      This program is free software; you can redistribute it and/or
-      modify it under the terms of the GNU General Public License
-      as published by the Free Software Foundation; either version 2
-      of the License, or (at your option) any later version.
+LICENSE:
+      This library is distributed under the terms of the zlib license:
+
+      This software is provided 'as-is', without any express or implied
+      warranty.  In no event will the authors be held liable for any damages
+      arising from the use of this software.
+
+      Permission is granted to anyone to use this software for any purpose,
+      including commercial applications, and to alter it and redistribute it
+      freely.
     
-      This program is distributed in the hope that it will be useful,
-      but WITHOUT ANY WARRANTY; without even the implied warranty of
-      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-      See the GNU General Public License for more details.
-    
-      You should have received a copy of the GNU General Public
-      License along with this program in the file 'LICENSE_GPL.txt';
+      You should have received a copy of the Zlib license along with
+      this program in the file 'LICENSE.txt';
       if not, you can find it on the web at:
-        http://www.fsf.org/licensing/licenses/gpl.html
+        https://opensource.org/licenses/Zlib
 
 
 
