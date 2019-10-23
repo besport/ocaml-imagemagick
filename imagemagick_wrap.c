@@ -5,24 +5,13 @@
  * +---------------------------------------------------------------+
  * | This binding aims to provide the ImageMagick methods to OCaml |
  * +---------------------------------------------------------------+
+ * | This software is provided 'as-is', without any express or     |
+ * | implied warranty.  In no event will the authors be held       |
+ * | liable for any damages arising from the use of this software. |
  * |                                                               |
- * | This program is free software; you can redistribute it and/or |
- * | modify it under the terms of the GNU General Public License   |
- * | as published by the Free Software Foundation; either version  |
- * | 2 of the License, or (at your option) any later version.      |
- * |                                                               |
- * | This program is distributed in the hope that it will be       |
- * | useful, but WITHOUT ANY WARRANTY; without even the implied    |
- * | warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR       |
- * | PURPOSE. See the GNU General Public License for more details. |
- * |                                                               |
- * | http://www.fsf.org/licensing/licenses/gpl.html                |
- * |                                                               |
- * | You should have received a copy of the GNU General Public     |
- * | License along with this program; if not,                      |
- * | write to the Free Software Foundation, Inc.,                  |
- * | 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA  |
- * |                                                               |
+ * | Permission is granted to anyone to use this software for any  |
+ * | purpose, including commercial applications, and to alter it   |
+ * | and redistribute it freely.                                   |
  * +---------------------------------------------------------------+
  * | Author: Florent Monnier <fmonnier@linux-nantes.fr.eu.org>     |
  * | Thanks to Matthieu Dubuget for his help with OCamlMakefile.   |

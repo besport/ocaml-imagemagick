@@ -5,26 +5,14 @@
  * +-----------------------------------------------------------------+
  * | This binding aims to provide the ImageMagick methods to OCaml.  |
  * +-----------------------------------------------------------------+
+ * | This software is provided 'as-is', without any express or       |
+ * | implied warranty.  In no event will the authors be held liable  |
+ * | for any damages arising from the use of this software.          |
  * |                                                                 |
- * | This program is free software; you can redistribute it and/or   |
- * | modify it under the terms of the GNU General Public License     |
- * | as published by the Free Software Foundation; either version 2  |
- * | of the License, or (at your option) any later version.          |
- * |                                                                 |
- * | This program is distributed in the hope that it will be useful, |
- * | but WITHOUT ANY WARRANTY; without even the implied warranty of  |
- * | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the   |
- * | GNU General Public License for more details.                    |
- * |                                                                 |
- * | http://www.fsf.org/licensing/licenses/gpl.html                  |
- * |                                                                 |
- * | You should have received a copy of the GNU General Public       |
- * | License along with this program; if not,                        |
- * | write to the Free Software Foundation, Inc.,                    |
- * | 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA    |
+ * | Permission is granted to anyone to use this software for any    |
+ * | purpose, including commercial applications, and to alter it and |
+ * | redistribute it freely.                                         |
  * +-----------------------------------------------------------------+
- *
- * $Id$
  *
  * }}} *)
 
@@ -141,7 +129,7 @@ type magick_boolean =
  | MagickTrue
 
 let magick_boolean_of_string str =
-  match String.lowercase str with
+  match String.lowercase_ascii str with
   | "false" | "magick-false" | "magickfalse" -> MagickFalse
   | "true"  | "magick-true"  | "magicktrue"  -> MagickTrue
   | _ -> raise Not_found
@@ -178,7 +166,7 @@ type resize_filter =
 
 
 let resize_filter_of_string str =
-  match String.lowercase str with
+  match String.lowercase_ascii str with
   | "undefined" -> Undefined_resize_filter
   | "point"     -> Point
   | "box"       -> Box
@@ -198,7 +186,7 @@ let resize_filter_of_string str =
   | _           -> Undefined_resize_filter
 
 let resize_filter_of_string' str =
-  match String.lowercase str with
+  match String.lowercase_ascii str with
   | "undefined" -> Undefined_resize_filter
   | "point"     -> Point
   | "box"       -> Box
@@ -255,7 +243,7 @@ type channel_type =
 
 
 let channel_type_of_string str =
-  match String.lowercase str with
+  match String.lowercase_ascii str with
   | "default_channels"
   | "default"   -> Default_Channels
   | "red"       -> Red
@@ -276,7 +264,7 @@ let channel_type_of_string str =
   | _           -> Default_Channels
 
 let channel_type_of_string' str =
-  match String.lowercase str with
+  match String.lowercase_ascii str with
   | "default_channels"
   | "default"   -> Default_Channels
   | "red"       -> Red
@@ -372,7 +360,7 @@ type composite_operator =
 
 
 let composite_operator_of_string str_op =
-  match String.lowercase str_op with
+  match String.lowercase_ascii str_op with
   | "undefined"   -> Undefined_composite_operator
   | "no"          -> No_composite_operator
   | "add"         -> Add
@@ -441,7 +429,7 @@ let composite_operator_of_string str_op =
   | _             -> Undefined_composite_operator
 
 let composite_operator_of_string' str_op =
-  match String.lowercase str_op with
+  match String.lowercase_ascii str_op with
   | "undefined"   -> Undefined_composite_operator
   | "no"          -> No_composite_operator
   | "add"         -> Add
@@ -922,7 +910,7 @@ let color_of_hex str_color =
   if str_len = 0 then
     invalid_arg "empty string";
 
-  (* remove the strating char '#' *)
+  (* remove the starting char '#' *)
   let str_color =
     if str_color.[0] = '#'
     then String.sub str_color 1 (str_len - 1)
@@ -950,9 +938,7 @@ let color_of_hex str_color =
 
   (* convert a char to a string *)
   let string_of_char my_char =
-    let str = " " in
-    str.[0] <- my_char;
-    str
+    String.make 1 my_char
   in
 
   (* cast and check the values of the color for IM *)
@@ -1775,7 +1761,7 @@ type stack =
   | Top_to_bottom
 
 let stack_dir_of_string ~stack =
-  match String.lowercase stack with
+  match String.lowercase_ascii stack with
   | "left to right"
   | "left-to-right"
   | "left_to_right" -> Left_to_right
