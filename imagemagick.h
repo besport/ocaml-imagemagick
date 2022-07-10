@@ -2,7 +2,7 @@
 /* Constants */
 
 /* maximum amount of resources allocated */
-#define OCAML_IMAGEMAGICK_VERSION "0.33"
+#define OCAML_IMAGEMAGICK_VERSION "0.35"
 
 /*  8 * 1024 = 8192 ;;  16 * 1024 = 16384  */
 #define MAX_AMOUNT 16384

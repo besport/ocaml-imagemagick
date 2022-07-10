@@ -5,14 +5,25 @@
  * +-----------------------------------------------------------------+
  * | This binding aims to provide the ImageMagick methods to OCaml.  |
  * +-----------------------------------------------------------------+
- * | This software is provided 'as-is', without any express or       |
- * | implied warranty.  In no event will the authors be held liable  |
- * | for any damages arising from the use of this software.          |
- * |                                                                 |
- * | Permission is granted to anyone to use this software for any    |
- * | purpose, including commercial applications, and to alter it and |
- * | redistribute it freely.                                         |
- * +-----------------------------------------------------------------+
+ * | 
+ * | Permission is hereby granted, free of charge, to any person obtaining a
+ * | copy of this software and associated files (the "Software"), to deal in
+ * | the Software without restriction, including without limitation the rights
+ * | to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * | copies of the Software, and to permit persons to whom the Software is
+ * | furnished to do so, subject to the following requests:
+ * | 
+ * | The above copyright notice and this permission notice may be included in
+ * | all copies or substantial portions of the Software.
+ * | 
+ * | The Software is provided "AS IS", without warranty of any kind, express or
+ * | implied, including but not limited to the warranties of merchantability,
+ * | fitness for a particular purpose and noninfringement.  In no event shall
+ * | the authors or copyright holders be liable for any claim, damages or other
+ * | liability, whether in an action of contract, tort or otherwise, arising
+ * | from, out of or in connection with the Software or the use or other
+ * | dealings in the Software.
+ * +
  *
  * }}} *)
 
@@ -304,197 +315,235 @@ let string_of_channel_type = function
 
 
 type composite_operator =
- | Undefined_composite_operator
- | No_composite_operator
- | Add
- | Atop
- | Blend
- | Bumpmap
- | Clear
- | ColorBurn
- | ColorDodge
- | Colorize
- | CopyBlack
- | CopyBlue
- | Copy
- | CopyCyan
- | CopyGreen
- | CopyMagenta
- | CopyOpacity
- | CopyRed
- | CopyYellow
- | Darken
- | DstAtop
- | Dst
- | DstIn
- | DstOut
- | DstOver
- | Difference
- | Displace
- | Dissolve
- | Exclusion
- | HardLight
- | Hue
- | In
- | Lighten
- | Luminize
- | Minus
- | Modulate
- | Multiply
- | Out
- | Over
- | Overlay
- | Plus
- | Replace
- | Saturate
- | Screen
- | SoftLight
- | SrcAtop
- | Src
- | SrcIn
- | SrcOut
- | SrcOver
- | Subtract
- | Threshold
- | Xor
+  | Undefined_composite_operator
+  | No_composite_operator
+  | Alpha
+  | Atop
+  | Blend
+  | Blur
+  | Bumpmap
+  | ChangeMask
+  | Clear
+  | ColorBurn
+  | ColorDodge
+  | Colorize
+  | CopyBlack
+  | CopyBlue
+  | Copy
+  | CopyCyan
+  | CopyGreen
+  | CopyMagenta
+  | CopyAlpha
+  | CopyRed
+  | CopyYellow
+  | Darken
+  | DarkenIntensity
+  | Difference
+  | Displace
+  | Dissolve
+  | Distort
+  | DivideDst
+  | DivideSrc
+  | DstAtop
+  | Dst
+  | DstIn
+  | DstOut
+  | DstOver
+  | Exclusion
+  | HardLight
+  | HardMix
+  | Hue
+  | In
+  | Intensity
+  | Lighten
+  | LightenIntensity
+  | LinearBurn
+  | LinearDodge
+  | LinearLight
+  | Luminize
+  | Mathematics
+  | MinusDst
+  | MinusSrc
+  | Modulate
+  | ModulusAdd
+  | ModulusSubtract
+  | Multiply
+  | Out
+  | Over
+  | Overlay
+  | PegtopLight
+  | PinLight
+  | Plus
+  | Replace
+  | Saturate
+  | Screen
+  | SoftLight
+  | SrcAtop
+  | Src
+  | SrcIn
+  | SrcOut
+  | SrcOver
+  | Threshold
+  | VividLight
+  | Xor
+  | Stereo
 
 
 let composite_operator_of_string str_op =
   match String.lowercase_ascii str_op with
   | "undefined"   -> Undefined_composite_operator
   | "no"          -> No_composite_operator
-  | "add"         -> Add
-  | "atop"        -> Atop
-  | "blend"       -> Blend
-  | "bumpmap"     -> Bumpmap
-  | "clear"       -> Clear
-  | "color-burn"
-  | "colorburn"   -> ColorBurn
-  | "color-dodge"
-  | "colordodge"  -> ColorDodge
-  | "colorize"    -> Colorize
-  | "copyblack"   -> CopyBlack
-  | "copyblue"    -> CopyBlue
-  | "copy"        -> Copy
-  | "copycyan"    -> CopyCyan
-  | "copygreen"   -> CopyGreen
-  | "copymagenta" -> CopyMagenta
-  | "copyopacity" -> CopyOpacity
-  | "copyred"     -> CopyRed
-  | "copyyellow"  -> CopyYellow
-  | "darken"      -> Darken
-  | "dst-atop"
-  | "dstatop"     -> DstAtop
-  | "dst"         -> Dst
-  | "dst-in"
-  | "dstin"       -> DstIn
-  | "dst-out"
-  | "dstout"      -> DstOut
-  | "dst-over"
-  | "dstover"     -> DstOver
-  | "difference"  -> Difference
-  | "displace"    -> Displace
-  | "dissolve"    -> Dissolve
-  | "exclusion"   -> Exclusion
-  | "hard-light"
-  | "hardlight"   -> HardLight
-  | "hue"         -> Hue
-  | "in"          -> In
-  | "lighten"     -> Lighten
-  | "luminize"    -> Luminize
-  | "minus"       -> Minus
-  | "modulate"    -> Modulate
-  | "multiply"    -> Multiply
-  | "out"         -> Out
-  | "over"        -> Over
-  | "overlay"     -> Overlay
-  | "plus"        -> Plus
-  | "replace"     -> Replace
-  | "saturate"    -> Saturate
-  | "screen"      -> Screen
-  | "soft-light"
-  | "softlight"   -> SoftLight
-  | "src-atop"
-  | "srcatop"     -> SrcAtop
-  | "src"         -> Src
-  | "src-in"
-  | "srcin"       -> SrcIn
-  | "src-out"
-  | "srcout"      -> SrcOut
-  | "src-over"
-  | "srcover"     -> SrcOver
-  | "subtract"    -> Subtract
-  | "threshold"   -> Threshold
-  | "xor"         -> Xor
+
+  | "Alpha"            | "alpha"                                  -> Alpha
+  | "Atop"             | "atop"                                   -> Atop
+  | "Blend"            | "blend"                                  -> Blend
+  | "Blur"             | "blur"                                   -> Blur
+  | "Bumpmap"          | "bumpmap"                                -> Bumpmap
+  | "ChangeMask"       | "change-mask"       | "changemask"       -> ChangeMask
+  | "Clear"            | "clear"                                  -> Clear
+  | "ColorBurn"        | "color-burn"        | "colorburn"        -> ColorBurn
+  | "ColorDodge"       | "color-dodge"       | "colordodge"       -> ColorDodge
+  | "Colorize"         | "colorize"                               -> Colorize
+  | "CopyBlack"        | "copy-black"        | "copyblack"        -> CopyBlack
+  | "CopyBlue"         | "copy-blue"         | "copyblue"         -> CopyBlue
+  | "Copy"             | "copy"                                   -> Copy
+  | "CopyCyan"         | "copy-cyan"         | "copycyan"         -> CopyCyan
+  | "CopyGreen"        | "copy-green"        | "copygreen"        -> CopyGreen
+  | "CopyMagenta"      | "copy-magenta"      | "copymagenta"      -> CopyMagenta
+  | "CopyAlpha"        | "copy-alpha"        | "copyalpha"        -> CopyAlpha
+  | "CopyRed"          | "copy-red"          | "copyred"          -> CopyRed
+  | "CopyYellow"       | "copy-yellow"       | "copyyellow"       -> CopyYellow
+  | "Darken"           | "darken"                                 -> Darken
+  | "DarkenIntensity"  | "darken-intensity"  | "darkenintensity"  -> DarkenIntensity
+  | "Difference"       | "difference"                             -> Difference
+  | "Displace"         | "displace"                               -> Displace
+  | "Dissolve"         | "dissolve"                               -> Dissolve
+  | "Distort"          | "distort"                                -> Distort
+  | "DivideDst"        | "divide-dst"        | "dividedst"        -> DivideDst
+  | "DivideSrc"        | "divide-src"        | "dividesrc"        -> DivideSrc
+  | "DstAtop"          | "dstatop"                                -> DstAtop
+  | "Dst"              | "dst"                                    -> Dst
+  | "DstIn"            | "dst-in"            | "dstin"            -> DstIn
+  | "DstOut"           | "dst-out"           | "dstout"           -> DstOut
+  | "DstOver"          | "dst-over"          | "dstover"          -> DstOver
+  | "Exclusion"        | "exclusion"                              -> Exclusion
+  | "HardLight"        | "hard-light"        | "hardlight"        -> HardLight
+  | "HardMix"          | "hard-mix"          | "hardmix"          -> HardMix
+  | "Hue"              | "hue"                                    -> Hue
+  | "In"               | "in"                                     -> In
+  | "Intensity"        | "intensity"                              -> Intensity
+  | "Lighten"          | "lighten"                                -> Lighten
+  | "LightenIntensity" | "lighten-intensity" | "lightenintensity" -> LightenIntensity
+  | "LinearBurn"       | "linear-burn"       | "linearburn"       -> LinearBurn
+  | "LinearDodge"      | "linear-dodge"      | "lineardodge"      -> LinearDodge
+  | "LinearLight"      | "linear-light"      | "linearlight"      -> LinearLight
+  | "Luminize"         | "luminize"                               -> Luminize
+  | "Mathematics"      | "mathematics"                            -> Mathematics
+  | "MinusDst"         | "minus-dst"         | "minusdst"         -> MinusDst
+  | "MinusSrc"         | "minus-src"         | "minussrc"         -> MinusSrc
+  | "Modulate"         | "modulate"                               -> Modulate
+  | "ModulusAdd"       | "modulus-add"       | "modulusadd"       -> ModulusAdd
+  | "ModulusSubtract"  | "modulus-subtract"  | "modulussubtract"  -> ModulusSubtract
+  | "Multiply"         | "multiply"                               -> Multiply
+  | "Out"              | "out"                                    -> Out
+  | "Over"             | "over"                                   -> Over
+  | "Overlay"          | "overlay"                                -> Overlay
+  | "PegtopLight"      | "pegtop-light"      | "pegtoplight"      -> PegtopLight
+  | "PinLight"         | "pin-light"         | "pinlight"         -> PinLight
+  | "Plus"             | "plus"                                   -> Plus
+  | "Replace"          | "replace"                                -> Replace
+  | "Saturate"         | "saturate"                               -> Saturate
+  | "Screen"           | "screen"                                 -> Screen
+  | "SoftLight"        | "soft-light"        | "softlight"        -> SoftLight
+  | "SrcAtop"          | "src-atop"          | "srcatop"          -> SrcAtop
+  | "Src"              | "src"                                    -> Src
+  | "SrcIn"            | "src-in"            | "srcin"            -> SrcIn
+  | "SrcOut"           | "src-out"           | "srcout"           -> SrcOut
+  | "SrcOver"          | "src-over"          | "srcover"          -> SrcOver
+  | "Threshold"        | "threshold"                              -> Threshold
+  | "VividLight"       | "vivid-light"                            -> VividLight
+  | "Xor"              | "xor"                                    -> Xor
+  | "Stereo"           | "stereo"                                 -> Stereo
+
   | _             -> Undefined_composite_operator
+
 
 let composite_operator_of_string' str_op =
   match String.lowercase_ascii str_op with
   | "undefined"   -> Undefined_composite_operator
   | "no"          -> No_composite_operator
-  | "add"         -> Add
-  | "atop"        -> Atop
-  | "blend"       -> Blend
-  | "bumpmap"     -> Bumpmap
-  | "clear"       -> Clear
-  | "color-burn"
-  | "colorburn"   -> ColorBurn
-  | "color-dodge"
-  | "colordodge"  -> ColorDodge
-  | "colorize"    -> Colorize
-  | "copyblack"   -> CopyBlack
-  | "copyblue"    -> CopyBlue
-  | "copy"        -> Copy
-  | "copycyan"    -> CopyCyan
-  | "copygreen"   -> CopyGreen
-  | "copymagenta" -> CopyMagenta
-  | "copyopacity" -> CopyOpacity
-  | "copyred"     -> CopyRed
-  | "copyyellow"  -> CopyYellow
-  | "darken"      -> Darken
-  | "dst-atop"
-  | "dstatop"     -> DstAtop
-  | "dst"         -> Dst
-  | "dst-in"
-  | "dstin"       -> DstIn
-  | "dst-out"
-  | "dstout"      -> DstOut
-  | "dst-over"
-  | "dstover"     -> DstOver
-  | "difference"  -> Difference
-  | "displace"    -> Displace
-  | "dissolve"    -> Dissolve
-  | "exclusion"   -> Exclusion
-  | "hard-light"
-  | "hardlight"   -> HardLight
-  | "hue"         -> Hue
-  | "in"          -> In
-  | "lighten"     -> Lighten
-  | "luminize"    -> Luminize
-  | "minus"       -> Minus
-  | "modulate"    -> Modulate
-  | "multiply"    -> Multiply
-  | "out"         -> Out
-  | "over"        -> Over
-  | "overlay"     -> Overlay
-  | "plus"        -> Plus
-  | "replace"     -> Replace
-  | "saturate"    -> Saturate
-  | "screen"      -> Screen
-  | "soft-light"
-  | "softlight"   -> SoftLight
-  | "src-atop"
-  | "srcatop"     -> SrcAtop
-  | "src"         -> Src
-  | "src-in"
-  | "srcin"       -> SrcIn
-  | "src-out"
-  | "srcout"      -> SrcOut
-  | "src-over"
-  | "srcover"     -> SrcOver
-  | "subtract"    -> Subtract
-  | "threshold"   -> Threshold
-  | "xor"         -> Xor
+
+  | "Alpha"            | "alpha"                                  -> Alpha
+  | "Atop"             | "atop"                                   -> Atop
+  | "Blend"            | "blend"                                  -> Blend
+  | "Blur"             | "blur"                                   -> Blur
+  | "Bumpmap"          | "bumpmap"                                -> Bumpmap
+  | "ChangeMask"       | "change-mask"       | "changemask"       -> ChangeMask
+  | "Clear"            | "clear"                                  -> Clear
+  | "ColorBurn"        | "color-burn"        | "colorburn"        -> ColorBurn
+  | "ColorDodge"       | "color-dodge"       | "colordodge"       -> ColorDodge
+  | "Colorize"         | "colorize"                               -> Colorize
+  | "CopyBlack"        | "copy-black"        | "copyblack"        -> CopyBlack
+  | "CopyBlue"         | "copy-blue"         | "copyblue"         -> CopyBlue
+  | "Copy"             | "copy"                                   -> Copy
+  | "CopyCyan"         | "copy-cyan"         | "copycyan"         -> CopyCyan
+  | "CopyGreen"        | "copy-green"        | "copygreen"        -> CopyGreen
+  | "CopyMagenta"      | "copy-magenta"      | "copymagenta"      -> CopyMagenta
+  | "CopyAlpha"        | "copy-alpha"        | "copyalpha"        -> CopyAlpha
+  | "CopyRed"          | "copy-red"          | "copyred"          -> CopyRed
+  | "CopyYellow"       | "copy-yellow"       | "copyyellow"       -> CopyYellow
+  | "Darken"           | "darken"                                 -> Darken
+  | "DarkenIntensity"  | "darken-intensity"  | "darkenintensity"  -> DarkenIntensity
+  | "Difference"       | "difference"                             -> Difference
+  | "Displace"         | "displace"                               -> Displace
+  | "Dissolve"         | "dissolve"                               -> Dissolve
+  | "Distort"          | "distort"                                -> Distort
+  | "DivideDst"        | "divide-dst"        | "dividedst"        -> DivideDst
+  | "DivideSrc"        | "divide-src"        | "dividesrc"        -> DivideSrc
+  | "DstAtop"          | "dstatop"                                -> DstAtop
+  | "Dst"              | "dst"                                    -> Dst
+  | "DstIn"            | "dst-in"            | "dstin"            -> DstIn
+  | "DstOut"           | "dst-out"           | "dstout"           -> DstOut
+  | "DstOver"          | "dst-over"          | "dstover"          -> DstOver
+  | "Exclusion"        | "exclusion"                              -> Exclusion
+  | "HardLight"        | "hard-light"        | "hardlight"        -> HardLight
+  | "HardMix"          | "hard-mix"          | "hardmix"          -> HardMix
+  | "Hue"              | "hue"                                    -> Hue
+  | "In"               | "in"                                     -> In
+  | "Intensity"        | "intensity"                              -> Intensity
+  | "Lighten"          | "lighten"                                -> Lighten
+  | "LightenIntensity" | "lighten-intensity" | "lightenintensity" -> LightenIntensity
+  | "LinearBurn"       | "linear-burn"       | "linearburn"       -> LinearBurn
+  | "LinearDodge"      | "linear-dodge"      | "lineardodge"      -> LinearDodge
+  | "LinearLight"      | "linear-light"      | "linearlight"      -> LinearLight
+  | "Luminize"         | "luminize"                               -> Luminize
+  | "Mathematics"      | "mathematics"                            -> Mathematics
+  | "MinusDst"         | "minus-dst"         | "minusdst"         -> MinusDst
+  | "MinusSrc"         | "minus-src"         | "minussrc"         -> MinusSrc
+  | "Modulate"         | "modulate"                               -> Modulate
+  | "ModulusAdd"       | "modulus-add"       | "modulusadd"       -> ModulusAdd
+  | "ModulusSubtract"  | "modulus-subtract"  | "modulussubtract"  -> ModulusSubtract
+  | "Multiply"         | "multiply"                               -> Multiply
+  | "Out"              | "out"                                    -> Out
+  | "Over"             | "over"                                   -> Over
+  | "Overlay"          | "overlay"                                -> Overlay
+  | "PegtopLight"      | "pegtop-light"      | "pegtoplight"      -> PegtopLight
+  | "PinLight"         | "pin-light"         | "pinlight"         -> PinLight
+  | "Plus"             | "plus"                                   -> Plus
+  | "Replace"          | "replace"                                -> Replace
+  | "Saturate"         | "saturate"                               -> Saturate
+  | "Screen"           | "screen"                                 -> Screen
+  | "SoftLight"        | "soft-light"        | "softlight"        -> SoftLight
+  | "SrcAtop"          | "src-atop"          | "srcatop"          -> SrcAtop
+  | "Src"              | "src"                                    -> Src
+  | "SrcIn"            | "src-in"            | "srcin"            -> SrcIn
+  | "SrcOut"           | "src-out"           | "srcout"           -> SrcOut
+  | "SrcOver"          | "src-over"          | "srcover"          -> SrcOver
+  | "Threshold"        | "threshold"                              -> Threshold
+  | "VividLight"       | "vivid-light"                            -> VividLight
+  | "Xor"              | "xor"                                    -> Xor
+  | "Stereo"           | "stereo"                                 -> Stereo
+
   | _             -> raise Not_found
 
 
@@ -502,59 +551,77 @@ let composite_operator_of_string' str_op =
 let string_of_composite_operator comp_op =
   match comp_op with
   | Undefined_composite_operator -> "Undefined"
-  | No_composite_operator        -> "No"
-  | Add         -> "Add"
-  | Atop        -> "Atop"
-  | Blend       -> "Blend"
-  | Bumpmap     -> "Bumpmap"
-  | Clear       -> "Clear"
-  | ColorBurn   -> "ColorBurn"
-  | ColorDodge  -> "ColorDodge"
-  | Colorize    -> "Colorize"
-  | CopyBlack   -> "CopyBlack"
-  | CopyBlue    -> "CopyBlue"
-  | Copy        -> "Copy"
-  | CopyCyan    -> "CopyCyan"
-  | CopyGreen   -> "CopyGreen"
-  | CopyMagenta -> "CopyMagenta"
-  | CopyOpacity -> "CopyOpacity"
-  | CopyRed     -> "CopyRed"
-  | CopyYellow  -> "CopyYellow"
-  | Darken      -> "Darken"
-  | DstAtop     -> "DstAtop"
-  | Dst         -> "Dst"
-  | DstIn       -> "DstIn"
-  | DstOut      -> "DstOut"
-  | DstOver     -> "DstOver"
-  | Difference  -> "Difference"
-  | Displace    -> "Displace"
-  | Dissolve    -> "Dissolve"
-  | Exclusion   -> "Exclusion"
-  | HardLight   -> "HardLight"
-  | Hue         -> "Hue"
-  | In          -> "In"
-  | Lighten     -> "Lighten"
-  | Luminize    -> "Luminize"
-  | Minus       -> "Minus"
-  | Modulate    -> "Modulate"
-  | Multiply    -> "Multiply"
-  | Out         -> "Out"
-  | Over        -> "Over"
-  | Overlay     -> "Overlay"
-  | Plus        -> "Plus"
-  | Replace     -> "Replace"
-  | Saturate    -> "Saturate"
-  | Screen      -> "Screen"
-  | SoftLight   -> "SoftLight"
-  | SrcAtop     -> "SrcAtop"
-  | Src         -> "Src"
-  | SrcIn       -> "SrcIn"
-  | SrcOut      -> "SrcOut"
-  | SrcOver     -> "SrcOver"
-  | Subtract    -> "Subtract"
-  | Threshold   -> "Threshold"
-  | Xor         -> "Xor"
-
+  | No_composite_operator -> "No"
+  | Alpha            -> "Alpha"
+  | Atop             -> "Atop"
+  | Blend            -> "Blend"
+  | Blur             -> "Blur"
+  | Bumpmap          -> "Bumpmap"
+  | ChangeMask       -> "ChangeMask"
+  | Clear            -> "Clear"
+  | ColorBurn        -> "ColorBurn"
+  | ColorDodge       -> "ColorDodge"
+  | Colorize         -> "Colorize"
+  | CopyBlack        -> "CopyBlack"
+  | CopyBlue         -> "CopyBlue"
+  | Copy             -> "Copy"
+  | CopyCyan         -> "CopyCyan"
+  | CopyGreen        -> "CopyGreen"
+  | CopyMagenta      -> "CopyMagenta"
+  | CopyAlpha        -> "CopyAlpha"
+  | CopyRed          -> "CopyRed"
+  | CopyYellow       -> "CopyYellow"
+  | Darken           -> "Darken"
+  | DarkenIntensity  -> "DarkenIntensity"
+  | Difference       -> "Difference"
+  | Displace         -> "Displace"
+  | Dissolve         -> "Dissolve"
+  | Distort          -> "Distort"
+  | DivideDst        -> "DivideDst"
+  | DivideSrc        -> "DivideSrc"
+  | DstAtop          -> "DstAtop"
+  | Dst              -> "Dst"
+  | DstIn            -> "DstIn"
+  | DstOut           -> "DstOut"
+  | DstOver          -> "DstOver"
+  | Exclusion        -> "Exclusion"
+  | HardLight        -> "HardLight"
+  | HardMix          -> "HardMix"
+  | Hue              -> "Hue"
+  | In               -> "In"
+  | Intensity        -> "Intensity"
+  | Lighten          -> "Lighten"
+  | LightenIntensity -> "LightenIntensity"
+  | LinearBurn       -> "LinearBurn"
+  | LinearDodge      -> "LinearDodge"
+  | LinearLight      -> "LinearLight"
+  | Luminize         -> "Luminize"
+  | Mathematics      -> "Mathematics"
+  | MinusDst         -> "MinusDst"
+  | MinusSrc         -> "MinusSrc"
+  | Modulate         -> "Modulate"
+  | ModulusAdd       -> "ModulusAdd"
+  | ModulusSubtract  -> "ModulusSubtract"
+  | Multiply         -> "Multiply"
+  | Out              -> "Out"
+  | Over             -> "Over"
+  | Overlay          -> "Overlay"
+  | PegtopLight      -> "PegtopLight"
+  | PinLight         -> "PinLight"
+  | Plus             -> "Plus"
+  | Replace          -> "Replace"
+  | Saturate         -> "Saturate"
+  | Screen           -> "Screen"
+  | SoftLight        -> "SoftLight"
+  | SrcAtop          -> "SrcAtop"
+  | Src              -> "Src"
+  | SrcIn            -> "SrcIn"
+  | SrcOut           -> "SrcOut"
+  | SrcOver          -> "SrcOver"
+  | Threshold        -> "Threshold"
+  | VividLight       -> "VividLight"
+  | Xor              -> "Xor"
+  | Stereo           -> "Stereo"
 
 
 (* }}} *)
@@ -621,9 +688,7 @@ external emboss :  image_handle -> radius:float -> sigma:float -> unit = "imper_
 let emboss t_img ?(radius=0.0) ~sigma () = emboss t_img ~radius ~sigma
 
 external implode:       image_handle -> amount:float -> unit       = "imper_implodeimage"
-external medianfilter:  image_handle -> radius:float -> unit       = "imper_medianfilterimage"
 external oilpaint:      image_handle -> radius:float -> unit       = "imper_oilpaintimage"
-external reduce_noise:  image_handle -> radius:float -> unit       = "imper_reducenoiseimage"
 external roll:          image_handle -> x:int -> y:int -> unit     = "imper_rollimage"
 
 external shade: image_handle -> gray:magick_boolean -> azimuth:float -> elevation:float -> unit = "imper_shadeimage"
@@ -680,38 +745,16 @@ external acquire_pixel : image_handle -> int -> int -> int * int * int * int  = 
 
 
 
-external composite_image: image_handle -> image_handle -> x:int -> y:int -> compose:composite_operator -> unit
-   = "imper_compositeimage"
-let composite_image t_img u_img ~compose ?(x=0) ?(y=0) () = composite_image t_img u_img ~x ~y ~compose
+external composite_image: image_handle -> image_handle -> clip:bool -> x:int -> y:int -> compose:composite_operator -> unit
+   = "imper_compositeimage_bytecode"
+     "imper_compositeimage_native"
+
+let composite_image t_img u_img ~compose ?(x=0) ?(y=0) ?(clip=false) () = composite_image t_img u_img ~clip ~x ~y ~compose
 
 
 
 
 external texture_image: image_handle -> image_handle -> unit = "imper_textureimage"
-
-
-
-external bilevel_channel : image_handle -> channel:channel_type -> float -> unit  = "imper_bilevelimagechannel"
-
-external blur_channel : image_handle -> channel:channel_type -> radius:float -> sigma:float -> unit = "imper_blurimagechannel"
-let blur_channel t_img ~channel ?(radius=0.0) ~sigma () = blur_channel t_img ~channel ~radius ~sigma
-
-
-external gaussian_blur_channel : image_handle -> channel:channel_type ->
-            radius:float -> sigma:float -> unit = "imper_gaussianblurimagechannel"
-let gaussian_blur_channel t_img ~channel ?(radius=0.0) ~sigma () =
-    gaussian_blur_channel t_img ~channel ~radius ~sigma
-
-
-external radial_blur : image_handle -> angle:float -> unit  = "imper_radialblurimage"
-external radial_blur_channel : image_handle -> channel:channel_type -> angle:float -> unit
-    = "imper_radialblurimagechannel"
-
-external sharpen_image_channel : image_handle -> channel:channel_type ->
-            radius:float  -> sigma:float -> unit = "imper_sharpenimagechannel"
-
-let sharpen_image_channel t_img ~channel ?(radius=0.0) ~sigma () =
-    sharpen_image_channel t_img ~channel ~radius ~sigma
 
 
 
@@ -733,7 +776,6 @@ external set_compression_quality:  image_handle -> int -> unit  = "imper_setcomp
 
 
 external set_image_type : image_handle -> image_type:image_type -> unit  = "imper_setimagetype"
-external set_type : image_handle -> unit  = "imper_setimagetype__"
 
 
 
@@ -742,9 +784,6 @@ external strip_image : image_handle -> unit  = "imper_stripimage"
 
 
 external level : image_handle -> string -> unit = "imper_levelimage"
-external level_channel :  image_handle -> channel:channel_type -> float -> float -> float -> unit = "imper_levelimagechannel"
-external gamma_channel :  image_handle -> channel:channel_type -> gamma:float -> unit = "imper_gammaimagechannel"
-external negate_channel : image_handle -> channel:channel_type -> magick_boolean -> unit = "imper_negateimagechannel"
 
 
 external ordered_dither : image_handle -> unit  = "imper_orderedditherimage"
@@ -756,9 +795,6 @@ external posterize : image_handle -> levels:int -> dither:magick_boolean  -> uni
 external map_image : image_handle -> map_image:image_handle -> dither:magick_boolean -> unit  = "imper_mapimage"
 
 
-external is_gray       : image_handle -> bool  = "imper_isgrayimage"
-external is_monochrome : image_handle -> bool  = "imper_ismonochromeimage"
-external is_opaque     : image_handle -> bool  = "imper_isopaqueimage"
 external is_palette    : image_handle -> bool  = "imper_ispaletteimage"
 external is_taint      : image_handle -> bool  = "imper_istaintimage"
 external is_equal : image_handle -> image_handle -> bool * float * float * float  = "imper_isimagesequal"
@@ -794,12 +830,6 @@ external acquire_pixel_opacity : image_handle -> int -> int -> int * int * int *
     = "imper_acquireonepixel_opacity"
 
 
-
-external set_image_opacity : image_handle -> opacity:int -> unit = "imper_setimageopacity"
-
-
-
-external color_of_string :  string -> color  = "imper_querycolordatabase"
 
 
 let color_of_rgbo_tuple (r,g,b,o) =
@@ -910,7 +940,7 @@ let color_of_hex str_color =
   if str_len = 0 then
     invalid_arg "empty string";
 
-  (* remove the starting char '#' *)
+  (* remove the strating char '#' *)
   let str_color =
     if str_color.[0] = '#'
     then String.sub str_color 1 (str_len - 1)
@@ -938,7 +968,7 @@ let color_of_hex str_color =
 
   (* convert a char to a string *)
   let string_of_char my_char =
-    String.make 1 my_char
+    (String.make 1 ' ')
   in
 
   (* cast and check the values of the color for IM *)
@@ -1731,17 +1761,8 @@ let append_image_to_list  t_img_list t_img ?(delay=50) () =
 external image_list_length : image_list_handle -> int  = "imper_getimagelistlength"
 
 
-external deconstruct_images : image_list_handle -> unit  = "imper_deconstructimages"
 external coalesce_images :    image_list_handle -> unit  = "imper_coalesceimages"
 external flatten_images :     image_list_handle -> unit  = "imper_flattenimages"
-
-
-external average_images : image_list_handle -> image_handle -> unit  = "imper_averageimages"
-let average_images img_list =
-  let _img = get_canvas 2 2 "#0000" in
-  average_images img_list _img;
-  _img
-;;
 
 
 external animate_images :  image_list_handle -> unit  = "imper_animateimages"
@@ -1771,11 +1792,11 @@ let stack_dir_of_string ~stack =
   | _ -> failwith "unrecognized stack direction"
 
 (*
-external append_images :  image_list_handle -> stack:stack -> image_handle  = "imper_appendimages"
+external append_images : image_list_handle -> stack:stack -> image_handle = "imper_appendimages"
 *)
-external append_images : image_list_handle -> stack:stack -> image_handle -> unit  = "imper_appendimages"
+external append_images : image_list_handle -> stack:stack -> image_handle -> unit = "imper_appendimages"
 let append_images img_list ~stack =
-  let _img = get_canvas 2 2 "#0000" in
+  let _img = get_canvas ~width:2  ~height:2 ~color:"#0000" in
   append_images img_list ~stack _img;
   _img
 ;;
@@ -1798,13 +1819,6 @@ let read_image ~filename () = read_image ~filename
 external blur : image_handle -> radius:float -> sigma:float -> image_handle = "fun_blurimage"
 let blur ?(radius=0.0) ~sigma () img = blur img ~radius ~sigma
 
-external radial_blur : image_handle -> angle:float -> image_handle = "fun_radialblurimage"
-let radial_blur ~angle () img = radial_blur img ~angle
-
-external radial_blur_channel : image_handle -> channel:channel_type -> angle:float -> image_handle
-    = "fun_radialblurimagechannel"
-let radial_blur_channel ~channel ~angle () img = radial_blur_channel img ~channel ~angle
-
 external charcoal : image_handle -> radius:float -> sigma:float -> image_handle = "fun_charcoalimage"
 let charcoal ?(radius=0.0) ~sigma () img = charcoal img ~radius ~sigma
 
@@ -1820,17 +1834,11 @@ let gaussian_blur ?(radius=0.0) ~sigma () img = gaussian_blur img ~radius ~sigma
 external implode : image_handle -> amount:float -> image_handle = "fun_implodeimage"
 let implode ~amount () img = implode img ~amount
 
-external medianfilter : image_handle -> radius:float -> image_handle = "fun_medianfilterimage"
-let medianfilter ~radius () img = medianfilter img ~radius
-
 external motion_blur : image_handle -> radius:float -> sigma:float -> angle:float -> image_handle = "fun_motionblurimage"
 let motion_blur ?(radius=0.0) ~sigma ~angle () img = motion_blur img ~radius ~sigma ~angle
 
 external oilpaint : image_handle -> radius:float -> image_handle = "fun_oilpaintimage"
 let oilpaint ~radius () img = oilpaint img ~radius
-
-external reduce_noise : image_handle -> radius:float -> image_handle = "fun_reducenoiseimage"
-let reduce_noise ~radius () img = reduce_noise img ~radius
 
 external roll : image_handle -> x:int -> y:int -> image_handle = "fun_rollimage"
 let roll ~x ~y () img = roll img ~x ~y
@@ -1872,14 +1880,6 @@ let thumbnail ~width ~height () img = thumbnail img ~width ~height
 external adaptive_threshold : image_handle -> width:int -> height:int -> offset:int -> image_handle
     = "fun_adaptivethresholdimage"
 let adaptive_threshold ~width ~height ~offset () img = adaptive_threshold img ~width ~height ~offset
-
-external blur_channel : image_handle -> channel:channel_type -> radius:float -> sigma:float -> image_handle
-    = "fun_blurimagechannel"
-let blur_channel ~channel ?(radius=0.0) ~sigma () img = blur_channel img ~channel ~radius ~sigma
-
-external gaussian_blur_channel : image_handle -> channel:channel_type -> radius:float -> sigma:float -> image_handle
-    = "fun_gaussianblurimagechannel"
-let gaussian_blur_channel ~channel ?(radius=0.0) ~sigma () img = gaussian_blur_channel img ~channel ~radius ~sigma
 
 external add_noise : image_handle -> noise_type:noise_type -> image_handle = "fun_addnoiseimage"
 let add_noise ~noise_type () img = add_noise img ~noise_type
@@ -1967,20 +1967,8 @@ let solarize ~threshold () img = solarize img ~threshold
 external strip : image_handle -> image_handle = "fun_stripimage"
 let strip () img = strip img
 
-external gamma_channel : image_handle -> channel:channel_type -> gamma:float -> image_handle = "fun_gammaimagechannel"
-let gamma_channel ~channel ~gamma () img = gamma_channel img ~channel ~gamma
-
 external level : image_handle -> levels:string -> image_handle = "fun_levelimage"
 let level ~levels () img = level img ~levels
-
-external level_channel : image_handle -> channel:channel_type -> black_point:float -> white_point:float ->
-    gamma:float -> image_handle = "fun_levelimagechannel"
-let level_channel ~channel ~black_point ~white_point ~gamma () img =
-    level_channel img ~channel ~black_point ~white_point ~gamma
-
-external negate_channel : image_handle -> channel:channel_type -> grayscale:magick_boolean -> image_handle
-    = "fun_negateimagechannel"
-let negate_channel ~channel ~grayscale () img = negate_channel img ~channel ~grayscale
 
 external ordered_dither : image_handle -> image_handle = "fun_orderedditherimage"
 let ordered_dither () = ordered_dither ;;
@@ -2074,121 +2062,6 @@ let big_array2_dump arr =
 
 external image_of_bigarray: ('a, 'b, 'c) Bigarray.Array3.t -> image_handle = "constituteimage_from_big_array_char"
 
-
-(* }}} *)
-
-
-(* {{{ Linear Gradient *)
-
-type coords_2d = {
-  x : int;
-  y : int;
-}
-
-type dimentions = {
-  width  : int;
-  height : int;
-}
-
-type bounding_box = {
-  pos : coords_2d;
-  dims : dimentions;
-}
-
-type gradient_spreadMethod =
-  | Pad_spread
-  | Repeat_spread
-  | Reflect_spread
-
-
-external _linear_gradient: width:int -> height:int ->
-  a_x:int -> a_y:int ->
-  b_x:int -> b_y:int ->
-  spread_method:gradient_spreadMethod ->
-  bounding_box_x : int ->
-  bounding_box_y : int ->
-  bounding_box_width  : int ->
-  bounding_box_height : int ->
-  image_handle
-    = "linear_gradient_bytecode"
-      "linear_gradient_native"
-
-let _linear_gradient ~width ~height ~a ~b ?(spread_method=Pad_spread) ?bounding_box () =
-  let a_x = a.x and a_y = a.y
-  and b_x = b.x and b_y = b.y
-  in
-  let bounding_box =
-    match bounding_box with
-    | None -> { pos={x=0; y=0}; dims={width=width; height=height} }
-    | Some v -> v
-  in
-  let bounding_box_x = bounding_box.pos.x
-  and bounding_box_y = bounding_box.pos.y
-  and bounding_box_width  = bounding_box.dims.width
-  and bounding_box_height = bounding_box.dims.height
-  in
-  _linear_gradient ~width ~height
-      ~a_x ~a_y
-      ~b_x ~b_y
-      ~spread_method
-      ~bounding_box_x
-      ~bounding_box_y
-      ~bounding_box_width
-      ~bounding_box_height
-;;
-
-
-
-external linear_gradient:
-  image_handle ->
-  width:int -> height:int ->
-  a_x:int -> a_y:int ->
-  b_x:int -> b_y:int ->
-  spread_method:gradient_spreadMethod ->
-  stop:(float * string) list -> stop_nb:int ->
-  a:float -> b:float -> c:float ->
-  d:float -> e:float -> f:float ->
-  g:float -> h:float -> i:float ->
-  bounding_box_x : int ->
-  bounding_box_y : int ->
-  bounding_box_width  : int ->
-  bounding_box_height : int ->
-  unit
-    = "linear_gradient_bytecode"
-      "linear_gradient_native"
-
-
-let linear_gradient img ~a:(pa) ~b:(pb)
-        ~stop
-        ?(matrix=( (1.0, 0.0, 0.0),
-                   (0.0, 1.0, 0.0),
-                   (0.0, 0.0, 1.0) ))
-        ?(spread_method=Pad_spread)
-        ?bounding_box () =
-  let width  = get_image_width img
-  and height = get_image_height img
-  in
-  let bounding_box =
-    match bounding_box with
-    | None -> { pos={x=0; y=0}; dims={width=width; height=height} }
-    | Some v -> v
-  in
-  let ((a, b, c), (d, e, f), (g, h, i)) = matrix in
-  linear_gradient
-      img
-      ~width ~height
-      ~a_x:pa.x  ~a_y:pa.y
-      ~b_x:pb.x  ~b_y:pb.y
-      ~spread_method
-      ~stop ~stop_nb:(List.length stop)
-      ~a ~b ~c
-      ~d ~e ~f
-      ~g ~h ~i
-      ~bounding_box_x:bounding_box.pos.x
-      ~bounding_box_y:bounding_box.pos.y
-      ~bounding_box_width:bounding_box.dims.width
-      ~bounding_box_height:bounding_box.dims.height
-;;
 
 (* }}} *)
 

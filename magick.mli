@@ -96,10 +96,12 @@ val string_of_channel_type : channel_type -> string
 type composite_operator =
     Undefined_composite_operator
   | No_composite_operator
-  | Add
+  | Alpha
   | Atop
   | Blend
+  | Blur
   | Bumpmap
+  | ChangeMask
   | Clear
   | ColorBurn
   | ColorDodge
@@ -110,30 +112,46 @@ type composite_operator =
   | CopyCyan
   | CopyGreen
   | CopyMagenta
-  | CopyOpacity
+  | CopyAlpha
   | CopyRed
   | CopyYellow
   | Darken
+  | DarkenIntensity
+  | Difference
+  | Displace
+  | Dissolve
+  | Distort
+  | DivideDst
+  | DivideSrc
   | DstAtop
   | Dst
   | DstIn
   | DstOut
   | DstOver
-  | Difference
-  | Displace
-  | Dissolve
   | Exclusion
   | HardLight
+  | HardMix
   | Hue
   | In
+  | Intensity
   | Lighten
+  | LightenIntensity
+  | LinearBurn
+  | LinearDodge
+  | LinearLight
   | Luminize
-  | Minus
+  | Mathematics
+  | MinusDst
+  | MinusSrc
   | Modulate
+  | ModulusAdd
+  | ModulusSubtract
   | Multiply
   | Out
   | Over
   | Overlay
+  | PegtopLight
+  | PinLight
   | Plus
   | Replace
   | Saturate
@@ -144,9 +162,10 @@ type composite_operator =
   | SrcIn
   | SrcOut
   | SrcOver
-  | Subtract
   | Threshold
+  | VividLight
   | Xor
+  | Stereo
 val composite_operator_of_string : string -> composite_operator
 val composite_operator_of_string' : string -> composite_operator
 val string_of_composite_operator : composite_operator -> string
@@ -194,12 +213,8 @@ module Imper :
     val emboss : image_handle -> ?radius:float -> sigma:float -> unit -> unit
     external implode : image_handle -> amount:float -> unit
       = "imper_implodeimage"
-    external medianfilter : image_handle -> radius:float -> unit
-      = "imper_medianfilterimage"
     external oilpaint : image_handle -> radius:float -> unit
       = "imper_oilpaintimage"
-    external reduce_noise : image_handle -> radius:float -> unit
-      = "imper_reducenoiseimage"
     external roll : image_handle -> x:int -> y:int -> unit
       = "imper_rollimage"
     val shade :
@@ -249,26 +264,10 @@ module Imper :
     val composite_image :
       image_handle ->
       image_handle ->
-      compose:composite_operator -> ?x:int -> ?y:int -> unit -> unit
+      compose:composite_operator ->
+      ?x:int -> ?y:int -> ?clip:bool -> unit -> unit
     external texture_image : image_handle -> image_handle -> unit
       = "imper_textureimage"
-    external bilevel_channel :
-      image_handle -> channel:channel_type -> float -> unit
-      = "imper_bilevelimagechannel"
-    val blur_channel :
-      image_handle ->
-      channel:channel_type -> ?radius:float -> sigma:float -> unit -> unit
-    val gaussian_blur_channel :
-      image_handle ->
-      channel:channel_type -> ?radius:float -> sigma:float -> unit -> unit
-    external radial_blur : image_handle -> angle:float -> unit
-      = "imper_radialblurimage"
-    external radial_blur_channel :
-      image_handle -> channel:channel_type -> angle:float -> unit
-      = "imper_radialblurimagechannel"
-    val sharpen_image_channel :
-      image_handle ->
-      channel:channel_type -> ?radius:float -> sigma:float -> unit -> unit
     external add_noise : image_handle -> noise_type -> unit
       = "imper_addnoiseimage"
     external resize :
@@ -287,18 +286,8 @@ module Imper :
       = "imper_setcompressionquality"
     external set_image_type : image_handle -> image_type:image_type -> unit
       = "imper_setimagetype"
-    external set_type : image_handle -> unit = "imper_setimagetype__"
     external strip_image : image_handle -> unit = "imper_stripimage"
     external level : image_handle -> string -> unit = "imper_levelimage"
-    external level_channel :
-      image_handle -> channel:channel_type -> float -> float -> float -> unit
-      = "imper_levelimagechannel"
-    external gamma_channel :
-      image_handle -> channel:channel_type -> gamma:float -> unit
-      = "imper_gammaimagechannel"
-    external negate_channel :
-      image_handle -> channel:channel_type -> magick_boolean -> unit
-      = "imper_negateimagechannel"
     external ordered_dither : image_handle -> unit
       = "imper_orderedditherimage"
     external compress_colormap : image_handle -> unit
@@ -309,9 +298,6 @@ module Imper :
     external map_image :
       image_handle -> map_image:image_handle -> dither:magick_boolean -> unit
       = "imper_mapimage"
-    external is_gray : image_handle -> bool = "imper_isgrayimage"
-    external is_monochrome : image_handle -> bool = "imper_ismonochromeimage"
-    external is_opaque : image_handle -> bool = "imper_isopaqueimage"
     external is_palette : image_handle -> bool = "imper_ispaletteimage"
     external is_taint : image_handle -> bool = "imper_istaintimage"
     external is_equal :
@@ -324,9 +310,6 @@ module Imper :
     external acquire_pixel_opacity :
       image_handle -> int -> int -> int * int * int * int
       = "imper_acquireonepixel_opacity"
-    external set_image_opacity : image_handle -> opacity:int -> unit
-      = "imper_setimageopacity"
-    external color_of_string : string -> color = "imper_querycolordatabase"
     val color_of_rgbo_tuple : int * int * int * int -> color
     val rgbo_tuple_of_color : color -> int * int * int * int
     val max_color_map : int
@@ -565,13 +548,10 @@ module Imper :
       image_list_handle -> image_handle -> ?delay:int -> unit -> unit
     external image_list_length : image_list_handle -> int
       = "imper_getimagelistlength"
-    external deconstruct_images : image_list_handle -> unit
-      = "imper_deconstructimages"
     external coalesce_images : image_list_handle -> unit
       = "imper_coalesceimages"
     external flatten_images : image_list_handle -> unit
       = "imper_flattenimages"
-    val average_images : image_list_handle -> image_handle
     external animate_images : image_list_handle -> unit
       = "imper_animateimages"
     external write_images : image_list_handle -> string -> unit
@@ -594,10 +574,6 @@ module Fun :
     val read_image : filename:string -> unit -> image_handle
     val blur :
       ?radius:float -> sigma:float -> unit -> image_handle -> image_handle
-    val radial_blur : angle:float -> unit -> image_handle -> image_handle
-    val radial_blur_channel :
-      channel:channel_type ->
-      angle:float -> unit -> image_handle -> image_handle
     val charcoal :
       ?radius:float -> sigma:float -> unit -> image_handle -> image_handle
     val edge : radius:float -> unit -> image_handle -> image_handle
@@ -606,12 +582,10 @@ module Fun :
     val gaussian_blur :
       ?radius:float -> sigma:float -> unit -> image_handle -> image_handle
     val implode : amount:float -> unit -> image_handle -> image_handle
-    val medianfilter : radius:float -> unit -> image_handle -> image_handle
     val motion_blur :
       ?radius:float ->
       sigma:float -> angle:float -> unit -> image_handle -> image_handle
     val oilpaint : radius:float -> unit -> image_handle -> image_handle
-    val reduce_noise : radius:float -> unit -> image_handle -> image_handle
     val roll : x:int -> y:int -> unit -> image_handle -> image_handle
     val shade :
       ?gray:magick_boolean ->
@@ -639,12 +613,6 @@ module Fun :
     val adaptive_threshold :
       width:int ->
       height:int -> offset:int -> unit -> image_handle -> image_handle
-    val blur_channel :
-      channel:channel_type ->
-      ?radius:float -> sigma:float -> unit -> image_handle -> image_handle
-    val gaussian_blur_channel :
-      channel:channel_type ->
-      ?radius:float -> sigma:float -> unit -> image_handle -> image_handle
     val add_noise :
       noise_type:noise_type -> unit -> image_handle -> image_handle
     val resize :
@@ -685,18 +653,7 @@ module Fun :
     val cyclecolormap : displace:int -> unit -> image_handle -> image_handle
     val solarize : threshold:float -> unit -> image_handle -> image_handle
     val strip : unit -> image_handle -> image_handle
-    val gamma_channel :
-      channel:channel_type ->
-      gamma:float -> unit -> image_handle -> image_handle
     val level : levels:string -> unit -> image_handle -> image_handle
-    val level_channel :
-      channel:channel_type ->
-      black_point:float ->
-      white_point:float ->
-      gamma:float -> unit -> image_handle -> image_handle
-    val negate_channel :
-      channel:channel_type ->
-      grayscale:magick_boolean -> unit -> image_handle -> image_handle
     val ordered_dither : unit -> image_handle -> image_handle
     val composite_image :
       compose:composite_operator ->
@@ -735,23 +692,3 @@ val select : unit -> int
 val big_array2_dump : (int, 'a, 'b) Bigarray.Array2.t -> unit
 external image_of_bigarray : ('a, 'b, 'c) Bigarray.Array3.t -> image_handle
   = "constituteimage_from_big_array_char"
-type coords_2d = { x : int; y : int; }
-type dimentions = { width : int; height : int; }
-type bounding_box = { pos : coords_2d; dims : dimentions; }
-type gradient_spreadMethod = Pad_spread | Repeat_spread | Reflect_spread
-val _linear_gradient :
-  width:int ->
-  height:int ->
-  a:coords_2d ->
-  b:coords_2d ->
-  ?spread_method:gradient_spreadMethod ->
-  ?bounding_box:bounding_box -> unit -> image_handle
-val linear_gradient :
-  image_handle ->
-  a:coords_2d ->
-  b:coords_2d ->
-  stop:(float * string) list ->
-  ?matrix:(float * float * float) * (float * float * float) *
-          (float * float * float) ->
-  ?spread_method:gradient_spreadMethod ->
-  ?bounding_box:bounding_box -> unit -> unit

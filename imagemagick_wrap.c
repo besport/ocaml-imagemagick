@@ -13,7 +13,7 @@
  * | purpose, including commercial applications, and to alter it   |
  * | and redistribute it freely.                                   |
  * +---------------------------------------------------------------+
- * | Author: Florent Monnier <fmonnier@linux-nantes.fr.eu.org>     |
+ * | Author: Florent Monnier <monnier.florent (at) gmail.com>      |
  * | Thanks to Matthieu Dubuget for his help with OCamlMakefile.   |
  * +---------------------------------------------------------------+
  *
@@ -40,11 +40,7 @@
 
 //define MAGICKCORE_EXCLUDE_DEPRECATED 1
 
-/* ImageMagick <= 6.0.1 */
-/* #include <magick/api.h> */
-
-/* ImageMagick >= 6.2.4 */
-#include <magick/ImageMagick.h>
+#include <MagickCore/MagickCore.h>
 
 
 #include "imagemagick_list.h"
@@ -53,6 +49,9 @@
 #include <limits.h>
 
 /* }}} */
+
+#define GetExceptionInfo(e)
+#define IsMagickInstantiated IsMagickCoreInstantiated
 
 /* "ocaml.multimedia.2d_graphics.magick.imagemagick" */
 
@@ -164,37 +163,44 @@ im_readimage(value input_image_name)
     ExceptionInfo
         exception;
 
+    ExceptionInfo
+        *exc_info;
+
     ImageInfo
         *image_info;
 
 
-    image_bloc = alloc_final(2, (*finalize_image), sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    image_bloc = caml_alloc_final(2, (*finalize_image), sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     if (IsMagickInstantiated() == MagickFalse) {
         MagickCoreGenesis(getenv("PWD"), MagickTrue);
     }
 
-    GetExceptionInfo(&exception);
+    exc_info = AcquireExceptionInfo();
+
     image_info = CloneImageInfo((ImageInfo *) NULL);
     /* GetImageInfo(image_info) ; */
     (void) strcpy(image_info->filename, String_val(input_image_name));
 
-    Field(image_bloc,1) = (value) ReadImage(image_info, &exception);
+    Field(image_bloc,1) = (value) ReadImage(image_info, exc_info);
+
     DestroyImageInfo(image_info);
 
+#if 0
     if (exception.severity != UndefinedException) {
         if ( (Image *)Field(image_bloc,1) != (Image *) NULL) {
             DestroyImage((Image *) Field(image_bloc,1));  /* TODO: test me */
         }
-        failwith( exception.reason );
+        caml_failwith( exception.reason );
         /* @TODO  exception.description */
     }
+#endif
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exc_info);
 
     if ((Image *) Field(image_bloc,1) == (Image *) NULL) {
         /* exit(1) ; */
-        failwith("read_image failed");
+        caml_failwith("read_image failed");
     }
 
     CAMLreturn( image_bloc );
@@ -216,8 +222,15 @@ im_getimagecanvas(value width, value height, value color)
     ExceptionInfo
         exception;
 
+    ExceptionInfo
+        *exc_info;
+
     ImageInfo
         *image_info;
+
+    if (IsMagickInstantiated() == MagickFalse) {
+        MagickCoreGenesis(getenv("PWD"), MagickTrue);
+    }
 
     image_info = CloneImageInfo((ImageInfo *) NULL);
 
@@ -240,31 +253,30 @@ im_getimagecanvas(value width, value height, value color)
     strncpy( image_info->filename, str_buffer, str_len );
 
 
-    image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
-    if (IsMagickInstantiated() == MagickFalse) {
-        MagickCoreGenesis(getenv("PWD"), MagickTrue);
-    }
+    exc_info = AcquireExceptionInfo();
 
-    GetExceptionInfo(&exception);
+    Field(image_bloc,1) = (value) ReadImage(image_info, exc_info);
 
-    Field(image_bloc,1) = (value) ReadImage(image_info, &exception);
     DestroyImageInfo(image_info);
 
+#if 0
     if (exception.severity != UndefinedException) {
 
         if ( (Image *)Field(image_bloc,1) != (Image *) NULL) {
             DestroyImage((Image *) Field(image_bloc,1));  /* TODO: test me */
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception.reason );
     }
+#endif
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exc_info);
 
     if ((Image *) Field(image_bloc,1) == (Image *) NULL) {
         /* exit(1) ; */
-        failwith("get_canvas failed");
+        caml_failwith("get_canvas failed");
     }
 
     CAMLreturn (image_bloc);
@@ -287,8 +299,15 @@ im_create_image( value width, value height, value format )
     ExceptionInfo
         exception;
 
+    ExceptionInfo
+        *exc_info;
+
     ImageInfo
         *image_info;
+
+    if (IsMagickInstantiated() == MagickFalse) {
+        MagickCoreGenesis(getenv("PWD"), MagickTrue);
+    }
 
     image_info = CloneImageInfo((ImageInfo *) NULL);
 
@@ -301,31 +320,30 @@ im_create_image( value width, value height, value format )
     strncpy( image_info->filename, str_buffer, str_len );
 
 
-    image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
-    if (IsMagickInstantiated() == MagickFalse) {
-        MagickCoreGenesis(getenv("PWD"), MagickTrue);
-    }
+    exc_info = AcquireExceptionInfo();
 
-    GetExceptionInfo(&exception);
+    Field(image_bloc,1) = (value) ReadImage(image_info, exc_info);
 
-    Field(image_bloc,1) = (value) ReadImage(image_info, &exception);
     DestroyImageInfo(image_info);
 
+#if 0
     if (exception.severity != UndefinedException) {
 
         if ( (Image *)Field(image_bloc,1) != (Image *) NULL) {
             DestroyImage((Image *) Field(image_bloc,1));  /* TODO: test me */
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception.reason );
     }
+#endif
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exc_info);
 
     if ((Image *) Field(image_bloc,1) == (Image *) NULL) {
         /* exit(1) ; */
-        failwith("create_image failed");
+        caml_failwith("create_image failed");
     }
 
     CAMLreturn( image_bloc );
@@ -362,7 +380,7 @@ CAMLprim value imper_constituteimage(value columns, value rows, value map)
         MagickCoreGenesis(getenv("PWD"), MagickTrue);
     }
 
-    image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);
+    image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);
     Field(image_bloc,1) = (value) alloc_image();
 
     GetExceptionInfo(&exception);
@@ -379,7 +397,7 @@ CAMLprim value imper_constituteimage(value columns, value rows, value map)
 
     if (exception.severity != UndefinedException) {
 
-        failwith( exception.reason );
+        caml_failwith( exception.reason );
     }
 
     DestroyExceptionInfo(&exception);
@@ -415,7 +433,7 @@ typedef struct _MagickPixelPacket
     red,
     green,
     blue,
-    opacity,
+    alpha,
     index;
 } MagickPixelPacket;
 
@@ -425,10 +443,10 @@ imper_newmagickimage_native( value width, value height,
             value background_red,
             value background_green,
             value background_blue,
-            value background_opacity )
+            value background_alpha )
 {
     CAMLparam5( width, height, background_red, background_green, background_blue );
-    CAMLxparam1( background_opacity );
+    CAMLxparam1( background_alpha );
 
     CAMLlocal1(image_bloc);
 
@@ -450,10 +468,10 @@ imper_newmagickimage_native( value width, value height,
     background.red     = (MagickRealType) Int_val(background_red);
     background.green   = (MagickRealType) Int_val(background_green);
     background.blue    = (MagickRealType) Int_val(background_blue);
-    background.opacity = (MagickRealType) Int_val(background_opacity);
+    background.alpha = (MagickRealType) Int_val(background_alpha);
     background.index   = (MagickRealType) 0;
 
-    image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
     Field(image_bloc,1) = (value) alloc_image();  /* alloc_image() */
 
     if (IsMagickInstantiated() == MagickFalse) {
@@ -471,7 +489,7 @@ imper_newmagickimage_native( value width, value height,
     DestroyImageInfo(image_info);
 
     if ((Image *) Field(image_bloc,1) == (Image *) NULL) {
-        failwith("newmagickimage failed");
+        caml_failwith("newmagickimage failed");
     }
 
     CAMLreturn (image_bloc);
@@ -510,7 +528,7 @@ typedef struct _MagickPixelPacket
     red,
     green,
     blue,
-    opacity,
+    alpha,
     index;
 } MagickPixelPacket;
 
@@ -520,10 +538,10 @@ imper_newmagickimage_native( value width, value height,
             value background_red,
             value background_green,
             value background_blue,
-            value background_opacity )
+            value background_alpha )
 {
     CAMLparam5( width, height, background_red, background_green, background_blue ) ;
-    CAMLxparam1( background_opacity ) ;
+    CAMLxparam1( background_alpha ) ;
 
     CAMLlocal1(image_bloc) ;
     /*
@@ -551,11 +569,11 @@ imper_newmagickimage_native( value width, value height,
     background->red     = (MagickRealType) Int_val(background_red);
     background->green   = (MagickRealType) Int_val(background_green);
     background->blue    = (MagickRealType) Int_val(background_blue);
-    background->opacity = (MagickRealType) Int_val(background_opacity);
+    background->alpha = (MagickRealType) Int_val(background_alpha);
     background->index   = (MagickRealType) 1;
     */
 
-    image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
     Field(image_bloc,1) = (value) alloc_image();  /* alloc_image() */
 
     if (IsMagickInstantiated() == MagickFalse) {
@@ -576,7 +594,7 @@ imper_newmagickimage_native( value width, value height,
 
     if ((Image *) Field(image_bloc,1) == (Image *) NULL) {
         /* printf("newmagickimage failed\n") ; fflush(stdout) ; */
-        failwith("newmagickimage failed");
+        caml_failwith("newmagickimage failed");
         /* exit(1) ; */
     }
 
@@ -617,10 +635,12 @@ im_writeimage(value image_bloc, value output_image_name)
     (void) strcpy(image->filename, String_val(output_image_name));
     image_info = CloneImageInfo((ImageInfo *) NULL);
 
-    ret = WriteImage(image_info, image);  /* WriteImage() */
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+    ret = WriteImage(image_info, image, excinfo);  /* WriteImage() */
+    excinfo = DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
-        failwith("write_image failed");
+        caml_failwith("write_image failed");
     }
     DestroyImageInfo(image_info);
 
@@ -643,14 +663,25 @@ im_displayimages(value image_bloc)
     ImageInfo
         *image_info ;
 
+    ExceptionInfo
+        excinfo ;
+
+    ExceptionInfo
+        *exc_info;
+
     MagickBooleanType
         ret ;
 
     image = (Image *) Field(image_bloc,1) ;
 
-    image_info = CloneImageInfo((ImageInfo *) NULL) ;
-    ret = DisplayImages(image_info, image) ;  /* DisplayImages() */
-    DestroyImageInfo(image_info) ;
+    exc_info = AcquireExceptionInfo();
+
+    image_info = CloneImageInfo((ImageInfo *) NULL);
+
+    ret = DisplayImages(image_info, image, exc_info) ;  /* DisplayImages() */
+
+    DestroyImageInfo(image_info);
+    DestroyExceptionInfo(exc_info);
 
     /* @TODO check this exception. */
     if (ret == MagickFalse) {
@@ -661,11 +692,11 @@ im_displayimages(value image_bloc)
          */
 
         /*
-        failwith( image_info.exception ) ;
-        failwith( image.exception ) ;
+        caml_failwith( image_info.exception ) ;
+        caml_failwith( image.exception ) ;
         */
 
-        failwith("display failed") ;
+        caml_failwith("display failed") ;
     }
 
     CAMLreturn (Val_unit) ;
@@ -686,16 +717,19 @@ im_cloneimage(value image_bloc)
     ExceptionInfo
         exception;
 
-    GetExceptionInfo(&exception);
+    ExceptionInfo
+        *exc_info;
 
+    exc_info = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value) CloneImage(
             (Image *) Field(image_bloc,1),
             0, 0, 1,
-            &exception );
+            exc_info );
 
+#if 0
     if (exception.severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
@@ -703,10 +737,11 @@ im_cloneimage(value image_bloc)
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception.reason );
     }
+#endif
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exc_info);
 
     CAMLreturn( new_image_bloc );
 }
@@ -764,20 +799,25 @@ imper_plasmaimage_native(
     segment_info.y2 = (double) Long_val(y2);
 
 
+    ExceptionInfo *excinfo;
+
+    excinfo = AcquireExceptionInfo();
+
     ret = PlasmaImage(
             (Image *) Field(image_bloc,1),
             &segment_info,
             (unsigned long) Long_val(attenuate),
-            (unsigned long) Long_val(depth) );
+            (unsigned long) Long_val(depth), excinfo );
 
+    DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
-        failwith("get_plasma_image failed");
+        caml_failwith("get_plasma_image failed");
     }
 
     if ((Image *) Field(image_bloc,1) == (Image *) NULL) {
         /* exit(1) ; */
-        failwith("get_plasma_image failed");
+        caml_failwith("get_plasma_image failed");
     }
 
     CAMLreturn( Val_unit );
@@ -813,57 +853,76 @@ CompositeOperator_val( value param )
         /* {{{ cases */
         case  0: return UndefinedCompositeOp;
         case  1: return NoCompositeOp;
-        case  2: return AddCompositeOp;
+        case  2: return AlphaCompositeOp;
         case  3: return AtopCompositeOp;
         case  4: return BlendCompositeOp;
-        case  5: return BumpmapCompositeOp;
-        case  6: return ClearCompositeOp;
-        case  7: return ColorBurnCompositeOp;
-        case  8: return ColorDodgeCompositeOp;
-        case  9: return ColorizeCompositeOp;
-        case 10: return CopyBlackCompositeOp;
-        case 11: return CopyBlueCompositeOp;
-        case 12: return CopyCompositeOp;
-        case 13: return CopyCyanCompositeOp;
-        case 14: return CopyGreenCompositeOp;
-        case 15: return CopyMagentaCompositeOp;
-        case 16: return CopyOpacityCompositeOp;
-        case 17: return CopyRedCompositeOp;
-        case 18: return CopyYellowCompositeOp;
-        case 19: return DarkenCompositeOp;
-        case 20: return DstAtopCompositeOp;
-        case 21: return DstCompositeOp;
-        case 22: return DstInCompositeOp;
-        case 23: return DstOutCompositeOp;
-        case 24: return DstOverCompositeOp;
-        case 25: return DifferenceCompositeOp;
-        case 26: return DisplaceCompositeOp;
-        case 27: return DissolveCompositeOp;
-        case 28: return ExclusionCompositeOp;
-        case 29: return HardLightCompositeOp;
-        case 30: return HueCompositeOp;
-        case 31: return InCompositeOp;
-        case 32: return LightenCompositeOp;
-        case 33: return LuminizeCompositeOp;
-        case 34: return MinusCompositeOp;
-        case 35: return ModulateCompositeOp;
-        case 36: return MultiplyCompositeOp;
-        case 37: return OutCompositeOp;
-        case 38: return OverCompositeOp;
-        case 39: return OverlayCompositeOp;
-        case 40: return PlusCompositeOp;
-        case 41: return ReplaceCompositeOp;
-        case 42: return SaturateCompositeOp;
-        case 43: return ScreenCompositeOp;
-        case 44: return SoftLightCompositeOp;
-        case 45: return SrcAtopCompositeOp;
-        case 46: return SrcCompositeOp;
-        case 47: return SrcInCompositeOp;
-        case 48: return SrcOutCompositeOp;
-        case 49: return SrcOverCompositeOp;
-        case 50: return SubtractCompositeOp;
-        case 51: return ThresholdCompositeOp;
-        case 52: return XorCompositeOp;
+        case  5: return BlurCompositeOp;
+        case  6: return BumpmapCompositeOp;
+        case  7: return ChangeMaskCompositeOp;
+        case  8: return ClearCompositeOp;
+        case  9: return ColorBurnCompositeOp;
+        case 10: return ColorDodgeCompositeOp;
+        case 11: return ColorizeCompositeOp;
+        case 12: return CopyBlackCompositeOp;
+        case 13: return CopyBlueCompositeOp;
+        case 14: return CopyCompositeOp;
+        case 15: return CopyCyanCompositeOp;
+        case 16: return CopyGreenCompositeOp;
+        case 17: return CopyMagentaCompositeOp;
+        case 18: return CopyAlphaCompositeOp;
+        case 19: return CopyRedCompositeOp;
+        case 20: return CopyYellowCompositeOp;
+        case 21: return DarkenCompositeOp;
+        case 22: return DarkenIntensityCompositeOp;
+        case 23: return DifferenceCompositeOp;
+        case 24: return DisplaceCompositeOp;
+        case 25: return DissolveCompositeOp;
+        case 26: return DistortCompositeOp;
+        case 27: return DivideDstCompositeOp;
+        case 28: return DivideSrcCompositeOp;
+        case 29: return DstAtopCompositeOp;
+        case 30: return DstCompositeOp;
+        case 31: return DstInCompositeOp;
+        case 32: return DstOutCompositeOp;
+        case 33: return DstOverCompositeOp;
+        case 34: return ExclusionCompositeOp;
+        case 35: return HardLightCompositeOp;
+        case 36: return HardMixCompositeOp;
+        case 37: return HueCompositeOp;
+        case 38: return InCompositeOp;
+        case 39: return IntensityCompositeOp;
+        case 40: return LightenCompositeOp;
+        case 41: return LightenIntensityCompositeOp;
+        case 42: return LinearBurnCompositeOp;
+        case 43: return LinearDodgeCompositeOp;
+        case 44: return LinearLightCompositeOp;
+        case 45: return LuminizeCompositeOp;
+        case 46: return MathematicsCompositeOp;
+        case 47: return MinusDstCompositeOp;
+        case 48: return MinusSrcCompositeOp;
+        case 49: return ModulateCompositeOp;
+        case 50: return ModulusAddCompositeOp;
+        case 51: return ModulusSubtractCompositeOp;
+        case 52: return MultiplyCompositeOp;
+        case 53: return OutCompositeOp;
+        case 54: return OverCompositeOp;
+        case 55: return OverlayCompositeOp;
+        case 56: return PegtopLightCompositeOp;
+        case 57: return PinLightCompositeOp;
+        case 58: return PlusCompositeOp;
+        case 59: return ReplaceCompositeOp;
+        case 60: return SaturateCompositeOp;
+        case 61: return ScreenCompositeOp;
+        case 62: return SoftLightCompositeOp;
+        case 63: return SrcAtopCompositeOp;
+        case 64: return SrcCompositeOp;
+        case 65: return SrcInCompositeOp;
+        case 66: return SrcOutCompositeOp;
+        case 67: return SrcOverCompositeOp;
+        case 68: return ThresholdCompositeOp;
+        case 69: return VividLightCompositeOp;
+        case 70: return XorCompositeOp;
+        case 71: return StereoCompositeOp;
         /* }}} */
         default:
 #if DEBUG
@@ -876,56 +935,57 @@ CompositeOperator_val( value param )
 /* }}} */
 /* {{{ imper_compositeimage() 
  *
- * MagickBooleanType CompositeImage(Image *image,
- *                         const CompositeOperator compose,const Image *composite_image,
- *                         const long x_offset, const long y_offset)
+ * MagickBooleanType CompositeImage(Image *image, const Image *composite_image,
+ *                         const CompositeOperator,
+ *                         const MagickBooleanType clip,
+ *                         const ssize_t x_offset, const ssize_t y_offset,
+ *                         ExceptionInfo *)
  */
-CAMLprim value imper_compositeimage(
+CAMLprim value imper_compositeimage_native(
         value image_bloc,
         value composite_image_bloc,
+        value ml_clip,
         value x_offset,
         value y_offset,
         value composite_operator )
 {
     CAMLparam5(image_bloc, composite_image_bloc, x_offset, y_offset, composite_operator) ;
 
-    /*
-    unsigned int
-        ret ;
-    */
     MagickBooleanType
         ret ;
 
-#if CHECK_VALS
-    if () 
-    {
-        /*
-        invalid_argument("");
-        */
-    }
-#endif
+    MagickBooleanType clip;
+    clip = MagickBoolean_val( ml_clip );
 
-    /*
+    ExceptionInfo *excinfo;
+
+    excinfo = AcquireExceptionInfo();
+
     ret = CompositeImage(
                 (Image *) Field(image_bloc,1),
-                Int_val(composite_operator),
                 (Image *) Field(composite_image_bloc,1),
-                Long_val(x_offset),
-                Long_val(y_offset) ) ;
-    */
-    ret = CompositeImage(
-                (Image *) Field(image_bloc,1),
                 CompositeOperator_val(composite_operator),
-                (Image *) Field(composite_image_bloc,1),
+                clip,
                 Long_val(x_offset),
-                Long_val(y_offset) ) ;
+                Long_val(y_offset),
+                excinfo ) ;
+
+    DestroyExceptionInfo(excinfo);
 
     /* @TODO check this exception. */
     if (ret == MagickFalse) {
-        failwith("composite_image failed");
+        caml_failwith("composite_image failed");
     }
 
     CAMLreturn( Val_unit );
+}
+
+CAMLprim value
+imper_compositeimage_bytecode(value * argv, int argn)
+{
+      return imper_compositeimage_native(
+                argv[0], argv[1], argv[2],
+                argv[3], argv[4], argv[5] );
 }
 
 /* }}} */
@@ -941,7 +1001,7 @@ CAMLprim value imper_compositeimage(
 
 /* {{{ imper_textureimage() 
  *
- * MagickBooleanType TextureImage(Image *image, const Image *texture)
+ * MagickBooleanType TextureImage(Image *image, const Image *texture, ExceptionInfo *exc);
  *
  */
 CAMLprim value imper_textureimage(
@@ -953,13 +1013,19 @@ CAMLprim value imper_textureimage(
     MagickBooleanType
         ret;
 
+    ExceptionInfo *excinfo;
+
+    excinfo = AcquireExceptionInfo();
+
     ret = TextureImage(
                 (Image *) Field(image_bloc,1),
-                (Image *) Field(texture_image_bloc,1) );
+                (Image *) Field(texture_image_bloc,1), excinfo );
+
+    DestroyExceptionInfo(excinfo);
 
     /* @TODO check this exception. */
     if (ret == MagickFalse) {
-        failwith("texture_image failed");
+        caml_failwith("texture_image failed");
     }
 
     CAMLreturn( Val_unit );
@@ -970,59 +1036,59 @@ CAMLprim value imper_textureimage(
 
 /* {{{ imper_colorizeimage() 
  *
- * Image *ColorizeImage(const Image *image, const char *opacity, const PixelPacket target, ExceptionInfo *exception)
+ * Image *ColorizeImage(const Image *, const char *, const PixelInfo *,ExceptionInfo *),
  */
 
 CAMLprim value
 imper_colorizeimage_native(
             value image_bloc,
-            value opacity,
+            value alpha,
             value target_red,
             value target_green,
             value target_blue,
-            value target_opacity )
+            value target_alpha )
 {
-    CAMLparam5( image_bloc, opacity, target_red, target_green, target_blue );
-    CAMLxparam1( target_opacity );
+    CAMLparam5( image_bloc, alpha, target_red, target_green, target_blue );
+    CAMLxparam1( target_alpha );
 
     Image
         *new_image;
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    PixelPacket
+    PixelInfo
         target;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     target.red     = (Quantum) Long_val(target_red);
     target.green   = (Quantum) Long_val(target_green);
     target.blue    = (Quantum) Long_val(target_blue);
-    target.opacity = (Quantum) Long_val(target_opacity);
+    target.alpha   = (Quantum) Long_val(target_alpha);
 
     /* QueryColorDatabase( color, target, &handle->exception ); */
 
     new_image = ColorizeImage(
                     (Image *) Field(image_bloc,1),
-                    String_val(opacity),
-                    target,
-                    &exception );
+                    String_val(alpha),
+                    &target,
+                    exception );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) );
     Field(image_bloc,1) = (value) new_image;
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( Val_unit );
 }
@@ -1056,12 +1122,12 @@ imper_acquireonepixel(
     CAMLlocal1( tuple_color );
 
     ExceptionInfo
-        exception;
+        *exception;
 
     PixelPacket
         pixel;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     /* DEPR
     pixel = AcquireOnePixel(
@@ -1076,21 +1142,21 @@ imper_acquireonepixel(
                     Long_val(x),
                     Long_val(y),
                     &pixel,
-                    &exception );
+                    exception );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     value pixel_red   = Val_int( (int) pixel.red );
     value pixel_green = Val_int( (int) pixel.green );
     value pixel_blue  = Val_int( (int) pixel.blue );
-    value pixel_alpha = Val_int( (int) (MaxMap - pixel.opacity) );
+    value pixel_alpha = Val_int( (int) (MaxMap - pixel.alpha) );
 
-    tuple_color = alloc_tuple(4) ;
+    tuple_color = caml_alloc_tuple(4) ;
 
     Store_field(tuple_color, 0, pixel_red );
     Store_field(tuple_color, 1, pixel_green );
@@ -1101,7 +1167,7 @@ imper_acquireonepixel(
 }
 
 /* }}} */
-/* {{{ imper_acquireonepixel_opacity() 
+/* {{{ imper_acquireonepixel_alpha() 
  *
  * PixelPacket AcquireOnePixel(const Image image,
  *                   const long x, const long y,
@@ -1109,7 +1175,7 @@ imper_acquireonepixel(
  */
 
 CAMLprim value
-imper_acquireonepixel_opacity(
+imper_acquireonepixel_alpha(
             value image_bloc,
             value x,
             value y )
@@ -1119,19 +1185,19 @@ imper_acquireonepixel_opacity(
     CAMLlocal1( tuple_color );
 
     ExceptionInfo
-        exception;
+        *exception;
 
     PixelPacket
         pixel;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     /* DEPR
     pixel = AcquireOnePixel(
                     (Image *) Field(image_bloc,1),
                     Long_val(x),
                     Long_val(y),
-                    &exception );
+                    exception );
     */
 
     GetOneVirtualPixel(
@@ -1139,26 +1205,26 @@ imper_acquireonepixel_opacity(
                     Long_val(x),
                     Long_val(y),
                     &pixel,
-                    &exception );
+                    exception );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     value pixel_red     = Val_int( (int) pixel.red );
     value pixel_green   = Val_int( (int) pixel.green );
     value pixel_blue    = Val_int( (int) pixel.blue );
-    value pixel_opacity = Val_int( (int) pixel.opacity );
+    value pixel_alpha = Val_int( (int) pixel.alpha );
 
-    tuple_color = alloc_tuple(4);
+    tuple_color = caml_alloc_tuple(4);
 
     Store_field(tuple_color, 0, pixel_red );
     Store_field(tuple_color, 1, pixel_green );
     Store_field(tuple_color, 2, pixel_blue );
-    Store_field(tuple_color, 3, pixel_opacity );
+    Store_field(tuple_color, 3, pixel_alpha );
 
     CAMLreturn( tuple_color );
 }
@@ -1183,7 +1249,7 @@ imper_ping_image_infos(value input_image_name)
     Image *_image;
 
     ExceptionInfo
-        exception;
+        *exception;
 
     ImageInfo
         *image_info;
@@ -1195,21 +1261,22 @@ imper_ping_image_infos(value input_image_name)
         MagickCoreGenesis(getenv("PWD"), MagickTrue);
     }
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
+
     image_info = CloneImageInfo((ImageInfo *) NULL);
     (void) strcpy(image_info->filename, String_val(input_image_name));
 
-    _image = PingImage(image_info, &exception);
+    _image = PingImage(image_info, exception);
     DestroyImageInfo(image_info);
 
-    if (exception.severity != UndefinedException) {
-        failwith( exception.reason );
+    if (exception->severity != UndefinedException) {
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     if (!_image) {
-        failwith("ping_image_infos failed");
+        caml_failwith("ping_image_infos failed");
     }
 
     mime_type = MagickToMime(_image->magick);
@@ -1219,14 +1286,14 @@ imper_ping_image_infos(value input_image_name)
     value depth    = Val_long(_image->depth);
     value colors   = Val_long(_image->colors);
     value quality  = Val_long(_image->quality);
-          mimetype = copy_string( mime_type );
+          mimetype = caml_copy_string( mime_type );
 
     /* TODO
      * BUG XXX FIXME
      * Perhaps the _image structure should be freed at this point?
      */
 
-    pong_tuple = alloc_tuple(6);
+    pong_tuple = caml_alloc_tuple(6);
 
     Store_field(pong_tuple, 0, width );
     Store_field(pong_tuple, 1, height );
@@ -1251,7 +1318,7 @@ imper_ping_image(value input_image_name)
     Image *_image;
 
     ExceptionInfo
-        exception;
+        *exception;
 
     ImageInfo
         *image_info;
@@ -1260,19 +1327,20 @@ imper_ping_image(value input_image_name)
         MagickCoreGenesis(getenv("PWD"), MagickTrue);
     }
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
+
     image_info = CloneImageInfo((ImageInfo *) NULL);
     (void) strcpy(image_info->filename, String_val(input_image_name));
 
-    _image = PingImage(image_info, &exception);
+    _image = PingImage(image_info, exception);
     DestroyImageInfo(image_info);
 
-    if (exception.severity != UndefinedException) {
+    if (exception->severity != UndefinedException) {
 
         CAMLreturn( Val_false );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     if (!_image) {
         CAMLreturn( Val_false );
@@ -1307,62 +1375,61 @@ imper_getnumbercolors(value image_bloc, value hist_file)
     unsigned long
         unique_colors;    /* the number of unique colors */
 
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
     fp = fopen( String_val(hist_file), "w" );
     if ( !fp ) {
-        failwith("could not write to histogram file");
+        caml_failwith("could not write to histogram file");
     }
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     unique_colors = GetNumberColors(
                         (Image *) Field(image_bloc,1),
                         fp,
-                        &exception );
+                        exception );
     fclose( fp );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( Val_long(unique_colors) );
 }
 /* }}} */
 /* {{{ imper_getimagehistogram() 
  *
- * ColorPacket *GetImageHistogram(const Image *image, unsigned long *number_colors, ExceptionInfo *exception);
+ * PixelInfo *GetImageHistogram(const Image *, size_t *, ExceptionInfo *);
  */
 CAMLprim value
 imper_getimagehistogram(value image_bloc)
 {
     CAMLparam1(image_bloc);
 
-    ColorPacket* color_packet;
+    PixelInfo * pixel_info;  /* TODO */
 
-    unsigned long
-        unique_colors;    /* the number of unique colors */
+    size_t number_colors;    /* the number of unique colors */
 
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    color_packet = GetImageHistogram(
+    pixel_info = GetImageHistogram(
                         (Image *) Field(image_bloc,1),
-                        &unique_colors,
-                        &exception );
+                        &number_colors,
+                        exception );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
-    CAMLreturn( Val_long(unique_colors) );
+    CAMLreturn( Val_long(number_colors) );
 }
 /* }}} */
 
@@ -1398,13 +1465,13 @@ ImageType_val( value param )
         case 0:  return UndefinedType;
         case 1:  return BilevelType;
         case 2:  return GrayscaleType;
-        case 3:  return GrayscaleMatteType;
+        case 3:  return GrayscaleAlphaType;
         case 4:  return PaletteType;
-        case 5:  return PaletteMatteType;
+        case 5:  return PaletteAlphaType;
         case 6:  return TrueColorType;
-        case 7:  return TrueColorMatteType;
+        case 7:  return TrueColorAlphaType;
         case 8:  return ColorSeparationType;
-        case 9:  return ColorSeparationMatteType;
+        case 9:  return ColorSeparationAlphaType;
         case 10: return OptimizeType;
         default:
 #if DEBUG
@@ -1429,13 +1496,13 @@ typedef enum
     UndefinedType,
     BilevelType,
     GrayscaleType,
-    GrayscaleMatteType,
+    GrayscaleAlphaType,
     PaletteType,
-    PaletteMatteType,
+    PaletteAlphaType,
     TrueColorType,
-    TrueColorMatteType,
+    TrueColorAlphaType,
     ColorSeparationType,
-    ColorSeparationMatteType,
+    ColorSeparationAlphaType,
     OptimizeType
 } ImageType;
 */
@@ -1444,13 +1511,13 @@ typedef enum
         case UndefinedType:            return 0;
         case BilevelType:              return 1;
         case GrayscaleType:            return 2;
-        case GrayscaleMatteType:       return 3;
+        case GrayscaleAlphaType:       return 3;
         case PaletteType:              return 4;
-        case PaletteMatteType:         return 5;
+        case PaletteAlphaType:         return 5;
         case TrueColorType:            return 6;
-        case TrueColorMatteType:       return 7;
+        case TrueColorAlphaType:       return 7;
         case ColorSeparationType:      return 8;
-        case ColorSeparationMatteType: return 9;
+        case ColorSeparationAlphaType: return 9;
         case OptimizeType:             return 10;
         default:           return 11;  /* Error */
     }
@@ -1467,28 +1534,16 @@ imper_getimagetype(value image_bloc)
 {
     CAMLparam1(image_bloc);
 
-    ExceptionInfo exception;
-
     ImageType image_type;
     int image_type_code;
 
-    GetExceptionInfo(&exception);
-
     image_type = GetImageType(
-                        (Image *) Field(image_bloc,1),
-                        &exception );
-
-    if (exception.severity != UndefinedException)
-    {
-        failwith( exception.reason );
-    }
-
-    DestroyExceptionInfo(&exception);
+                        (Image *) Field(image_bloc,1) );
 
     image_type_code = Val_ImageType(image_type);
 
     if ( image_type_code == 11 ) {
-        failwith("get_image_type failed: the ImageType structure of the MagickCore has been upgraded");
+        caml_failwith("get_image_type failed: the ImageType structure of the MagickCore has been upgraded");
     }
 
     CAMLreturn( Val_int(image_type_code) );
@@ -1507,38 +1562,25 @@ imper_setimagetype(value image_bloc, value image_type)
     MagickBooleanType
         ret;
 
+    ExceptionInfo *excinfo;
+
+    excinfo = AcquireExceptionInfo();
+
     ret = SetImageType(
                     (Image *) Field(image_bloc,1),
-                    ImageType_val(image_type) );
+                    ImageType_val(image_type),
+                    excinfo ) ;
+
+    DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
-        failwith("set_image_type failed");
+        caml_failwith("set_image_type failed");
     }
 
     CAMLreturn( Val_unit );
 }
 /* }}} */
 
-/* Work in Progress */
-
-CAMLprim value
-imper_setimagetype__(value image_bloc)
-{
-    CAMLparam1(image_bloc);
-
-    MagickBooleanType
-        ret;
-
-    ret = SetImageType(
-                    (Image *) Field(image_bloc,1),
-                    TrueColorMatteType );
-
-    if (ret == MagickFalse) {
-        failwith("set_image_type failed");
-    }
-
-    CAMLreturn( Val_unit );
-}
 
 /* {{{ _Val_AffineMatrix() 
 
@@ -1608,7 +1650,7 @@ imper_affinetransformimage_native(
     CAMLxparam2( tx, ty );
 
     ExceptionInfo
-        exception;
+        *exception;
 
     AffineMatrix
         affine_matrix;
@@ -1616,7 +1658,7 @@ imper_affinetransformimage_native(
     Image
         *new_image;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
 
     _Val_AffineMatrix( &affine_matrix,
@@ -1634,20 +1676,20 @@ imper_affinetransformimage_native(
     new_image = AffineTransformImage(
                     (Image *) Field(image_bloc,1),
                     &affine_matrix,
-                    &exception );
+                    exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     DestroyImage( (Image *) Field(image_bloc,1) );
     Field(image_bloc,1) = (value) new_image;
@@ -1684,15 +1726,15 @@ fun_affinetransformimage_native(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
     AffineMatrix
         affine_matrix;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     _Val_AffineMatrix( &affine_matrix,
             Double_val(sx),
@@ -1710,20 +1752,20 @@ fun_affinetransformimage_native(
         (value) AffineTransformImage(
                     (Image *) Field(image_bloc,1),
                     &affine_matrix,
-                    &exception );
+                    exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -1739,25 +1781,6 @@ fun_affinetransformimage_bytecode(value * argv, int argn)
 
 /* }}} */
 
-
-/* {{{ imper_setimageopacity() 
- *
- * void SetImageOpacity(Image *image, const Quantum opacity)
- */
-CAMLprim value
-imper_setimageopacity(
-            value image_bloc,
-            value opacity )
-{
-    CAMLparam2( image_bloc, opacity );
-
-    SetImageOpacity(
-                (Image *) Field(image_bloc,1),
-                (Quantum) Long_val(opacity) );
-
-    CAMLreturn( Val_unit );
-}
-/* }}} */
 
 /* {{{ ====  GET INFOS  ==== */
 
@@ -1902,7 +1925,7 @@ imper_getimagemimetype( value image_bloc )
                         ((Image *) Field(image_bloc,1))->magick
                     );
 
-    CAMLreturn( copy_string( mime_type ) );
+    CAMLreturn( caml_copy_string( mime_type ) );
 }
 
 /* }}} */
@@ -1925,7 +1948,7 @@ imper_getimagesize( value image_bloc )
     int ret;
 
     if ( (size = malloc(256)) == NULL ) {
-        failwith("get_image_size failed") ;
+        caml_failwith("get_image_size failed") ;
     }
 
     width  = ((Image *) Field(image_bloc,1))->columns;
@@ -1933,7 +1956,7 @@ imper_getimagesize( value image_bloc )
 
     ret = snprintf(size, 256, "width='%lu' height='%lu'", width, height);
 
-    CAMLreturn( copy_string( size ) );
+    CAMLreturn( caml_copy_string( size ) );
 }
 
 /* }}} */
@@ -1942,105 +1965,6 @@ imper_getimagesize( value image_bloc )
 
 /* {{{ ====  TESTS  ==== */
 
-/* {{{ imper_isgrayimage() 
- *
- * MagickBooleanType IsGrayImage(const Image *image, ExceptionInfo *exception)
- */
-CAMLprim value
-imper_isgrayimage(value image_bloc)
-{
-    CAMLparam1(image_bloc);
-
-    MagickBooleanType
-        ret;
-
-    ExceptionInfo
-        exception;
-
-    GetExceptionInfo(&exception);
-
-    ret = IsGrayImage( (Image *) Field(image_bloc,1), &exception );
-
-    if (exception.severity != UndefinedException)
-    {
-        failwith( exception.reason );
-    }
-    DestroyExceptionInfo(&exception);
-
-    if ( ret == MagickTrue )
-    {
-        CAMLreturn( Val_true );
-    } else {
-        CAMLreturn( Val_false );
-    }
-}
-/* }}} */
-/* {{{ imper_ismonochromeimage() 
- *
- * MagickBooleanType IsMonochromeImage(const Image *image, ExceptionInfo *exception)
- */
-CAMLprim value
-imper_ismonochromeimage(value image_bloc)
-{
-    CAMLparam1(image_bloc);
-
-    MagickBooleanType
-        ret;
-
-    ExceptionInfo
-        exception;
-
-    GetExceptionInfo(&exception);
-
-    ret = IsMonochromeImage( (Image *) Field(image_bloc,1), &exception );
-
-    if (exception.severity != UndefinedException)
-    {
-        failwith( exception.reason );
-    }
-    DestroyExceptionInfo(&exception);
-
-    if ( ret == MagickTrue )
-    {
-        CAMLreturn( Val_true );
-    } else {
-        CAMLreturn( Val_false );
-    }
-}
-/* }}} */
-/* {{{ imper_isopaqueimage() 
- *
- * MagickBooleanType IsOpaqueImage(const Image *image, ExceptionInfo *exception)
- */
-CAMLprim value
-imper_isopaqueimage(value image_bloc)
-{
-    CAMLparam1(image_bloc);
-
-    MagickBooleanType
-        ret;
-
-    ExceptionInfo
-        exception;
-
-    GetExceptionInfo(&exception);
-
-    ret = IsOpaqueImage( (Image *) Field(image_bloc,1), &exception );
-
-    if (exception.severity != UndefinedException)
-    {
-        failwith( exception.reason );
-    }
-    DestroyExceptionInfo(&exception);
-
-    if ( ret == MagickTrue )
-    {
-        CAMLreturn( Val_true );
-    } else {
-        CAMLreturn( Val_false );
-    }
-}
-/* }}} */
 /* {{{ imper_ispaletteimage() 
  *
  * MagickBooleanType IsPaletteImage(const Image *image, ExceptionInfo *exception)
@@ -2053,18 +1977,7 @@ imper_ispaletteimage(value image_bloc)
     MagickBooleanType
         ret;
 
-    ExceptionInfo
-        exception;
-
-    GetExceptionInfo(&exception);
-
-    ret = IsPaletteImage( (Image *) Field(image_bloc,1), &exception );
-
-    if (exception.severity != UndefinedException)
-    {
-        failwith( exception.reason );
-    }
-    DestroyExceptionInfo(&exception);
+    ret = IsPaletteImage( (Image *) Field(image_bloc,1) );
 
     if ( ret == MagickTrue )
     {
@@ -2110,14 +2023,21 @@ imper_isimagesequal(value image_bloc, value comp_image_bloc)
             normalized_mean_error,
             normalized_maximum_error );
 
+    ExceptionInfo
+        *excinfo;
+
     MagickBooleanType
         ret;
 
+    excinfo = AcquireExceptionInfo();
+
     ret = IsImagesEqual(
             (Image *) Field(image_bloc,1),
-            (Image *) Field(comp_image_bloc,1) );
+            (Image *) Field(comp_image_bloc,1), excinfo);
 
-    tuple_errors = alloc_tuple(4);
+    DestroyExceptionInfo(excinfo);
+
+    tuple_errors = caml_alloc_tuple(4);
 
     if ( ret == MagickTrue ) {
         Store_field(tuple_errors, 0, Val_true );
@@ -2129,9 +2049,9 @@ imper_isimagesequal(value image_bloc, value comp_image_bloc)
     image = (Image *) Field(image_bloc,1);
 
     /* OLD
-    value mean_error_per_pixel     = copy_double((double)image->error.mean_error_per_pixel);
-    value normalized_mean_error    = copy_double((double)image->error.normalized_mean_error);
-    value normalized_maximum_error = copy_double((double)image->error.normalized_maximum_error);
+    value mean_error_per_pixel     = caml_copy_double((double)image->error.mean_error_per_pixel);
+    value normalized_mean_error    = caml_copy_double((double)image->error.normalized_mean_error);
+    value normalized_maximum_error = caml_copy_double((double)image->error.normalized_maximum_error);
     */
 
     /*
@@ -2168,7 +2088,7 @@ imper_getmagickcopyright( value unit )
 
     copyright = GetMagickCopyright();
 
-    CAMLreturn(copy_string( copyright ));
+    CAMLreturn(caml_copy_string( copyright ));
 }
 /* }}} */
 /* {{{ imper_getmagickhomeurl() 
@@ -2180,7 +2100,7 @@ imper_getmagickhomeurl( value unit )
 {
     CAMLparam1(unit);
 
-    CAMLreturn(copy_string(
+    CAMLreturn(caml_copy_string(
                 GetMagickHomeURL()
                 ));
 }
@@ -2203,9 +2123,9 @@ imper_getmagickquantumdepth( value unit )
     quantum_depth = GetMagickQuantumDepth(depth);
 
     value int_quantum_depth = Val_int( (int) depth );
-          str_quantum_depth = copy_string( quantum_depth );
+          str_quantum_depth = caml_copy_string( quantum_depth );
 
-    tuple_quantum_depth = alloc_tuple(2);
+    tuple_quantum_depth = caml_alloc_tuple(2);
 
     Store_field(tuple_quantum_depth, 0, int_quantum_depth);
     Store_field(tuple_quantum_depth, 1, str_quantum_depth);
@@ -2231,9 +2151,9 @@ imper_getmagickquantumrange( value unit )
     quantum_range = GetMagickQuantumRange(range);
 
     value int_quantum_range = Val_int( (int) range );
-    value str_quantum_range = copy_string( quantum_range );
+    value str_quantum_range = caml_copy_string( quantum_range );
 
-    tuple_quantum_range = alloc_tuple(2);
+    tuple_quantum_range = caml_alloc_tuple(2);
 
     Store_field(tuple_quantum_range, 0, int_quantum_range);
     Store_field(tuple_quantum_range, 1, str_quantum_range);
@@ -2250,7 +2170,7 @@ imper_getmagickreleasedate( value unit )
 {
     CAMLparam1(unit);
 
-    CAMLreturn(copy_string(
+    CAMLreturn(caml_copy_string(
                 GetMagickReleaseDate()
                 ));
 }
@@ -2266,16 +2186,14 @@ imper_getmagickversion( value unit )
     CAMLlocal3( tuple_magick_version, int_version, str_version );
 
     const char* char_version;
-    unsigned long *version;
+    unsigned long version;
 
-    version = (unsigned long *)NULL;
+    char_version = GetMagickVersion(&version);
 
-    char_version = GetMagickVersion(version);
+    int_version = Val_int( version );
+    str_version = caml_copy_string( char_version );
 
-    int_version = Val_int( *version );
-    str_version = copy_string( char_version );
-
-    tuple_magick_version = alloc_tuple(2);
+    tuple_magick_version = caml_alloc_tuple(2);
 
     Store_field(tuple_magick_version, 0, int_version);
     Store_field(tuple_magick_version, 1, str_version);
@@ -2292,7 +2210,7 @@ imper_getbindingversion( value unit )
 {
     CAMLparam1(unit);
 
-    CAMLreturn(copy_string(
+    CAMLreturn(caml_copy_string(
                 OCAML_IMAGEMAGICK_VERSION
                 ));
 }
@@ -2401,71 +2319,6 @@ fill_AffineMatrix(
     affine->sy = sy;
     affine->tx = tx;
     affine->ty = ty;
-}
-/* }}} */
-
-/* {{{ imper_querycolordatabase() 
- *
- * MagickBooleanType  QueryColorDatabase(
- *                           const char *name,
- *                           PixelPacket *color,
- *                           ExceptionInfo *exception );
- */
-
-CAMLprim value
-imper_querycolordatabase(value color_string)
-{
-    CAMLparam1( color_string );
-    CAMLlocal1( color_tuple );
-
-    ExceptionInfo
-        exception;
-
-    MagickBooleanType
-        ret;
-
-    PixelPacket
-        color;
-
-    if (IsMagickInstantiated() == MagickFalse) {
-        MagickCoreGenesis(getenv("PWD"), MagickTrue);
-    }
-
-    GetExceptionInfo(&exception);
-
-
-    ret = QueryColorDatabase(
-                         String_val(color_string),
-                         &color,
-                         &exception );
-
-
-    if (ret == MagickFalse) {
-        failwith("color_of_string failed");
-    }
-
-    if (exception.severity != UndefinedException) {
-        failwith( exception.reason );
-    }
-
-    DestroyExceptionInfo(&exception);
-
-    /* @TODO:  Should the color PixelPacket be freed or not at this point???
-     */
-
-    value red     = Val_long(color.red );
-    value green   = Val_long(color.green );
-    value blue    = Val_long(color.blue );
-    value opacity = Val_long(color.opacity );
-
-    color_tuple = alloc_tuple(4);
-
-    Store_field(color_tuple, 0, red );
-    Store_field(color_tuple, 1, green );
-    Store_field(color_tuple, 2, blue );
-    Store_field(color_tuple, 3, opacity );
-
-    CAMLreturn( color_tuple );
 }
 /* }}} */
 
@@ -2578,7 +2431,7 @@ imper_querycolordatabase(value color_string)
         clip_units;
 
       Quantum
-        opacity;
+        alpha;
 
       MagickBooleanType
         render;
@@ -2608,10 +2461,10 @@ imper_draw_point_native(
         value red,
         value green,
         value blue,
-        value opacity )
+        value alpha )
 {
     CAMLparam5( image_bloc, x, y, red, green );
-    CAMLxparam2( blue, opacity );
+    CAMLxparam2( blue, alpha );
 
     MagickBooleanType
         ret;
@@ -2632,16 +2485,16 @@ imper_draw_point_native(
 #if DEBUG
         fprintf(stderr, "CloneDrawInfo() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_point failed");
+        caml_failwith("draw_point failed");
     }
 
-    PixelPacket
+    PixelInfo
         fill;
 
     fill.red     = (Quantum) Long_val(red);
     fill.green   = (Quantum) Long_val(green);
     fill.blue    = (Quantum) Long_val(blue);
-    fill.opacity = (Quantum) Long_val(opacity);
+    fill.alpha = (Quantum) Long_val(alpha);
 
     draw_info->fill = fill;
 
@@ -2653,13 +2506,17 @@ imper_draw_point_native(
     str_len = snprintf( str_buffer, MaxTextExtent, "point %ld,%ld", Long_val(x), Long_val(y) );
     (void) CloneString(&draw_info->primitive, str_buffer);
 
-    ret = DrawImage((Image *) Field(image_bloc,1), draw_info);
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+
+    ret = DrawImage((Image *) Field(image_bloc,1), draw_info, excinfo);
+
+    excinfo = DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
 #if DEBUG
         fprintf(stderr, "DrawImage() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_point failed");
+        caml_failwith("draw_point failed");
     }
 
 
@@ -2732,27 +2589,27 @@ imper_draw_line_native(
 #if DEBUG
         fprintf(stderr, "CloneDrawInfo() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_line failed");
+        caml_failwith("draw_line failed");
     }
 
-    PixelPacket
+    PixelInfo
         fill;
 
     fill.red     = (Quantum) Long_val(fill_red);
     fill.green   = (Quantum) Long_val(fill_green);
     fill.blue    = (Quantum) Long_val(fill_blue);
-    fill.opacity = (Quantum) Long_val(fill_alpha);
+    fill.alpha = (Quantum) Long_val(fill_alpha);
 
     draw_info->fill = fill;
 
 
-    PixelPacket
+    PixelInfo
         stroke;
 
     stroke.red     = (Quantum) Long_val(stroke_red);
     stroke.green   = (Quantum) Long_val(stroke_green);
     stroke.blue    = (Quantum) Long_val(stroke_blue);
-    stroke.opacity = (Quantum) Long_val(stroke_alpha);
+    stroke.alpha = (Quantum) Long_val(stroke_alpha);
 
     /*
        typedef struct _DrawInfo
@@ -2784,13 +2641,15 @@ imper_draw_line_native(
 
     (void) CloneString(&draw_info->primitive, str_buffer);
 
-    ret = DrawImage((Image *) Field(image_bloc,1), draw_info);
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+    ret = DrawImage((Image *) Field(image_bloc,1), draw_info, excinfo);
+    excinfo = DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
 #if DEBUG
         fprintf(stderr, "DrawImage() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_line failed");
+        caml_failwith("draw_line failed");
     }
 
 
@@ -2870,27 +2729,27 @@ imper_draw_rectangle_native(
 #if DEBUG
         fprintf(stderr, "CloneDrawInfo() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_rectangle failed");
+        caml_failwith("draw_rectangle failed");
     }
 
-    PixelPacket
+    PixelInfo
         fill;
 
     fill.red     = (Quantum) Long_val(fill_red);
     fill.green   = (Quantum) Long_val(fill_green);
     fill.blue    = (Quantum) Long_val(fill_blue);
-    fill.opacity = (Quantum) Long_val(fill_alpha);
+    fill.alpha = (Quantum) Long_val(fill_alpha);
 
     draw_info->fill = fill;
 
 
-    PixelPacket
+    PixelInfo
         stroke;
 
     stroke.red     = (Quantum) Long_val(stroke_red);
     stroke.green   = (Quantum) Long_val(stroke_green);
     stroke.blue    = (Quantum) Long_val(stroke_blue);
-    stroke.opacity = (Quantum) Long_val(stroke_alpha);
+    stroke.alpha = (Quantum) Long_val(stroke_alpha);
 
     /*
        typedef struct _DrawInfo
@@ -2937,13 +2796,15 @@ imper_draw_rectangle_native(
 
     (void) CloneString(&draw_info->primitive, str_buffer);
 
-    ret = DrawImage((Image *) Field(image_bloc,1), draw_info);
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+    ret = DrawImage((Image *) Field(image_bloc,1), draw_info, excinfo);
+    excinfo = DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
 #if DEBUG
         fprintf(stderr, "DrawImage() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_rectangle failed");
+        caml_failwith("draw_rectangle failed");
     }
 
 
@@ -3025,27 +2886,27 @@ imper_draw_roundrectangle_native(
 #if DEBUG
         fprintf(stderr, "CloneDrawInfo() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_round_rectangle failed");
+        caml_failwith("draw_round_rectangle failed");
     }
 
-    PixelPacket
+    PixelInfo
         fill;
 
     fill.red     = (Quantum) Long_val(fill_red);
     fill.green   = (Quantum) Long_val(fill_green);
     fill.blue    = (Quantum) Long_val(fill_blue);
-    fill.opacity = (Quantum) Long_val(fill_alpha);
+    fill.alpha = (Quantum) Long_val(fill_alpha);
 
     draw_info->fill = fill;
 
 
-    PixelPacket
+    PixelInfo
         stroke;
 
     stroke.red     = (Quantum) Long_val(stroke_red);
     stroke.green   = (Quantum) Long_val(stroke_green);
     stroke.blue    = (Quantum) Long_val(stroke_blue);
-    stroke.opacity = (Quantum) Long_val(stroke_alpha);
+    stroke.alpha = (Quantum) Long_val(stroke_alpha);
 
     /*
        typedef struct _DrawInfo
@@ -3084,13 +2945,15 @@ imper_draw_roundrectangle_native(
 
     (void) CloneString(&draw_info->primitive, str_buffer);
 
-    ret = DrawImage((Image *) Field(image_bloc,1), draw_info);
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+    ret = DrawImage((Image *) Field(image_bloc,1), draw_info, excinfo);
+    excinfo = DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
 #if DEBUG
         fprintf(stderr, "DrawImage() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_round_rectangle failed");
+        caml_failwith("draw_round_rectangle failed");
     }
 
 
@@ -3173,27 +3036,27 @@ imper_draw_arc_native(
 #if DEBUG
         fprintf(stderr, "CloneDrawInfo() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_arc failed");
+        caml_failwith("draw_arc failed");
     }
 
-    PixelPacket
+    PixelInfo
         fill;
 
     fill.red     = (Quantum) Long_val(fill_red);
     fill.green   = (Quantum) Long_val(fill_green);
     fill.blue    = (Quantum) Long_val(fill_blue);
-    fill.opacity = (Quantum) Long_val(fill_alpha);
+    fill.alpha = (Quantum) Long_val(fill_alpha);
 
     draw_info->fill = fill;
 
 
-    PixelPacket
+    PixelInfo
         stroke;
 
     stroke.red     = (Quantum) Long_val(stroke_red);
     stroke.green   = (Quantum) Long_val(stroke_green);
     stroke.blue    = (Quantum) Long_val(stroke_blue);
-    stroke.opacity = (Quantum) Long_val(stroke_alpha);
+    stroke.alpha = (Quantum) Long_val(stroke_alpha);
 
     /*
        typedef struct _DrawInfo
@@ -3235,13 +3098,15 @@ imper_draw_arc_native(
 
     (void) CloneString(&draw_info->primitive, str_buffer);
 
-    ret = DrawImage((Image *) Field(image_bloc,1), draw_info);
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+    ret = DrawImage((Image *) Field(image_bloc,1), draw_info, excinfo);
+    excinfo = DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
 #if DEBUG
         fprintf(stderr, "DrawImage() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_arc failed");
+        caml_failwith("draw_arc failed");
     }
 
 
@@ -3322,27 +3187,27 @@ imper_draw_circle_native(
 #if DEBUG
         fprintf(stderr, "CloneDrawInfo() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_circle failed");
+        caml_failwith("draw_circle failed");
     }
 
-    PixelPacket
+    PixelInfo
         fill;
 
     fill.red     = (Quantum) Long_val(fill_red);
     fill.green   = (Quantum) Long_val(fill_green);
     fill.blue    = (Quantum) Long_val(fill_blue);
-    fill.opacity = (Quantum) Long_val(fill_alpha);
+    fill.alpha = (Quantum) Long_val(fill_alpha);
 
     draw_info->fill = fill;
 
 
-    PixelPacket
+    PixelInfo
         stroke;
 
     stroke.red     = (Quantum) Long_val(stroke_red);
     stroke.green   = (Quantum) Long_val(stroke_green);
     stroke.blue    = (Quantum) Long_val(stroke_blue);
-    stroke.opacity = (Quantum) Long_val(stroke_alpha);
+    stroke.alpha = (Quantum) Long_val(stroke_alpha);
 
     /*
        typedef struct _DrawInfo
@@ -3382,13 +3247,15 @@ imper_draw_circle_native(
 
     (void) CloneString(&draw_info->primitive, str_buffer);
 
-    ret = DrawImage((Image *) Field(image_bloc,1), draw_info);
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+    ret = DrawImage((Image *) Field(image_bloc,1), draw_info, excinfo);
+    excinfo = DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
 #if DEBUG
         fprintf(stderr, "DrawImage() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_circle failed");
+        caml_failwith("draw_circle failed");
     }
 
 
@@ -3471,27 +3338,27 @@ imper_draw_ellipse_native(
 #if DEBUG
         fprintf(stderr, "CloneDrawInfo() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_ellipse failed");
+        caml_failwith("draw_ellipse failed");
     }
 
-    PixelPacket
+    PixelInfo
         fill;
 
     fill.red     = (Quantum) Long_val(fill_red);
     fill.green   = (Quantum) Long_val(fill_green);
     fill.blue    = (Quantum) Long_val(fill_blue);
-    fill.opacity = (Quantum) Long_val(fill_alpha);
+    fill.alpha = (Quantum) Long_val(fill_alpha);
 
     draw_info->fill = fill;
 
 
-    PixelPacket
+    PixelInfo
         stroke;
 
     stroke.red     = (Quantum) Long_val(stroke_red);
     stroke.green   = (Quantum) Long_val(stroke_green);
     stroke.blue    = (Quantum) Long_val(stroke_blue);
-    stroke.opacity = (Quantum) Long_val(stroke_alpha);
+    stroke.alpha = (Quantum) Long_val(stroke_alpha);
 
     /*
        typedef struct _DrawInfo
@@ -3531,13 +3398,15 @@ imper_draw_ellipse_native(
 
     (void) CloneString(&draw_info->primitive, str_buffer);
 
-    ret = DrawImage((Image *) Field(image_bloc,1), draw_info);
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+    ret = DrawImage((Image *) Field(image_bloc,1), draw_info, excinfo);
+    excinfo = DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
 #if DEBUG
         fprintf(stderr, "DrawImage() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_ellipse failed");
+        caml_failwith("draw_ellipse failed");
     }
 
 
@@ -3625,27 +3494,27 @@ imper_draw_polyline_native(
 #if DEBUG
         fprintf(stderr, "CloneDrawInfo() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_polyline failed");
+        caml_failwith("draw_polyline failed");
     }
 
-    PixelPacket
+    PixelInfo
         fill;
 
     fill.red     = (Quantum) Long_val(fill_red);
     fill.green   = (Quantum) Long_val(fill_green);
     fill.blue    = (Quantum) Long_val(fill_blue);
-    fill.opacity = (Quantum) Long_val(fill_alpha);
+    fill.alpha = (Quantum) Long_val(fill_alpha);
 
     draw_info->fill = fill;
 
 
-    PixelPacket
+    PixelInfo
         stroke;
 
     stroke.red     = (Quantum) Long_val(stroke_red);
     stroke.green   = (Quantum) Long_val(stroke_green);
     stroke.blue    = (Quantum) Long_val(stroke_blue);
-    stroke.opacity = (Quantum) Long_val(stroke_alpha);
+    stroke.alpha = (Quantum) Long_val(stroke_alpha);
 
     /*
        typedef struct _DrawInfo
@@ -3701,13 +3570,15 @@ imper_draw_polyline_native(
 
     (void) CloneString(&draw_info->primitive, str_buffer);
 
-    ret = DrawImage((Image *) Field(image_bloc,1), draw_info);
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+    ret = DrawImage((Image *) Field(image_bloc,1), draw_info, excinfo);
+    excinfo = DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
 #if DEBUG
         fprintf(stderr, "DrawImage() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_polyline failed");
+        caml_failwith("draw_polyline failed");
     }
 
 
@@ -3791,27 +3662,27 @@ imper_draw_polygon_native(
 #if DEBUG
         fprintf(stderr, "CloneDrawInfo() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_polygon failed");
+        caml_failwith("draw_polygon failed");
     }
 
-    PixelPacket
+    PixelInfo
         fill;
 
     fill.red     = (Quantum) Long_val(fill_red);
     fill.green   = (Quantum) Long_val(fill_green);
     fill.blue    = (Quantum) Long_val(fill_blue);
-    fill.opacity = (Quantum) Long_val(fill_alpha);
+    fill.alpha = (Quantum) Long_val(fill_alpha);
 
     draw_info->fill = fill;
 
 
-    PixelPacket
+    PixelInfo
         stroke;
 
     stroke.red     = (Quantum) Long_val(stroke_red);
     stroke.green   = (Quantum) Long_val(stroke_green);
     stroke.blue    = (Quantum) Long_val(stroke_blue);
-    stroke.opacity = (Quantum) Long_val(stroke_alpha);
+    stroke.alpha = (Quantum) Long_val(stroke_alpha);
 
     /*
        typedef struct _DrawInfo
@@ -3867,13 +3738,15 @@ imper_draw_polygon_native(
 
     (void) CloneString(&draw_info->primitive, str_buffer);
 
-    ret = DrawImage((Image *) Field(image_bloc,1), draw_info);
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+    ret = DrawImage((Image *) Field(image_bloc,1), draw_info, excinfo);
+    excinfo = DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
 #if DEBUG
         fprintf(stderr, "DrawImage() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_polygon failed");
+        caml_failwith("draw_polygon failed");
     }
 
 
@@ -3957,27 +3830,27 @@ imper_draw_bezier_native(
 #if DEBUG
         fprintf(stderr, "CloneDrawInfo() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_bezier failed");
+        caml_failwith("draw_bezier failed");
     }
 
-    PixelPacket
+    PixelInfo
         fill;
 
     fill.red     = (Quantum) Long_val(fill_red);
     fill.green   = (Quantum) Long_val(fill_green);
     fill.blue    = (Quantum) Long_val(fill_blue);
-    fill.opacity = (Quantum) Long_val(fill_alpha);
+    fill.alpha = (Quantum) Long_val(fill_alpha);
 
     draw_info->fill = fill;
 
 
-    PixelPacket
+    PixelInfo
         stroke;
 
     stroke.red     = (Quantum) Long_val(stroke_red);
     stroke.green   = (Quantum) Long_val(stroke_green);
     stroke.blue    = (Quantum) Long_val(stroke_blue);
-    stroke.opacity = (Quantum) Long_val(stroke_alpha);
+    stroke.alpha = (Quantum) Long_val(stroke_alpha);
 
     /*
        typedef struct _DrawInfo
@@ -4033,13 +3906,15 @@ imper_draw_bezier_native(
 
     (void) CloneString(&draw_info->primitive, str_buffer);
 
-    ret = DrawImage((Image *) Field(image_bloc,1), draw_info);
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+    ret = DrawImage((Image *) Field(image_bloc,1), draw_info, excinfo);
+    excinfo = DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
 #if DEBUG
         fprintf(stderr, "DrawImage() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_bezier failed");
+        caml_failwith("draw_bezier failed");
     }
 
 
@@ -4122,28 +3997,28 @@ imper_draw_path_native(
 #if DEBUG
         fprintf(stderr, "CloneDrawInfo() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_path failed");
+        caml_failwith("draw_path failed");
     }
 
 
-    PixelPacket
+    PixelInfo
         fill;
 
     fill.red     = (Quantum) Long_val(fill_red);
     fill.green   = (Quantum) Long_val(fill_green);
     fill.blue    = (Quantum) Long_val(fill_blue);
-    fill.opacity = (Quantum) Long_val(fill_alpha);
+    fill.alpha = (Quantum) Long_val(fill_alpha);
 
     draw_info->fill = fill;
 
 
-    PixelPacket
+    PixelInfo
         stroke;
 
     stroke.red     = (Quantum) Long_val(stroke_red);
     stroke.green   = (Quantum) Long_val(stroke_green);
     stroke.blue    = (Quantum) Long_val(stroke_blue);
-    stroke.opacity = (Quantum) Long_val(stroke_alpha);
+    stroke.alpha = (Quantum) Long_val(stroke_alpha);
 
     draw_info->stroke = stroke;
 
@@ -4184,13 +4059,15 @@ imper_draw_path_native(
     str_len = snprintf( str_buffer, MaxTextExtent, "path '%s'", String_val(path) );
     (void) CloneString(&draw_info->primitive, str_buffer);
 
-    ret = DrawImage((Image *) Field(image_bloc,1), draw_info);
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+    ret = DrawImage((Image *) Field(image_bloc,1), draw_info, excinfo);
+    excinfo = DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
 #if DEBUG
         fprintf(stderr, "DrawImage() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_path failed");
+        caml_failwith("draw_path failed");
     }
 
     /* @FIXME: draw_info should be freed
@@ -4382,26 +4259,26 @@ imper_draw_text_native(
 #if DEBUG
         fprintf(stderr, "CloneDrawInfo() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_text failed");
+        caml_failwith("draw_text failed");
     }
 
 
-    PixelPacket fill;
+    PixelInfo fill;
 
     fill.red     = (Quantum) Long_val(fill_red);
     fill.green   = (Quantum) Long_val(fill_green);
     fill.blue    = (Quantum) Long_val(fill_blue);
-    fill.opacity = (Quantum) Long_val(fill_alpha);
+    fill.alpha = (Quantum) Long_val(fill_alpha);
 
     draw_info->fill = fill;
 
 
-    PixelPacket stroke;
+    PixelInfo stroke;
 
     stroke.red     = (Quantum) Long_val(stroke_red);
     stroke.green   = (Quantum) Long_val(stroke_green);
     stroke.blue    = (Quantum) Long_val(stroke_blue);
-    stroke.opacity = (Quantum) Long_val(stroke_alpha);
+    stroke.alpha = (Quantum) Long_val(stroke_alpha);
 
     draw_info->stroke = stroke;
 
@@ -4543,7 +4420,7 @@ imper_draw_text_native(
         clip_units;
 
       Quantum
-        opacity;
+        alpha;
 
       MagickBooleanType
         render;
@@ -4606,13 +4483,15 @@ imper_draw_text_native(
     (void) CloneString(&draw_info->primitive, str_buffer);
 
 
-    ret = DrawImage((Image *) Field(image_bloc,1), draw_info);
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+    ret = DrawImage((Image *) Field(image_bloc,1), draw_info, excinfo);
+    excinfo = DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
 #if DEBUG
         fprintf(stderr, "DrawImage() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_text failed");
+        caml_failwith("draw_text failed");
     }
 
 
@@ -4708,7 +4587,7 @@ imper_get_metrics_native(
 #if DEBUG
         fprintf(stderr, "CloneDrawInfo() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_text failed");
+        caml_failwith("draw_text failed");
     }
 
     /*
@@ -4789,13 +4668,15 @@ imper_get_metrics_native(
 
     (void) CloneString(&draw_info->text, String_val(text) );
 
-    ret = GetMultilineTypeMetrics((Image *) Field(image_bloc,1), draw_info, &metrics_infos);
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+    ret = GetMultilineTypeMetrics((Image *) Field(image_bloc,1), draw_info, &metrics_infos, excinfo);
+    excinfo = DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
 #if DEBUG
         fprintf(stderr, "GetMultilineTypeMetrics() failed\n"); fflush(stderr);
 #endif
-        failwith("get_text_metrics failed");
+        caml_failwith("get_text_metrics failed");
     }
 
     /* {{{ dev */
@@ -4874,23 +4755,23 @@ typedef struct _SegmentInfo
 
     /* }}} */
 
-    ascent              = copy_double( (double) metrics_infos.ascent              );
-    descent             = copy_double( (double) metrics_infos.descent             );
-    width               = copy_double( (double) metrics_infos.width               );
-    height              = copy_double( (double) metrics_infos.height              );
-    max_advance         = copy_double( (double) metrics_infos.max_advance         );
-    underline_position  = copy_double( (double) metrics_infos.underline_position  );
-    underline_thickness = copy_double( (double) metrics_infos.underline_thickness );
+    ascent              = caml_copy_double( (double) metrics_infos.ascent              );
+    descent             = caml_copy_double( (double) metrics_infos.descent             );
+    width               = caml_copy_double( (double) metrics_infos.width               );
+    height              = caml_copy_double( (double) metrics_infos.height              );
+    max_advance         = caml_copy_double( (double) metrics_infos.max_advance         );
+    underline_position  = caml_copy_double( (double) metrics_infos.underline_position  );
+    underline_thickness = caml_copy_double( (double) metrics_infos.underline_thickness );
 
-    x_ = copy_double( (double) metrics_infos.pixels_per_em.x );
-    y_ = copy_double( (double) metrics_infos.pixels_per_em.y );
+    x_ = caml_copy_double( (double) metrics_infos.pixels_per_em.x );
+    y_ = caml_copy_double( (double) metrics_infos.pixels_per_em.y );
 
-    x1 = copy_double( (double) metrics_infos.bounds.x1 );
-    y1 = copy_double( (double) metrics_infos.bounds.y1 );
-    x2 = copy_double( (double) metrics_infos.bounds.x2 );
-    y2 = copy_double( (double) metrics_infos.bounds.y2 );
+    x1 = caml_copy_double( (double) metrics_infos.bounds.x1 );
+    y1 = caml_copy_double( (double) metrics_infos.bounds.y1 );
+    x2 = caml_copy_double( (double) metrics_infos.bounds.x2 );
+    y2 = caml_copy_double( (double) metrics_infos.bounds.y2 );
 
-    tuple_metrics = alloc_tuple(13);
+    tuple_metrics = caml_alloc_tuple(13);
 
     Store_field(tuple_metrics, 0, ascent              );
     Store_field(tuple_metrics, 1, descent             );
@@ -4970,7 +4851,7 @@ imper_draw_text_new1(
 #if DEBUG
         fprintf(stderr, "CloneDrawInfo() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_text failed");
+        caml_failwith("draw_text failed");
     }
 
 #if 0
@@ -5082,7 +4963,7 @@ Typedef struct _DrawInfo
     clip_units;
 
   Quantum
-    opacity;
+    alpha;
 
   MagickBooleanType
     render;
@@ -5119,13 +5000,15 @@ Typedef struct _DrawInfo
         printf(" font set to: '%s'\n", draw_info->font ); fflush(stdout);
     }
 
-    ret = DrawImage((Image *) Field(image_bloc,1), draw_info);
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+    ret = DrawImage((Image *) Field(image_bloc,1), draw_info, excinfo);
+    excinfo = DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
 #if DEBUG
         fprintf(stderr, "DrawImage() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_text failed");
+        caml_failwith("draw_text failed");
     }
 
 
@@ -5176,7 +5059,7 @@ Typedef struct _DrawInfo
      * encoding
      * fill
      * fill-rule
-     * fill-opacity
+     * fill-alpha
      * font
      * font-family
      * font-size
@@ -5189,7 +5072,7 @@ Typedef struct _DrawInfo
      * line
      * matte
      * offset
-     * opacity
+     * alpha
      * path
      * point
      * polyline
@@ -5224,7 +5107,7 @@ Typedef struct _DrawInfo
      * stroke-linecap
      * stroke-linejoin
      * stroke-miterlimit
-     * stroke-opacity
+     * stroke-alpha
      * stroke-width
      * text
      * text-align
@@ -5265,18 +5148,20 @@ imper_draw_mvg(
 #if DEBUG
         fprintf(stderr, "CloneDrawInfo() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_mvg failed");
+        caml_failwith("draw_mvg failed");
     }
 
     (void) CloneString(&draw_info->primitive, String_val(mvg) );
 
-    ret = DrawImage((Image *) Field(image_bloc,1), draw_info);
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+    ret = DrawImage((Image *) Field(image_bloc,1), draw_info, excinfo);
+    excinfo = DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
 #if DEBUG
         fprintf(stderr, "DrawImage() failed\n"); fflush(stderr);
 #endif
-        failwith("draw_mvg failed");
+        caml_failwith("draw_mvg failed");
     }
 
     /* @FIXME: draw_info should be freed
@@ -5328,7 +5213,7 @@ imper_setimagepixel(
                     1, 1);
 
     if (pixels == (PixelPacket *) NULL) {
-        failwith("setimagepixel failed") ;
+        caml_failwith("setimagepixel failed") ;
     }
 
     /*
@@ -5343,7 +5228,7 @@ imper_setimagepixel(
     pixels->red     = 0;
     pixels->green   = 0;
     pixels->blue    = 0;
-    pixels->opacity = 0;
+    pixels->alpha = 0;
 
     img = ( (Image *) Field(image_bloc,1) ) ;
 
@@ -5358,7 +5243,7 @@ imper_setimagepixel(
     ret = SyncImagePixels( img );
 
     if (ret == MagickFalse) {
-        failwith("setimagepixel failed") ;
+        caml_failwith("setimagepixel failed") ;
     }
 
     CAMLreturn( Val_unit );
@@ -5391,9 +5276,9 @@ imper_loadimage(
 
 
 #if DEBUG
-    image_bloc = alloc_final(3, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    image_bloc = caml_alloc_final(3, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 #else
-    image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 #endif
 
     Field(image_bloc,1) = (value) alloc_image();
@@ -5457,14 +5342,14 @@ imper_loadimage(
     DestroyImageInfo(image_info);
 
     if (exception.severity != UndefinedException) {
-        failwith( exception.reason );
+        caml_failwith( exception.reason );
         /* @TODO  exception.description */
     }
 
     DestroyExceptionInfo(&exception);
 
     if ((Image *) Field(image_bloc,1) == (Image *) NULL) {
-        failwith("load_image failed");
+        caml_failwith("load_image failed");
     }
 
     CAMLreturn( image_bloc );
@@ -5493,7 +5378,7 @@ imper_get_raw( value image_bloc )
     unsigned long columns, rows;
 
     ExceptionInfo
-        exception;
+        *exception;
 
     PixelPacket
         pixel;
@@ -5501,7 +5386,7 @@ imper_get_raw( value image_bloc )
     columns = ((Image *) Field(image_bloc,1))->columns;
     rows    = ((Image *) Field(image_bloc,1))->rows;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     const PixelPacket * pixel_packet_array;
 
@@ -5511,7 +5396,7 @@ imper_get_raw( value image_bloc )
                      (Image *) Field(image_bloc,1),
                      0, 0,
                      columns, rows,
-                     &exception );
+                     exception );
     */
 
     pixel_packet_array =
@@ -5519,13 +5404,13 @@ imper_get_raw( value image_bloc )
                      (Image *) Field(image_bloc,1),
                      0, 0,
                      columns, rows,
-                     &exception );
+                     exception );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     /* alloc_array(f, a) allocates an array of values, calling function f
      * over each element of the input array a to transform it into a value.
@@ -5543,23 +5428,23 @@ imper_get_raw( value image_bloc )
     column_array = alloc_array(fill_raw, init_rows);
     */
 
-    pixel_matrix = alloc_tuple(columns);
+    pixel_matrix = caml_alloc_tuple(columns);
 
     for (x=0; x < columns; ++x) {
 
-        column_array = alloc_tuple(rows);
+        column_array = caml_alloc_tuple(rows);
 
         for (y=0; y < rows; ++y) {
 
             pixel = pixel_packet_array[(columns * y) + x];
 
-            color_tuple  = alloc_tuple(4);
+            color_tuple  = caml_alloc_tuple(4);
 
             Store_field(color_tuple, 0, Val_long( (long) pixel.red ));
             Store_field(color_tuple, 1, Val_long( (long) pixel.green ));
             Store_field(color_tuple, 2, Val_long( (long) pixel.blue ));
             Store_field(color_tuple, 3, Val_long( MaxMap -
-                                                  (long) pixel.opacity ));
+                                                  (long) pixel.alpha ));
 
             Store_field(column_array, y, color_tuple);
         }
@@ -5570,7 +5455,7 @@ imper_get_raw( value image_bloc )
 }
 
 /* }}} */
-/* {{{ imper_get_raw_opacity() 
+/* {{{ imper_get_raw_alpha() 
  *
  * const PixelPacket *AcquireImagePixels(const Image *image,
  *                   const long x, const long y,
@@ -5579,7 +5464,7 @@ imper_get_raw( value image_bloc )
  */
 
 CAMLprim value
-imper_get_raw_opacity( value image_bloc )
+imper_get_raw_alpha( value image_bloc )
 {
     CAMLparam1( image_bloc );
     CAMLlocal3( pixel_matrix, column_array, color_tuple );
@@ -5587,7 +5472,7 @@ imper_get_raw_opacity( value image_bloc )
     unsigned long columns, rows;
 
     ExceptionInfo
-        exception;
+        *exception;
 
     PixelPacket
         pixel;
@@ -5595,7 +5480,7 @@ imper_get_raw_opacity( value image_bloc )
     columns = ((Image *) Field(image_bloc,1))->columns;
     rows    = ((Image *) Field(image_bloc,1))->rows;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     const PixelPacket * pixel_packet_array;
 
@@ -5605,7 +5490,7 @@ imper_get_raw_opacity( value image_bloc )
                      (Image *) Field(image_bloc,1),
                      0, 0,
                      columns, rows,
-                     &exception );
+                     exception );
     */
 
     pixel_packet_array =
@@ -5613,13 +5498,13 @@ imper_get_raw_opacity( value image_bloc )
                      (Image *) Field(image_bloc,1),
                      0, 0,
                      columns, rows,
-                     &exception );
+                     exception );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     /* alloc_array(f, a) allocates an array of values, calling function f
      * over each element of the input array a to transform it into a value.
@@ -5637,22 +5522,22 @@ imper_get_raw_opacity( value image_bloc )
     column_array = alloc_array(fill_raw, init_rows);
     */
 
-    pixel_matrix = alloc_tuple(columns);
+    pixel_matrix = caml_alloc_tuple(columns);
 
     for (x=0; x < columns; ++x) {
 
-        column_array = alloc_tuple(rows);
+        column_array = caml_alloc_tuple(rows);
 
         for (y=0; y < rows; ++y) {
 
             pixel = pixel_packet_array[(columns * y) + x];
 
-            color_tuple  = alloc_tuple(4);
+            color_tuple  = caml_alloc_tuple(4);
 
             Store_field(color_tuple, 0, Val_long( (long) pixel.red ));
             Store_field(color_tuple, 1, Val_long( (long) pixel.green ));
             Store_field(color_tuple, 2, Val_long( (long) pixel.blue ));
-            Store_field(color_tuple, 3, Val_long( (long) pixel.opacity ));
+            Store_field(color_tuple, 3, Val_long( (long) pixel.alpha ));
 
             Store_field(column_array, y, color_tuple);
         }
@@ -5680,7 +5565,7 @@ imper_get_raw_without_alpha( value image_bloc )
     unsigned long columns, rows;
 
     ExceptionInfo
-        exception;
+        *exception;
 
     PixelPacket
         pixel;
@@ -5688,7 +5573,7 @@ imper_get_raw_without_alpha( value image_bloc )
     columns = ((Image *) Field(image_bloc,1))->columns;
     rows    = ((Image *) Field(image_bloc,1))->rows;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     const PixelPacket * pixel_packet_array;
 
@@ -5698,7 +5583,7 @@ imper_get_raw_without_alpha( value image_bloc )
                      (Image *) Field(image_bloc,1),
                      0, 0,
                      columns, rows,
-                     &exception );
+                     exception );
     */
 
     pixel_packet_array =
@@ -5706,13 +5591,13 @@ imper_get_raw_without_alpha( value image_bloc )
                      (Image *) Field(image_bloc,1),
                      0, 0,
                      columns, rows,
-                     &exception );
+                     exception );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     /* alloc_array(f, a) allocates an array of values, calling function f
      * over each element of the input array a to transform it into a value.
@@ -5730,17 +5615,17 @@ imper_get_raw_without_alpha( value image_bloc )
     column_array = alloc_array(fill_raw, init_rows);
     */
 
-    pixel_matrix = alloc_tuple(columns);
+    pixel_matrix = caml_alloc_tuple(columns);
 
     for (x=0; x < columns; ++x) {
 
-        column_array = alloc_tuple(rows);
+        column_array = caml_alloc_tuple(rows);
 
         for (y=0; y < rows; ++y) {
 
             pixel = pixel_packet_array[(columns * y) + x];
 
-            color_tuple  = alloc_tuple(3);
+            color_tuple  = caml_alloc_tuple(3);
 
             Store_field(color_tuple, 0, Val_long( (long) pixel.red ));
             Store_field(color_tuple, 1, Val_long( (long) pixel.green ));
@@ -5771,7 +5656,7 @@ imper_get_raw2( value image_bloc )
     unsigned long width, height;
 
     ExceptionInfo
-        exception;
+        *exception;
 
     PixelPacket
         pixel;
@@ -5779,7 +5664,7 @@ imper_get_raw2( value image_bloc )
     width  = ((Image *) Field(image_bloc,1))->columns;
     height = ((Image *) Field(image_bloc,1))->rows;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     /* alloc_array(f, a) allocates an array of values, calling function f
      * over each element of the input array a to transform it into a value.
@@ -5796,14 +5681,14 @@ imper_get_raw2( value image_bloc )
     column_array = alloc_array(fill_raw, init_height);
     */
 
-    pixel_matrix = alloc_tuple(width);
+    pixel_matrix = caml_alloc_tuple(width);
     /*
     pixel_matrix = alloc(width, 0);
     */
 
     for (x=0; x < width; ++x) {
 
-        column_array = alloc_tuple(height);
+        column_array = caml_alloc_tuple(height);
         /*
         column_array = alloc(height,0);
         */
@@ -5813,7 +5698,7 @@ imper_get_raw2( value image_bloc )
             /* DEPR
             pixel = AcquireOnePixel(
                             (Image *) Field(image_bloc,1),
-                            x, y, &exception );
+                            x, y, exception );
             */
 
             GetOneVirtualPixel(
@@ -5821,26 +5706,26 @@ imper_get_raw2( value image_bloc )
                             Long_val(x),
                             Long_val(y),
                             &pixel,
-                            &exception );
+                            exception );
 
-            if (exception.severity != UndefinedException)
+            if (exception->severity != UndefinedException)
             {
-                failwith( exception.reason );
+                caml_failwith( exception->reason );
             }
 
-            color_tuple  = alloc_tuple(4);
+            color_tuple  = caml_alloc_tuple(4);
 
             Store_field(color_tuple, 0, Val_long( (long) pixel.red ));
             Store_field(color_tuple, 1, Val_long( (long) pixel.green ));
             Store_field(color_tuple, 2, Val_long( (long) pixel.blue ));
             Store_field(color_tuple, 3, Val_long( MaxMap -
-                                                  (long) pixel.opacity ));
+                                                  (long) pixel.alpha ));
 
             Store_field(column_array, y, color_tuple);
         }
         Store_field(pixel_matrix, x, column_array);
     }
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( pixel_matrix );
 }
@@ -5895,7 +5780,7 @@ imper_get_raw_gl_indexed( value image_bloc )
    
     if (exception.severity != UndefinedException)
     {
-        failwith( exception.reason );
+        caml_failwith( exception.reason );
     }
     DestroyExceptionInfo(&exception);
 
@@ -5915,7 +5800,7 @@ imper_get_raw_gl_indexed( value image_bloc )
     column_array = alloc_array(fill_raw, init_rows);
     */
 
-    pixel_matrix = alloc_tuple(columns * rows);
+    pixel_matrix = caml_alloc_tuple(columns * rows);
 
     for (x=0; x < columns; ++x) {
 
@@ -5923,13 +5808,13 @@ imper_get_raw_gl_indexed( value image_bloc )
 
             pixel = pixel_packet_array[(columns * y) + x];
 
-            color_tuple  = alloc_tuple(4);
+            color_tuple  = caml_alloc_tuple(4);
 
             Store_field(color_tuple, 0, Val_long( (long) pixel.red ));
             Store_field(color_tuple, 1, Val_long( (long) pixel.green ));
             Store_field(color_tuple, 2, Val_long( (long) pixel.blue ));
             Store_field(color_tuple, 3, Val_long( MaxMap -
-                                                  (long) pixel.opacity ));
+                                                  (long) pixel.alpha ));
 
             Store_field(pixel_matrix, (x * rows) + y, color_tuple);
         }
@@ -5986,7 +5871,7 @@ imper_get_raw_gl_indexed_without_alpha( value image_bloc )
 
     if (exception.severity != UndefinedException)
     {
-        failwith( exception.reason );
+        caml_failwith( exception.reason );
     }
     DestroyExceptionInfo(&exception);
 
@@ -6006,7 +5891,7 @@ imper_get_raw_gl_indexed_without_alpha( value image_bloc )
     column_array = alloc_array(fill_raw, init_rows);
     */
 
-    pixel_matrix = alloc_tuple(columns * rows);
+    pixel_matrix = caml_alloc_tuple(columns * rows);
 
     for (x=0; x < columns; ++x) {
 
@@ -6014,7 +5899,7 @@ imper_get_raw_gl_indexed_without_alpha( value image_bloc )
 
             pixel = pixel_packet_array[(columns * y) + x];
 
-            color_tuple  = alloc_tuple(3);
+            color_tuple  = caml_alloc_tuple(3);
 
             Store_field(color_tuple, 0, Val_long( (long) pixel.red ));
             Store_field(color_tuple, 1, Val_long( (long) pixel.green ));
@@ -6040,7 +5925,7 @@ set_pixel(
         Image *image,
         unsigned long x,
         unsigned long y,
-        PixelPacket pixel )
+        PixelInfo pixel )
 {
     MagickBooleanType
         ret;
@@ -6060,7 +5945,7 @@ set_pixel(
 #if DEBUG
         fprintf(stderr, "CloneDrawInfo() failed\n"); fflush(stderr);
 #endif
-        failwith("set_raw failed");
+        caml_failwith("set_raw failed");
     }
 
     draw_info->fill = pixel;
@@ -6072,13 +5957,15 @@ set_pixel(
     str_len = snprintf( str_buffer, MaxTextExtent, "point %ld,%ld", Long_val(x), Long_val(y) );
     (void) CloneString(&draw_info->primitive, str_buffer);
 
-    ret = DrawImage(image, draw_info);
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+    ret = DrawImage(image, draw_info, excinfo);
+    excinfo = DestroyExceptionInfo(excinfo);
 
     if (ret == MagickFalse) {
 #if DEBUG
         fprintf(stderr, "DrawImage() failed\n"); fflush(stderr);
 #endif
-        failwith("set_raw failed");
+        caml_failwith("set_raw failed");
     }
 
     /* @FIXME: draw_info should be freed
@@ -6126,7 +6013,7 @@ imper_set_raw_c(
         /* image color */
         strcpy( image_info->filename, "xc:#7F7F7F7F");
 
-        image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+        image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
         Field(image_bloc,1) = (value) alloc_image();  /* alloc_image() */
 
@@ -6141,14 +6028,14 @@ imper_set_raw_c(
 
         if (exception.severity != UndefinedException) {
 
-            failwith( exception.reason );
+            caml_failwith( exception.reason );
         }
 
         DestroyExceptionInfo(&exception);
 
         if ((Image *) Field(image_bloc,1) == (Image *) NULL) {
             /* exit(1) ; */
-            failwith("set_raw failed");
+            caml_failwith("set_raw failed");
         }
     }
     /* }}} */
@@ -6160,13 +6047,13 @@ imper_set_raw_c(
     pilxel_array = SetImagePixels(Field(image_bloc,1), 0, 0, columns, rows);
 
     if (pixel_array == (PixelPacket *)NULL) {
-        failwith("set_raw failed") ;
+        caml_failwith("set_raw failed") ;
     }
     */
 
     unsigned long x, y;
 
-    PixelPacket
+    PixelInfo
         pixel;
 
     /*
@@ -6185,7 +6072,7 @@ imper_set_raw_c(
             pixel.red     = Field(color_tuple, 0);
             pixel.green   = Field(color_tuple, 0);
             pixel.blue    = Field(color_tuple, 0);
-            pixel.opacity = Field(color_tuple, 0);  /* o = max - a */
+            pixel.alpha = Field(color_tuple, 0);  /* o = max - a */
 
             /*
             printf("ImageMagick: recording pixel y=%d into array", y); fflush(stdout);
@@ -6213,7 +6100,7 @@ imper_set_raw_c(
 #if DEBUG
             printf("ImageMagick: SyncImagePixels() failed\n"); fflush(stdout);
 #endif
-            failwith("set_raw failed");
+            caml_failwith("set_raw failed");
         }
     }
     /* }}} */
@@ -6256,7 +6143,7 @@ imper_new_image_list(value unit)
     CAMLlocal1(images_list_bloc);
 
 
-    images_list_bloc = alloc_final(2, finalize_images_list, sizeof(Image), MAX_AMOUNT); /* finalize_image() */
+    images_list_bloc = caml_alloc_final(2, finalize_images_list, sizeof(Image), MAX_AMOUNT); /* finalize_image() */
 
     if (IsMagickInstantiated() == MagickFalse) {
         MagickCoreGenesis(getenv("PWD"), MagickTrue);
@@ -6270,7 +6157,7 @@ imper_new_image_list(value unit)
 
     if ((Image *) &Field(images_list_bloc,1) == (Image *) NULL) {
         /* exit(1) ; */
-        failwith("new_images_list failed");
+        caml_failwith("new_images_list failed");
     }
 
     CAMLreturn (images_list_bloc);
@@ -6336,11 +6223,13 @@ imper_animateimages(
     image_info = CloneImageInfo((ImageInfo *) NULL);
 
 
-    ret = AnimateImages(image_info, (Image *) Field(images_list_bloc,1) );
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+    ret = AnimateImages(image_info, (Image *) Field(images_list_bloc,1), excinfo);
+    excinfo = DestroyExceptionInfo(excinfo);
 
 
     if (ret == MagickFalse) {
-        failwith("animate_images failed");
+        caml_failwith("animate_images failed");
     }
     DestroyImageInfo(image_info);
 
@@ -6387,47 +6276,6 @@ imper_getfirstimageinlist(
 }
 /* }}} */
 
-/* {{{ imper_averageimages()
- *
- * Image *AverageImages(Image *image, ExceptionInfo *exception)
- */
-CAMLprim value
-imper_averageimages(
-        value image_list_bloc,
-        value image_bloc )
-{
-    CAMLparam2(image_list_bloc, image_bloc);
-
-    Image *new_image;
-
-    ExceptionInfo exception;
-
-
-    GetExceptionInfo(&exception);
-
-    new_image = AverageImages(
-            (Image *) Field(image_list_bloc,1),
-            &exception );
-
-    if (exception.severity != UndefinedException)
-    {
-        if ( new_image )
-        {
-            DestroyImage( new_image );
-        }
-
-        failwith( exception.reason );
-    }
-
-    DestroyImage( (Image *) Field(image_bloc,1) );
-    Field(image_bloc,1) = (value) new_image;
-
-    DestroyExceptionInfo(&exception);
-
-    CAMLreturn( Val_unit );
-}
-
-/* }}} */
 
 /* TEMP */
 /* Just a work-around to prevent an image in an image_list
@@ -6531,7 +6379,7 @@ imper_has_link( value image_bloc )
             CAMLreturn( Val_true );
             break;
         default:
-            failwith("has_link failed");
+            caml_failwith("has_link failed");
     }
 }
 /* }}} */
@@ -6560,7 +6408,7 @@ __imper_appendimages(
 
     GetExceptionInfo(&exception);
 
-    image_bloc = alloc_final(2, (*finalize_image), sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    image_bloc = caml_alloc_final(2, (*finalize_image), sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 #if CAML_ALLOC_WITH_0_SIZE
 #endif
 
@@ -6574,7 +6422,7 @@ __imper_appendimages(
         {
             DestroyImage( new_image );
         }
-        failwith( exception.reason );
+        caml_failwith( exception.reason );
     }
 
     Field(image_bloc,1) = (value) new_image;
@@ -6599,10 +6447,10 @@ imper_appendimages(
 
     Image *new_image;
 
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     MagickBooleanType stack;
     stack = MagickBoolean_val( ml_stack );
@@ -6610,22 +6458,22 @@ imper_appendimages(
     new_image = AppendImages(
             (Image *) Field(image_list_bloc,1),
             stack,
-            &exception );
+            exception );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) );
     Field(image_bloc,1) = (value) new_image;
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( Val_unit );
 }
@@ -6691,7 +6539,7 @@ imper_imagetoblob_stdout(value image_bloc)
     */
     if (exception.severity != UndefinedException) {
 
-        failwith( exception.reason );
+        caml_failwith( exception.reason );
     }
 
     mime_type = MagickToMime(
@@ -6742,13 +6590,13 @@ imper_imagetoblob_bytes(value image_bloc)
 
     if (exception.severity != UndefinedException) {
 
-        failwith( exception.reason );
+        caml_failwith( exception.reason );
     }
     DestroyImageInfo(image_info);
     DestroyExceptionInfo(&exception);
 
 
-    byte_array = alloc_tuple(blob_size);
+    byte_array = caml_alloc_tuple(blob_size);
 
     unsigned long blob_len;
 
@@ -6808,7 +6656,7 @@ imper_importimage(value width, value height, value color)
     int str_len;
 
     ExceptionInfo
-        exception;
+        *exception;
 
     ImageInfo
         *image_info;
@@ -6825,7 +6673,7 @@ imper_importimage(value width, value height, value color)
     strncpy( image_info->filename, str_buffer, str_len );
 
 
-    image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(image_bloc,1) = (value) alloc_image();  /* alloc_image() */
 
@@ -6834,9 +6682,9 @@ imper_importimage(value width, value height, value color)
         MagickCoreGenesis(getenv("PWD"), MagickTrue);
     }
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    Field(image_bloc,1) = (value) ReadImage(image_info, &exception);
+    Field(image_bloc,1) = (value) ReadImage(image_info, exception);
     DestroyImageInfo(image_info);
 
     /****************/
@@ -6852,20 +6700,22 @@ imper_importimage(value width, value height, value color)
         *import_info;
     import_info = (XImportInfo *)NULL;
 
-    Field(image_bloc,1) = (value) XImportImage(image_info, import_info);
+    ExceptionInfo *excinfo = AcquireExceptionInfo();
+    Field(image_bloc,1) = (value) XImportImage(image_info, import_info, excinfo);
+    excinfo = DestroyExceptionInfo(excinfo);
 
     /****************/
 
-    if (exception.severity != UndefinedException) {
+    if (exception->severity != UndefinedException) {
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     if ((Image *) Field(image_bloc,1) == (Image *) NULL) {
         /* exit(1) ; */
-        failwith("import failed");
+        caml_failwith("import failed");
     }
 
     CAMLreturn (image_bloc);
@@ -6904,34 +6754,34 @@ ml_big_array_test(value v)
     CAMLparam1( v );
 
     /* number of dimensions should be 2 */
-    if (Bigarray_val(v)->num_dims != 2) {
-        failwith("the Bigarray should have 2 dimensions");
+    if (Caml_ba_array_val(v)->num_dims != 2) {
+        caml_failwith("the Bigarray should have 2 dimensions");
     }
 
     /* kind of array elements */
     printf(" Bigarray kind: ");
-    switch (Bigarray_val(v)->flags & BIGARRAY_KIND_MASK)
+    switch (Caml_ba_array_val(v)->flags & CAML_BA_KIND_MASK)
     /* {{{ cases: */
     {
-        case BIGARRAY_FLOAT32:    printf(" FLOAT32:    Single-precision floats \n"); break;
-        case BIGARRAY_FLOAT64:    printf(" FLOAT64:    Double-precision floats \n"); break;
-        case BIGARRAY_SINT8:      printf(" SINT8:      Signed 8-bit integers   \n"); break;
-        case BIGARRAY_UINT8:      printf(" UINT8:      Unsigned 8-bit integers \n"); break;
-        case BIGARRAY_SINT16:     printf(" SINT16:     Signed 16-bit integers  \n"); break;
-        case BIGARRAY_UINT16:     printf(" UINT16:     Unsigned 16-bit integers\n"); break;
-        case BIGARRAY_INT32:      printf(" INT32:      Signed 32-bit integers  \n"); break;
-        case BIGARRAY_INT64:      printf(" INT64:      Signed 64-bit integers  \n"); break;
-        case BIGARRAY_CAML_INT:   printf(" CAML_INT:   Caml-style integers (signed 31 or 63 bits)   \n"); break;
-        case BIGARRAY_NATIVE_INT: printf(" NATIVE_INT: Platform-native long integers (32 or 64 bits)\n"); break;
-        case BIGARRAY_COMPLEX32:  printf(" COMPLEX32:  Single-precision complex\n"); break;
-        case BIGARRAY_COMPLEX64:  printf(" COMPLEX64:  Double-precision complex\n"); break;
+        case CAML_BA_FLOAT32:    printf(" FLOAT32:    Single-precision floats \n"); break;
+        case CAML_BA_FLOAT64:    printf(" FLOAT64:    Double-precision floats \n"); break;
+        case CAML_BA_SINT8:      printf(" SINT8:      Signed 8-bit integers   \n"); break;
+        case CAML_BA_UINT8:      printf(" UINT8:      Unsigned 8-bit integers \n"); break;
+        case CAML_BA_SINT16:     printf(" SINT16:     Signed 16-bit integers  \n"); break;
+        case CAML_BA_UINT16:     printf(" UINT16:     Unsigned 16-bit integers\n"); break;
+        case CAML_BA_INT32:      printf(" INT32:      Signed 32-bit integers  \n"); break;
+        case CAML_BA_INT64:      printf(" INT64:      Signed 64-bit integers  \n"); break;
+        case CAML_BA_CAML_INT:   printf(" CAML_INT:   Caml-style integers (signed 31 or 63 bits)   \n"); break;
+        case CAML_BA_NATIVE_INT: printf(" NATIVE_INT: Platform-native long integers (32 or 64 bits)\n"); break;
+        case CAML_BA_COMPLEX32:  printf(" COMPLEX32:  Single-precision complex\n"); break;
+        case CAML_BA_COMPLEX64:  printf(" COMPLEX64:  Double-precision complex\n"); break;
     }
     /* }}} */
 
-    unsigned long X_ = (unsigned long) Bigarray_val(v)->dim[0];
-    unsigned long Y_ = (unsigned long) Bigarray_val(v)->dim[1];
+    unsigned long X_ = (unsigned long) Caml_ba_array_val(v)->dim[0];
+    unsigned long Y_ = (unsigned long) Caml_ba_array_val(v)->dim[1];
     Quantum *arr;
-    arr = Data_bigarray_val(v);
+    arr = Caml_ba_data_val(v);
 
     printf("    sizeof array   %d bytes, %d bits\n",
                     sizeof(arr[0]),
@@ -6977,27 +6827,27 @@ constituteimage_from_big_array_char(value array)
     CAMLlocal1( image_bloc );
     ExceptionInfo *exception;
 
-    if ( (Bigarray_val(array)->flags & BIGARRAY_KIND_MASK) != BIGARRAY_UINT8) {
-        failwith("The bigarray should contain unsigned 8-bit integers");
+    if ( (Caml_ba_array_val(array)->flags & CAML_BA_KIND_MASK) != CAML_BA_UINT8) {
+        caml_failwith("The bigarray should contain unsigned 8-bit integers");
     }
-    if (Bigarray_val(array)->num_dims != 3) {
-        failwith("the Bigarray should have 3 dimensions");
+    if (Caml_ba_array_val(array)->num_dims != 3) {
+        caml_failwith("the Bigarray should have 3 dimensions");
     }
-    unsigned long width  = (unsigned long) Bigarray_val(array)->dim[0];
-    unsigned long height = (unsigned long) Bigarray_val(array)->dim[1];
+    unsigned long width  = (unsigned long) Caml_ba_array_val(array)->dim[0];
+    unsigned long height = (unsigned long) Caml_ba_array_val(array)->dim[1];
     /*
-    unsigned short cells = (unsigned short)Bigarray_val(array)->dim[2];
+    unsigned short cells = (unsigned short)Caml_ba_array_val(array)->dim[2];
     */
 
     //unsigned char *data;
     void *data;
-    data = Data_bigarray_val(array);
+    data = Caml_ba_data_val(array);
 
     if (IsMagickInstantiated() == MagickFalse) {
         MagickCoreGenesis(getenv("PWD"), MagickTrue);
     }
 
-    image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     /*
     unsigned char *pixels;
@@ -7030,12 +6880,12 @@ constituteimage_from_big_array_char(value array)
         if ( (Image *)Field(image_bloc,1) != (Image *) NULL) {
             DestroyImage((Image *) Field(image_bloc,1));
         }
-        failwith( exception->reason );
+        caml_failwith( exception->reason );
     }
     exception = DestroyExceptionInfo(exception);
 
     if ( (Image *)Field(image_bloc,1) == (Image *) NULL) {
-        failwith("image_of_bigarray failed");
+        caml_failwith("image_of_bigarray failed");
     }
 
     CAMLreturn( image_bloc );
@@ -7193,7 +7043,9 @@ test_math_utilities(void)
           draw_info->fill = px_color; \
           str_len=snprintf(str_buffer,MaxTextExtent,"point %lu,%lu", x,y); \
           (void) CloneString(&draw_info->primitive, str_buffer); \
-          ret=DrawImage(image, draw_info); \
+          ExceptionInfo *excinfo = AcquireExceptionInfo(); \
+          ret=DrawImage(image, draw_info, excinfo); \
+          excinfo = DestroyExceptionInfo(excinfo); \
           if(ret==MagickFalse) fprintf(stderr, "DrawImage() failed\n");
 
 /* }}} */
@@ -7232,8 +7084,8 @@ SpreadMethod_val( value param )
             abort();
             /*
             return -1;
-            failwith("Gradient SpreadMethod unrecognized");
-            // failwith() does not work in sub-functions
+            caml_failwith("Gradient SpreadMethod unrecognized");
+            // caml_failwith() does not work in sub-functions
             */
 #else
             fprintf(stderr, "Warning: Gradient SpreadMethod unrecognized\n"); fflush(stderr);
@@ -7267,793 +7119,6 @@ typedef struct _BoundingBox
     x, y,
     width, height;
 } BoundingBox;
-
-void _linearGradientMagick(
-      Image *image,
-      unsigned long width,
-      unsigned long height,
-      BoundingBox bounding_box,
-      char *colors_strings[],
-      long double stop[],
-      int stop_nb,
-      Gradient_SpreadMethod spreadMethod,
-      long double matrix[3][3],
-      Gradient_Units gradientUnits,
-      unsigned long a_x,
-      unsigned long a_y,
-      unsigned long b_x,
-      unsigned long b_y );
-
-void linearGradientMagick(
-      Image *image,
-      unsigned long width,
-      unsigned long height,
-      BoundingBox bounding_box,
-      char *colors_strings[],
-      long double stop[],
-      int stop_nb,
-      Gradient_SpreadMethod spreadMethod,
-      long double matrix[3][3],
-      Gradient_Units gradientUnits,
-      unsigned long a_x,
-      unsigned long a_y,
-      unsigned long b_x,
-      unsigned long b_y );
-
-/* }}} */
-
-/* {{{ _linear_gradient() */
-
-CAMLprim value
-_linear_gradient_native(
-        value ml_width,
-        value ml_height,
-
-        value ml_a_x,
-        value ml_a_y,
-        value ml_b_x,
-        value ml_b_y,
-
-        value ml_spreadMethod,
-
-        value bounding_box_x,
-        value bounding_box_y,
-        value bounding_box_width,
-        value bounding_box_height )
-{
-    CAMLparam5( ml_width, ml_height, ml_a_x, ml_a_y, ml_b_x );
-    CAMLxparam5( ml_b_y, ml_spreadMethod, bounding_box_x, bounding_box_y, bounding_box_width );
-    CAMLxparam1( bounding_box_height );
-    CAMLlocal1(image_bloc);
-
-    if (IsMagickInstantiated() == MagickFalse) {
-        MagickCoreGenesis(getenv("PWD"), MagickTrue);
-    }
-
-
-  unsigned long width  = Int_val(ml_width);
-  unsigned long height = Int_val(ml_height);
-
-  BoundingBox
-    bounding_box;
-
-  bounding_box.x = Int_val(bounding_box_x);
-  bounding_box.y = Int_val(bounding_box_y);
-  bounding_box.width  = Int_val(bounding_box_width);
-  bounding_box.height = Int_val(bounding_box_height);
-
-  if (bounding_box.x + bounding_box.width  > width) {
-      //bounding_box.width = width - bounding_box.x;
-      printf(" bounding-box width overflow\n"); fflush(stdout);
-  }
-  if (bounding_box.y + bounding_box.height > height) {
-      //bounding_box.height = height - bounding_box.y;
-      printf(" bounding-box height overflow\n"); fflush(stdout);
-  }
-
-  unsigned long
-    a_x, a_y,
-    b_x, b_y;
-
-  a_x = Int_val(ml_a_x);  a_y = Int_val(ml_a_y);
-  b_x = Int_val(ml_b_x);  b_y = Int_val(ml_b_y);
-
-
-  int stop_nb = 4;
-
-  long double *stop;
-  stop = malloc(stop_nb * sizeof(long double));
-  stop[0] = 0.1;
-  stop[1] = 0.3;
-  stop[2] = 0.8;
-  stop[3] = 0.9;
-
-  char
-    *colors_strings[4] = {
-      "#1D5",
-      "#00F",
-      "#F00",
-      "#F91",
-    };
-
-  Gradient_SpreadMethod spreadMethod;
-
-  spreadMethod = SpreadMethod_val( ml_spreadMethod );
-
-  long double matrix[3][3] = {
-      /* the identity matrix */
-      { 1.0, 0.0, 0.0 },
-      { 0.0, 1.0, 0.0 },
-      { 0.0, 0.0, 1.0 },
-    };
-
-
-    image_bloc = alloc_final(2, (*finalize_image), sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
-
-  /* {{{ Create the base canvas */
-  ImageInfo *image_info;
-  image_info = CloneImageInfo((ImageInfo *) NULL);
-  {
-    ExceptionInfo exception;
-    char str_buffer[MaxTextExtent];
-    GetExceptionInfo(&exception);
-    (void) snprintf(str_buffer,MaxTextExtent,"%lux%lu", width, height);
-    (void) CloneString(&image_info->size, str_buffer);
-    strcpy(image_info->filename,"xc:#888");
-    Field(image_bloc,1) = (value) ReadImage(image_info,&exception);
-    if (exception.severity != UndefinedException) CatchException(&exception);
-    if ((Image *) Field(image_bloc,1) == (Image *) NULL) failwith("test_linear_gradient failed");
-    DestroyExceptionInfo(&exception);
-  }
-  /* }}} */
-
-  Gradient_Units gradientUnits;
-  gradientUnits = Gradient_UserSpaceOnUse;
-
-  _linearGradientMagick(
-        (Image *) Field(image_bloc,1),
-        width, height,
-        bounding_box,
-        colors_strings,
-        stop, stop_nb,
-        spreadMethod,
-        matrix,
-        gradientUnits,
-        a_x, a_y,
-        b_x, b_y );
-
-  free(stop);
-
-  //DisplayImages(image_info, (Image *) Field(image_bloc,1) );
-
-  image_info=DestroyImageInfo(image_info);
-
-  CAMLreturn( image_bloc );
-}
-
-CAMLprim value
-_linear_gradient_bytecode(value * argv, int argn)
-{
-      return _linear_gradient_native(
-                argv[0], argv[1], argv[2], argv[3], argv[4], argv[5],
-                argv[6], argv[7], argv[8], argv[9], argv[10] );
-}
-
-/* }}} */
-/* {{{ _linearGradientMagick */
-
-void
-_linearGradientMagick(
-      Image *image,
-
-      unsigned long width,  /* size of the image */
-      unsigned long height,
-
-      BoundingBox bounding_box,
-
-      char *colors_strings[], /* colors */
-      long double stop[],     /* positions of colors (0.0 < percentage < 1.0) */
-      int stop_nb,            /* number of colors */
-
-      Gradient_SpreadMethod spreadMethod,
-
-     /* en: http://www.w3.org/TR/SVG/coords.html#TransformAttribute
-        fr: http://www.yoyodesign.org/doc/w3c/svg1/coords.html#TransformAttribute  */
-      long double matrix[3][3],
-      Gradient_Units gradientUnits,
-
-     /* Percentages are allowed for x1, y1, x2, y2.
-        For gradientUnits="userSpaceOnUse", percentages represent values relative 
-        to the current viewport.
-        For gradientUnits="objectBoundingBox", percentages represent values relative 
-        to the bounding box for the object.  */
-      unsigned long a_x,  /* point A */
-      unsigned long a_y,
-
-      unsigned long b_x,  /* point B */
-      unsigned long b_y )
-{
-  MagickBooleanType ret;
-
-  ExceptionInfo
-    exception;
-
-  ImageInfo
-    *image_info;
-
-  GetExceptionInfo(&exception);
-  image_info=CloneImageInfo((ImageInfo *) NULL);
-
-  unsigned long _x = bounding_box.x;
-  unsigned long _y = bounding_box.y;
-  unsigned long last_x = bounding_box.width  + _x;
-  unsigned long last_y = bounding_box.height + _y;
-
-  /* {{{ linearGradient Core */
-  {
-    PixelPacket
-      *color;
-
-    color = malloc(stop_nb * sizeof(PixelPacket));
-
-    long double  /* make the cast only once */
-      *red, *green, *blue, *opacity;
-
-    red     = malloc(stop_nb * sizeof(long double));
-    green   = malloc(stop_nb * sizeof(long double));
-    blue    = malloc(stop_nb * sizeof(long double));
-    opacity = malloc(stop_nb * sizeof(long double));
-
-    int stop_i, stop_j;
-
-    for (stop_i = 0; stop_i < stop_nb; stop_i++)
-    {
-      ret = QueryColorDatabase(colors_strings[stop_i],&color[stop_i],&exception);
-      if (ret == MagickFalse)
-        fprintf(stderr, "QueryColorDatabase() failed\n");
-      if (exception.severity != UndefinedException)
-        CatchException(&exception);
-
-      red[stop_i]     = (long double)color[stop_i].red;
-      green[stop_i]   = (long double)color[stop_i].green;
-      blue[stop_i]    = (long double)color[stop_i].blue;
-      opacity[stop_i] = (long double)color[stop_i].opacity;
-    }
-
-    long long ab_x, ab_y;
-
-    vector_substract(&ab_x,&ab_y, b_x,b_y, a_x,a_y);
-    long double len_ab = vector_length(ab_x, ab_y);
-
-    /* {{{ foreach pixel of the image */
-    {
-      register
-      unsigned long x;
-      unsigned long y;
-      long double percent, pos, percent_opposite;
-      PixelPacket px_color;
-      char str_buffer[MaxTextExtent];
-      int str_len;
-
-      DrawInfo *draw_info; // tmp
-      draw_info = CloneDrawInfo( image_info, ( DrawInfo* )NULL );  // tmp
-      if (!draw_info) fprintf(stderr, "CloneDrawInfo() failed\n"); // tmp
-
-      for (y = _y; y < last_y; y++) {
-        for (x = _x; x < last_x; x++) {
-          /* {{{ pos */
-          if (a_x == x && a_y == y) {
-            pos = 0.0;
-          } else {
-            pos = get_y_of_A_B(a_x,a_y, b_x,b_y, x,y) / len_ab;
-          }
-          /* }}} */
-          /* {{{ pos over spread */
-          switch (spreadMethod)
-          {
-            case Pad_SpreadMethod:
-              break;
-
-            case Repeat_SpreadMethod:
-              if (pos < 0.0)
-                pos = 1.0 - fmod(- pos, 1.0);
-              else
-                pos = fmod(pos, 1.0);
-              break;
-
-            case Reflect_SpreadMethod:
-              if (pos < 0.0) pos = - pos;
-              if ( ((int)pos % 2) == 0 )
-                pos = fmod(pos, 1.0);
-              else
-                pos = 1.0 - fmod(pos, 1.0);
-              break;
-          }
-          /* }}} */
-
-          for (stop_i = 0; stop_i < stop_nb; stop_i++)
-            if (pos < stop[stop_i])
-              break;
-
-          if (stop_i == 0) {
-            px_color = color[0];
-
-          } else if (stop_i == stop_nb) {
-            px_color = color[stop_nb - 1];
-
-          } else {
-            stop_j = stop_i;
-            --stop_i;
-
-            percent = (
-                (pos - stop[stop_i]) /
-                (stop[stop_j] - stop[stop_i])
-              );
-
-            percent_opposite = 1.0L - percent;
-
-            /* {{{ pixel calculation */
-            if ( spreadMethod == Pad_SpreadMethod &&
-                  (pos < 0.0L || pos > 1.0L) )
-            {
-              if (pos < 0.0L)
-                   px_color = color[0];
-              else px_color = color[stop_nb - 1];
-
-            } else {
-              px_color.red     = (Quantum)((red[stop_i]     * percent_opposite) + (red[stop_j]     * percent));
-              px_color.green   = (Quantum)((green[stop_i]   * percent_opposite) + (green[stop_j]   * percent));
-              px_color.blue    = (Quantum)((blue[stop_i]    * percent_opposite) + (blue[stop_j]    * percent));
-              px_color.opacity = (Quantum)((opacity[stop_i] * percent_opposite) + (opacity[stop_j] * percent));
-            }
-            /* }}} */
-          }
-
-          _set_pixel(image, x, y, px_color); // tmp
-        }
-      }
-      (void) DestroyDrawInfo(draw_info); // tmp
-    }
-    /* }}} */
-    free(color);
-    free(red);
-    free(green);
-    free(blue);
-    free(opacity);
-  }
-  /* }}} */
-
-  image_info=DestroyImageInfo(image_info);
-  DestroyExceptionInfo(&exception);
-}
-
-/* }}} */
-
-/* {{{ test_linear_gradient() */
-
-CAMLprim value
-linear_gradient_native(
-        value image_bloc,
-
-        value ml_width,
-        value ml_height,
-
-        value ml_a_x,
-        value ml_a_y,
-        value ml_b_x,
-        value ml_b_y,
-
-        value ml_spreadMethod,
-
-        value ml_stop_list,
-        value ml_stop_nb,
-
-        value _a, value _b, value _c,
-        value _d, value _e, value _f,
-        value _g, value _h, value _i,
-
-        value bounding_box_x,
-        value bounding_box_y,
-        value bounding_box_width,
-        value bounding_box_height )
-{
-    CAMLparam5( image_bloc, ml_width, ml_height, ml_a_x, ml_a_y );
-    CAMLxparam5( ml_b_x, ml_b_y, ml_spreadMethod, ml_stop_list, ml_stop_nb );
-    CAMLxparam5( _a, _b, _c, _d, _e );
-    CAMLxparam5( _f, _g, _h, _i, bounding_box_x );
-    CAMLxparam3( bounding_box_y, bounding_box_width, bounding_box_height );
-
-    if (IsMagickInstantiated() == MagickFalse) {
-        MagickCoreGenesis(getenv("PWD"), MagickTrue);
-    }
-
-    unsigned long width  = Int_val(ml_width);
-    unsigned long height = Int_val(ml_height);
-
-  BoundingBox
-    bounding_box;
-
-  bounding_box.x = Int_val(bounding_box_x);
-  bounding_box.y = Int_val(bounding_box_y);
-  bounding_box.width  = Int_val(bounding_box_width);
-  bounding_box.height = Int_val(bounding_box_height);
-
-  if (bounding_box.x + bounding_box.width  > width) {
-      //bounding_box.width = width - bounding_box.x;
-      printf(" bounding-box width overflow\n"); fflush(stdout);
-  }
-  if (bounding_box.y + bounding_box.height > height) {
-      //bounding_box.height = height - bounding_box.y;
-      printf(" bounding-box height overflow\n"); fflush(stdout);
-  }
-
-  unsigned long
-    a_x, a_y,
-    b_x, b_y;
-
-  a_x = Int_val(ml_a_x);  a_y = Int_val(ml_a_y);
-  b_x = Int_val(ml_b_x);  b_y = Int_val(ml_b_y);
-
-
-  int stop_nb = Int_val(ml_stop_nb);
-
-  long double *stop_offset;
-  stop_offset = malloc(stop_nb * sizeof(long double));
-
-  char
-    **colors_strings;
-  colors_strings = malloc(stop_nb * sizeof(char *));
-  int i;
-
-  CAMLlocal3( ml_item, ml_stop_offset, ml_stop_color );
-
-  i = 0;
-  while ( ml_stop_list != Val_emptylist )
-  {
-      ml_item = Field(ml_stop_list,0);
-
-      ml_stop_offset = Field(ml_item,0);
-      ml_stop_color  = Field(ml_item,1);
-
-      stop_offset[i] = Double_val(ml_stop_offset);
-
-      int len = strlen(String_val(ml_stop_color));
-      colors_strings[i] = malloc(len * sizeof(char));
-      strcpy(colors_strings[i], String_val(ml_stop_color));
-
-      ml_stop_list = Field(ml_stop_list,1);
-      i++;
-  }
-
-
-  Gradient_SpreadMethod spreadMethod;
-
-  spreadMethod = SpreadMethod_val( ml_spreadMethod );
-
-  long double matrix[3][3] = {
-      /* the transformation matrix */
-      { Double_val(_a), Double_val(_b), Double_val(_c) },
-      { Double_val(_d), Double_val(_e), Double_val(_f) },
-      { Double_val(_g), Double_val(_h), Double_val(_i) },
-      /* TODO: not used yet */
-    };
-
-
-  Gradient_Units gradientUnits;
-  gradientUnits = Gradient_UserSpaceOnUse;
-
-  linearGradientMagick(
-        (Image *) Field(image_bloc,1),
-        width, height,
-        bounding_box,
-        colors_strings,
-        stop_offset, stop_nb,
-        spreadMethod,
-        matrix,
-        gradientUnits,
-        a_x, a_y,
-        b_x, b_y );
-
-
-  free(stop_offset);
-
-  for (i=0; i<stop_nb; i++) {
-      free(colors_strings[i]);
-  }
-  free(colors_strings);
-
-  //DisplayImages(image_info, (Image *) Field(image_bloc,1) );
-  //image_info = DestroyImageInfo(image_info);
-
-    CAMLreturn( Val_unit );
-}
-
-CAMLprim value
-linear_gradient_bytecode(value * argv, int argn)
-{
-      return linear_gradient_native(
-                argv[0],  argv[1],  argv[2],  argv[3],  argv[4],  argv[5],
-                argv[6],  argv[7],  argv[8],  argv[9],  argv[10], argv[11],
-                argv[12], argv[13], argv[14], argv[15], argv[16], argv[17],
-                argv[18], argv[19], argv[20], argv[21], argv[22] );
-}
-
-/* }}} */
-/* {{{ linearGradientMagick */
-
-void
-linearGradientMagick(
-      Image *image,
-
-      unsigned long width,  /* size of the image */
-      unsigned long height,
-
-      BoundingBox bounding_box,
-
-      char *colors_strings[], /* colors */
-      long double stop[],     /* positions of colors (0.0 < percentage < 1.0) */
-      int stop_nb,            /* number of colors */
-
-      Gradient_SpreadMethod spreadMethod,
-
-     /* en: http://www.w3.org/TR/SVG/coords.html#TransformAttribute
-        fr: http://www.yoyodesign.org/doc/w3c/svg1/coords.html#TransformAttribute  */
-      long double matrix[3][3],
-      Gradient_Units gradientUnits,
-
-      unsigned long a_x,  /* point A */
-      unsigned long a_y,
-
-      unsigned long b_x,  /* point B */
-      unsigned long b_y )
-{
-  MagickBooleanType ret;
-
-  ExceptionInfo
-    *exception;
-
-  ImageInfo
-    *image_info;
-
-  /* Initialize the image info structure. */
-  exception=AcquireExceptionInfo();
-  image_info=CloneImageInfo((ImageInfo *) NULL);
-
-  unsigned long _x = bounding_box.x;
-  unsigned long _y = bounding_box.y;
-  unsigned long _width  = bounding_box.width;
-  unsigned long _height = bounding_box.height;
-
-  /* linearGradient Core */
-  {
-    /* {{{ init */
-    PixelPacket
-      *color;
-
-    color = malloc(stop_nb * sizeof(PixelPacket));
-
-    long double  /* make the cast only once */
-      *red, *green, *blue, *opacity;
-
-    red     = malloc(stop_nb * sizeof(long double));
-    green   = malloc(stop_nb * sizeof(long double));
-    blue    = malloc(stop_nb * sizeof(long double));
-    opacity = malloc(stop_nb * sizeof(long double));
-
-    int stop_i, stop_j;
-
-    for (stop_i = 0; stop_i < stop_nb; stop_i++)
-    {
-      ret = QueryColorDatabase(colors_strings[stop_i],&color[stop_i],exception);
-      if (ret == MagickFalse)
-        fprintf(stderr, "QueryColorDatabase() failed\n");
-      if (exception->severity != UndefinedException)
-        CatchException(exception);
-
-      red[stop_i]     = (long double)color[stop_i].red;
-      green[stop_i]   = (long double)color[stop_i].green;
-      blue[stop_i]    = (long double)color[stop_i].blue;
-      opacity[stop_i] = (long double)color[stop_i].opacity;
-    }
-
-    long long ab_x, ab_y;
-
-    vector_substract(&ab_x,&ab_y, b_x,b_y, a_x,a_y);
-    long double len_ab = vector_length(ab_x, ab_y);
-    /*}}}*/
-
-    /* foreach pixel of the image */
-    {
-      register
-      unsigned long x;
-      unsigned long y;
-      long double percent, pos, percent_opposite;
-      PixelPacket px_color;
-
-      char str_buffer[MaxTextExtent]; // tmp
-      int str_len; // tmp
-      DrawInfo *draw_info; // tmp
-      draw_info = CloneDrawInfo( image_info, ( DrawInfo* )NULL );  // tmp
-      if (!draw_info) fprintf(stderr, "CloneDrawInfo() failed\n"); // tmp
-
-      switch (spreadMethod) {
-        case Pad_SpreadMethod:
-          /*{{{*/
-          for (y = _y; y < _height; y++) {
-            for (x = _x; x < _width; x++) {
-
-              if (a_x == x && a_y == y) {
-                pos = 0.0;
-              } else {
-                pos = get_y_of_A_B(a_x,a_y, b_x,b_y, x,y) / len_ab;
-              }
-
-              /* find the stop range */
-              for (stop_i = 0; stop_i < stop_nb; stop_i++)
-                if (pos < stop[stop_i])
-                  break;
-
-              if (pos < 0.0L || stop_i == 0) {
-                px_color = color[0];
-
-              } else if (pos > 1.0L || stop_i == stop_nb) {
-                px_color = color[stop_nb - 1];
-
-              } else {
-                stop_j = stop_i;
-                --stop_i;
-
-                percent =
-                    (pos - stop[stop_i]) /
-                    (stop[stop_j] - stop[stop_i]);
-
-                percent_opposite = 1.0L - percent;
-
-                /* pixel calculation */
-                px_color.red     = (Quantum)((red[stop_i]     * percent_opposite) + (red[stop_j]     * percent));
-                px_color.green   = (Quantum)((green[stop_i]   * percent_opposite) + (green[stop_j]   * percent));
-                px_color.blue    = (Quantum)((blue[stop_i]    * percent_opposite) + (blue[stop_j]    * percent));
-                px_color.opacity = (Quantum)((opacity[stop_i] * percent_opposite) + (opacity[stop_j] * percent));
-              }
-
-              _set_pixel(image, x, y, px_color); // tmp
-            }
-          }
-          /*}}}*/
-          break;
-        case Repeat_SpreadMethod:
-          /*{{{*/
-          for (y = _y; y < _height; y++) {
-            for (x = _x; x < _width; x++) {
-
-              long double y_on_ab, y_mod;
-              char do_antialias;
-              if (a_x == x && a_y == y) {
-                pos = 0.0;
-              } else {
-                y_on_ab = get_y_of_A_B(a_x,a_y, b_x,b_y, x,y);
-                y_mod = fmod(y_on_ab, len_ab);
-
-                /* pos over spread */
-                if (y_mod < 0.0)
-                  y_mod = len_ab - fmod(- y_mod, len_ab);
-                else
-                  y_mod = fmod(y_on_ab, len_ab);
-
-                if (y_mod < len_ab && y_mod + 1 > len_ab) {
-                  do_antialias = 1;
-                } else {
-                  do_antialias = 0;
-                }
-                pos = y_mod / len_ab;
-              }
-
-              /* find the offset */
-              for (stop_i = 0; stop_i < stop_nb; stop_i++)
-                if (pos < stop[stop_i])
-                  break;
-
-              if (stop_i == 0) {
-                px_color = color[0];
-
-              } else if (stop_i == stop_nb) {
-                px_color = color[stop_nb - 1];
-
-              } else {
-                stop_j = stop_i;
-                --stop_i;
-
-                percent =
-                    (pos - stop[stop_i]) /
-                    (stop[stop_j] - stop[stop_i]);
-
-                if (do_antialias) {
-                  percent = len_ab - y_mod;
-                  stop_i = 0;
-                  stop_j = stop_nb - 1;
-                }
-
-                percent_opposite = 1.0L - percent;
-
-                /* pixel calculation */
-                px_color.red     = (Quantum)((red[stop_i]     * percent_opposite) + (red[stop_j]     * percent));
-                px_color.green   = (Quantum)((green[stop_i]   * percent_opposite) + (green[stop_j]   * percent));
-                px_color.blue    = (Quantum)((blue[stop_i]    * percent_opposite) + (blue[stop_j]    * percent));
-                px_color.opacity = (Quantum)((opacity[stop_i] * percent_opposite) + (opacity[stop_j] * percent));
-              }
-
-              _set_pixel(image, x, y, px_color); // tmp
-            }
-          }
-          /*}}}*/
-          break;
-        case Reflect_SpreadMethod:
-          /*{{{*/
-          for (y = _y; y < _height; y++) {
-            for (x = _x; x < _width; x++) {
-
-              if (a_x == x && a_y == y) {
-                pos = 0.0;
-              } else {
-                pos = get_y_of_A_B(a_x,a_y, b_x,b_y, x,y) / len_ab;
-              }
-
-              /* pos over spread */
-              if (pos < 0.0) pos = - pos;
-              //if ( ((int)pos % 2) == 0 )
-              if ( (int)fmod(pos, 2) == 0 )
-                pos = fmod(pos, 1.0);
-              else
-                pos = 1.0 - fmod(pos, 1.0);
-
-              /* find the stop range */
-              for (stop_i = 0; stop_i < stop_nb; stop_i++)
-                if (pos < stop[stop_i])
-                  break;
-
-              if (stop_i == 0) {
-                px_color = color[0];
-
-              } else if (stop_i == stop_nb) {
-                px_color = color[stop_nb - 1];
-
-              } else {
-                stop_j = stop_i;
-                --stop_i;
-
-                percent =
-                    (pos - stop[stop_i]) /
-                    (stop[stop_j] - stop[stop_i]);
-
-                percent_opposite = 1.0L - percent;
-
-                /* pixel calculation */
-                px_color.red     = (Quantum)((red[stop_i]     * percent_opposite) + (red[stop_j]     * percent));
-                px_color.green   = (Quantum)((green[stop_i]   * percent_opposite) + (green[stop_j]   * percent));
-                px_color.blue    = (Quantum)((blue[stop_i]    * percent_opposite) + (blue[stop_j]    * percent));
-                px_color.opacity = (Quantum)((opacity[stop_i] * percent_opposite) + (opacity[stop_j] * percent));
-              }
-
-              _set_pixel(image, x, y, px_color); // tmp
-            }
-          }
-          /*}}}*/
-          break;
-      }
-
-      (void) DestroyDrawInfo(draw_info); // tmp
-    }
-    free(color);
-    free(red);
-    free(green);
-    free(blue);
-    free(opacity);
-  }
-
-  /* Finalize */
-  image_info=DestroyImageInfo(image_info);
-  exception=DestroyExceptionInfo(exception);
-}
 
 /* }}} */
 

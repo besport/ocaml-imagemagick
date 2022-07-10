@@ -3,6 +3,8 @@
 open Magick
 open Imper
 
+let color_of_string _ = (0, 255, 0, 255)
+
 let () =
   let img = get_canvas ~width:400 ~height:300 ~color:"#C8E0FF" in
 

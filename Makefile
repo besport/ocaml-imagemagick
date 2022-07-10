@@ -3,22 +3,15 @@
 # +-----------------------------------------------------------------+
 # | This binding aims to provide the ImageMagick methods to OCaml.  |
 # +-----------------------------------------------------------------+
-# | This program is free software; you can redistribute it and/or   |
-# | modify it under the terms of the GNU General Public License     |
-# | as published by the Free Software Foundation; either version 2  |
-# | of the License, or (at your option) any later version.          |
+# | This software is provided 'as-is', without any express or       |
+# | implied warranty.  In no event will the authors be held liable  |
+# | for any damages arising from the use of this software.          |
 # |                                                                 |
-# | This program is distributed in the hope that it will be useful, |
-# | but WITHOUT ANY WARRANTY; without even the implied warranty of  |
-# | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the   |
-# | GNU General Public License for more details.                    |
-# |                                                                 |
-# | http://www.gnu.org/licenses/gpl.html                            |
-# |                                                                 |
-# | You should have received a copy of the GNU General Public       |
-# | License along with this program; if not,                        |
-# | write to the Free Software Foundation, Inc.,                    |
-# | 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA    |
+# | Permission is granted to anyone to use this software for any    |
+# | purpose, including commercial applications, and to alter it and |
+# | redistribute it freely.                                         |
+# +-----------------------------------------------------------------+
+# | Contact: Florent Monnier <monnier.florent (at) gmail.com>       |
 # +-----------------------------------------------------------------+
 
 # path to the MagickCore-config utility
@@ -68,7 +61,6 @@ magick.cmxa:  magick.cmx  dllimagemagick_stubs.so
 magick.cmxs: magick.cmxa  dllimagemagick_stubs.so
 	ocamlopt -shared -linkall -I ./ -o $@  $<  -cclib -limagemagick_stubs $(MAGICK_CLIBS_)
 
-# ocamlopt -shared -linkall -I /usr/local/lib/ocaml/3.12.1/libMagick -o /usr/local/lib/ocaml/3.12.1/libMagick/magick.cmxs /usr/local/lib/ocaml/3.12.1/libMagick/libimagemagick_stubs.a /usr/local/lib/ocaml/3.12.1/libMagick/magick.cmxa
 
 clean:
 	rm -f *.[oa] *.so *.cm[ixoa] *.cmx[as]
@@ -89,16 +81,16 @@ uninstall:
 
 IMAGE := image.png
 
-test:
+test: magick.cma
 	@echo
 	@echo "  Press Q to close images"
 	@echo
-	ocaml bigarray.cma magick.cma ./examples/example_01.ml $(IMAGE)
-	ocaml bigarray.cma magick.cma ./examples/example_02.ml $(IMAGE)
-	ocaml bigarray.cma magick.cma ./examples/example_03.ml $(IMAGE)
-	ocaml bigarray.cma magick.cma ./examples/example_thumbnail.ml $(IMAGE)
-	ocaml bigarray.cma magick.cma ./examples/example_compression.ml $(IMAGE)
-	ocaml bigarray.cma magick.cma ./examples/drawing.ml
+	ocaml -w -6 -I . magick.cma ./examples/example_01.ml $(IMAGE)
+	ocaml -w -6 -I . magick.cma ./examples/example_02.ml $(IMAGE)
+	ocaml -w -6 -I . magick.cma ./examples/example_03.ml $(IMAGE)
+	ocaml -w -6 -I . magick.cma ./examples/example_thumbnail.ml $(IMAGE)
+	ocaml -w -6 -I . magick.cma ./examples/example_compression.ml $(IMAGE)
+	ocaml -w -6 -I . magick.cma ./examples/drawing.ml
 	@echo
 #	@touch ./examples/.t
 
@@ -117,7 +109,7 @@ dist:
 	mkdir -p $(DIST_DIR)
 	cp \
 	    README.txt            \
-	    LICENSE_GPL.txt       \
+	    LICENSE.txt           \
 	    Makefile              \
 	    imagemagick.h         \
 	    imagemagick_list.c    \

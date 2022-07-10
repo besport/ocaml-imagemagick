@@ -13,7 +13,7 @@
  * | purpose, including commercial applications, and to alter it and |
  * | redistribute it freely.                                         |
  * +-----------------------------------------------------------------+
- * | Author: Florent Monnier <fmonnier@linux-nantes.fr.eu.org>       |
+ * | Author: Florent Monnier <monnier.florent (at) gmail.com>        |
  * | Thanks to Matthieu Dubuget for his help with OCamlMakefile use. |
  * +-----------------------------------------------------------------+
  *
@@ -32,9 +32,7 @@
 #include <caml/fail.h>
 #include <caml/callback.h>
 
-//define MAGICKCORE_EXCLUDE_DEPRECATED 1
-
-#include <magick/ImageMagick.h>
+#include <MagickCore/MagickCore.h>
 
 
 #include "imagemagick.h"
@@ -42,6 +40,7 @@
 
 /* }}} */
 
+#define GetExceptionInfo(v)
 
 /* {{{ MagickBoolean_val() 
  *
@@ -95,28 +94,28 @@ CAMLprim value imper_flipimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
     new_image = FlipImage(
             (Image *) Field(image_bloc,1),
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -135,28 +134,28 @@ CAMLprim value imper_flopimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
     new_image = FlopImage(
             (Image *) Field(image_bloc,1),
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -175,28 +174,28 @@ CAMLprim value imper_magnifyimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
     new_image = MagnifyImage(
             (Image *) Field(image_bloc,1),
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -215,28 +214,28 @@ CAMLprim value imper_minifyimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
     new_image = MinifyImage(
             (Image *) Field(image_bloc,1),
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -255,28 +254,28 @@ CAMLprim value imper_enhanceimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
     new_image = EnhanceImage(
             (Image *) Field(image_bloc,1),
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -295,28 +294,28 @@ CAMLprim value imper_trimimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
     new_image = TrimImage(
             (Image *) Field(image_bloc,1),
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -335,72 +334,34 @@ CAMLprim value imper_despeckle(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
     new_image = DespeckleImage(
             (Image *) Field(image_bloc,1),
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
 
 /* }}} */
 
-/* {{{ imper_deconstructimages()
- *
- * Image *DeconstructImages(const Image *image, ExceptionInfo *exception)
- */
-CAMLprim value imper_deconstructimages( value image_bloc )
-{
-    CAMLparam1(image_bloc);
-
-    Image *new_image;
-
-    ExceptionInfo exception;
-
-
-    GetExceptionInfo(&exception);
-
-    new_image = DeconstructImages(
-            (Image *) Field(image_bloc,1),
-            &exception );
-
-    if (exception.severity != UndefinedException)
-    {
-        if ( new_image )
-        {
-            DestroyImage( new_image );
-        }
-
-        failwith( exception.reason );
-    }
-
-    DestroyImage( (Image *) Field(image_bloc,1) );
-    Field(image_bloc,1) = (value) new_image;
-
-    DestroyExceptionInfo(&exception);
-
-    CAMLreturn (Val_unit);
-}
-
-/* }}} */
 /* {{{ imper_coalesceimages()
  *
  * Image *CoalesceImages(Image *image, ExceptionInfo *exception)
@@ -411,29 +372,29 @@ CAMLprim value imper_coalesceimages( value image_bloc )
 
     Image *new_image;
 
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     new_image = CoalesceImages(
             (Image *) Field(image_bloc,1),
-            &exception );
+            exception );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) );
     Field(image_bloc,1) = (value) new_image;
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn (Val_unit);
 }
@@ -449,21 +410,23 @@ CAMLprim value imper_flattenimages( value image_bloc )
 
     Image *new_image;
 
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
 
-    GetExceptionInfo(&exception);
+    /* TODO update
+    exception = AcquireExceptionInfo();
+    */
 
     /* DEPR
     new_image = FlattenImages(
             (Image *) Field(image_bloc,1),
-            &exception );
+            exception );
     */
 
     new_image = MergeImageLayers(
                         (Image *) Field(image_bloc,1),
                         FlattenLayer,
-                        &exception );
+                        exception );
 
     /* TODO
 typedef enum
@@ -490,23 +453,23 @@ typedef enum
     new_image = MergeImageLayers(
                         (Image *) Field(image_bloc,1),
                         const ImageLayerMethod,
-                        &exception );
+                        exception );
     */
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) );
     Field(image_bloc,1) = (value) new_image;
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn (Val_unit);
 }
@@ -530,72 +493,30 @@ CAMLprim value imper_blurimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo() ;
 
     new_image = BlurImage(
             (Image *) Field(image_bloc,1),
             Double_val(radius),
             Double_val(sigma),
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
-
-    CAMLreturn (Val_unit) ;
-}
-
-/* }}} */
-/* {{{ imper_radialblurimage()
- *
- * Image *RadialBlurImage(const Image *image, const double angle, ExceptionInfo *exception)
- */
-CAMLprim value imper_radialblurimage(
-        value image_bloc,
-        value angle )
-{
-    CAMLparam2(image_bloc, angle) ;
-
-    Image
-        *new_image ;
-
-    ExceptionInfo
-        exception ;
-
-    GetExceptionInfo(&exception) ;
-
-    new_image = RadialBlurImage(
-            (Image *) Field(image_bloc,1),
-            Double_val(angle),
-            &exception) ;
-
-    if (exception.severity != UndefinedException)
-    {
-        if ( new_image )
-        {
-            DestroyImage( new_image ) ;
-        }
-
-        failwith( exception.reason ) ;
-    }
-
-    DestroyImage( (Image *) Field(image_bloc,1) ) ;
-    Field(image_bloc,1) = (value) new_image ;
-
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -616,30 +537,30 @@ CAMLprim value imper_charcoalimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
     new_image = CharcoalImage(
             (Image *) Field(image_bloc,1),
             Double_val(radius),
             Double_val(sigma),
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -659,29 +580,29 @@ CAMLprim value imper_edgeimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
     new_image = EdgeImage(
             (Image *) Field(image_bloc,1),
             Double_val(radius),
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -702,30 +623,30 @@ CAMLprim value imper_embossimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
     new_image = EmbossImage(
             (Image *) Field(image_bloc,1),
             Double_val(radius),
             Double_val(sigma),
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -746,30 +667,30 @@ CAMLprim value imper_gaussianblurimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
     new_image = GaussianBlurImage(
             (Image *) Field(image_bloc,1),
             Double_val(radius),
             Double_val(sigma),
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -789,71 +710,31 @@ CAMLprim value imper_implodeimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
+    /* TODO update
     new_image = ImplodeImage(
             (Image *) Field(image_bloc,1),
             Double_val(amount),
-            &exception) ;
+            exception) ;
+    */
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
-
-    CAMLreturn (Val_unit) ;
-}
-
-/* }}} */
-/* {{{ imper_medianfilterimage()
- *
- * Image *MedianFilterImage(const Image *image, const double radius, ExceptionInfo *exception)
- */
-CAMLprim value imper_medianfilterimage(
-        value image_bloc,
-        value radius )
-{
-    CAMLparam2(image_bloc, radius) ;
-
-    Image
-        *new_image ;
-
-    ExceptionInfo
-        exception ;
-
-    GetExceptionInfo(&exception) ;
-
-    new_image = MedianFilterImage(
-            (Image *) Field(image_bloc,1),
-            Double_val(radius),
-            &exception) ;
-
-    if (exception.severity != UndefinedException)
-    {
-        if ( new_image )
-        {
-            DestroyImage( new_image ) ;
-        }
-
-        failwith( exception.reason ) ;
-    }
-
-    DestroyImage( (Image *) Field(image_bloc,1) ) ;
-    Field(image_bloc,1) = (value) new_image ;
-
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -875,31 +756,31 @@ CAMLprim value imper_motionblurimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
     new_image = MotionBlurImage(
             (Image *) Field(image_bloc,1),
             Double_val(radius),
             Double_val(sigma),
             Double_val(angle),
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -919,71 +800,31 @@ CAMLprim value imper_oilpaintimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
+    /* TODO update
     new_image = OilPaintImage(
             (Image *) Field(image_bloc,1),
             Double_val(radius),
-            &exception) ;
+            exception) ;
+    */
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
-
-    CAMLreturn (Val_unit) ;
-}
-
-/* }}} */
-/* {{{ imper_reducenoiseimage()
- *
- * Image *ReduceNoiseImage(Image *image, const double radius, ExceptionInfo *exception)
- */
-CAMLprim value imper_reducenoiseimage(
-        value image_bloc,
-        value radius )
-{
-    CAMLparam2(image_bloc, radius) ;
-
-    Image
-        *new_image ;
-
-    ExceptionInfo
-        exception ;
-
-    GetExceptionInfo(&exception) ;
-
-    new_image = ReduceNoiseImage(
-            (Image *) Field(image_bloc,1),
-            Double_val(radius),
-            &exception) ;
-
-    if (exception.severity != UndefinedException)
-    {
-        if ( new_image )
-        {
-            DestroyImage( new_image ) ;
-        }
-
-        failwith( exception.reason ) ;
-    }
-
-    DestroyImage( (Image *) Field(image_bloc,1) ) ;
-    Field(image_bloc,1) = (value) new_image ;
-
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -1004,30 +845,30 @@ CAMLprim value imper_rollimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo() ;
 
     new_image = RollImage(
             (Image *) Field(image_bloc,1),
             Long_val(x_offset),
             Long_val(y_offset),
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -1050,31 +891,31 @@ CAMLprim value imper_shadeimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo() ;
 
     new_image = ShadeImage(
             (Image *) Field(image_bloc,1),
             MagickBoolean_val(color_shading),
             Double_val(azimuth),
             Double_val(elevation),
-            &exception ) ;
+            exception ) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -1095,30 +936,30 @@ CAMLprim value imper_sharpenimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
     new_image = SharpenImage(
             (Image *) Field(image_bloc,1),
             Double_val(radius),
             Double_val(sigma),
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -1138,29 +979,31 @@ CAMLprim value imper_spreadimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
+    /* TODO update
     new_image = SpreadImage(
             (Image *) Field(image_bloc,1),
             Double_val(radius),
-            &exception) ;
+            exception) ;
+    */
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -1180,29 +1023,31 @@ CAMLprim value imper_swirlimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
+    /* TODO update
     new_image = SwirlImage(
             (Image *) Field(image_bloc,1),
             Double_val(degrees),
-            &exception) ;
+            exception) ;
+    */
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -1225,9 +1070,9 @@ CAMLprim value imper_unsharpmaskimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
     new_image = UnsharpMaskImage(
             (Image *) Field(image_bloc,1),
@@ -1235,22 +1080,22 @@ CAMLprim value imper_unsharpmaskimage(
             Double_val(sigma),
             Double_val(amount),
             Double_val(threshold),
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -1271,30 +1116,32 @@ CAMLprim value imper_waveimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
+    /* TODO update
     new_image = WaveImage(
             (Image *) Field(image_bloc,1),
             Double_val(amplitude),
             Double_val(wave_length),
-            &exception) ;
+            exception) ;
+    */
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -1315,29 +1162,29 @@ CAMLprim value imper_rotateimage(
         *new_image;
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     new_image = RotateImage(
             (Image *) Field(image_bloc,1),
             Double_val(degrees),
-            &exception );
+            exception );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) );
     Field(image_bloc,1) = (value) new_image;
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn (Val_unit);
 }
@@ -1358,30 +1205,30 @@ CAMLprim value imper_shearimage(
         *new_image;
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     new_image = ShearImage(
             (Image *) Field(image_bloc,1),
             Double_val(x_shear),
             Double_val(y_shear),
-            &exception );
+            exception );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) );
     Field(image_bloc,1) = (value) new_image;
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn (Val_unit);
 }
@@ -1402,30 +1249,30 @@ CAMLprim value imper_sampleimage(
         *new_image;
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     new_image = SampleImage(
             (Image *) Field(image_bloc,1),
             Long_val(columns),
             Long_val(rows),
-            &exception );
+            exception );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) );
     Field(image_bloc,1) = (value) new_image;
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn (Val_unit);
 }
@@ -1446,30 +1293,30 @@ CAMLprim value imper_scaleimage(
         *new_image;
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     new_image = ScaleImage(
             (Image *) Field(image_bloc,1),
             Long_val(columns),
             Long_val(rows),
-            &exception );
+            exception );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) );
     Field(image_bloc,1) = (value) new_image;
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn (Val_unit);
 }
@@ -1490,30 +1337,30 @@ CAMLprim value imper_thumbnailimage(
         *new_image;
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     new_image = ThumbnailImage(
             (Image *) Field(image_bloc,1),
             Long_val(columns),
             Long_val(rows),
-            &exception );
+            exception );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) );
     Field(image_bloc,1) = (value) new_image;
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn (Val_unit);
 }
@@ -1538,31 +1385,31 @@ CAMLprim value imper_adaptivethresholdimage(
         *new_image;
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     new_image = AdaptiveThresholdImage(
             (Image *) Field(image_bloc,1),
             Long_val(width),
             Long_val(height),
             Long_val(offset),
-            &exception );
+            exception );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) );
     Field(image_bloc,1) = (value) new_image;
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn (Val_unit);
 }
@@ -1587,12 +1434,12 @@ CAMLprim value imper_cropimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
     RectangleInfo 
         geometry ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo() ;
 
     geometry.x  = Long_val(x) ;
     geometry.y  = Long_val(y) ;
@@ -1602,22 +1449,22 @@ CAMLprim value imper_cropimage(
     new_image = CropImage(
             (Image *) Field(image_bloc,1),
             &geometry,
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -1640,12 +1487,12 @@ CAMLprim value imper_chopimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
     RectangleInfo 
         chop_info ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
     chop_info.x  = Long_val(x) ;
     chop_info.y  = Long_val(y) ;
@@ -1655,22 +1502,22 @@ CAMLprim value imper_chopimage(
     new_image = ChopImage(
             (Image *) Field(image_bloc,1),
             &chop_info,
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -1694,12 +1541,12 @@ CAMLprim value imper_spliceimage(
         *new_image ;
 
     ExceptionInfo
-        exception ;
+        *exception ;
 
     RectangleInfo 
         chop_info ;
 
-    GetExceptionInfo(&exception) ;
+    exception = AcquireExceptionInfo();
 
     chop_info.x  = Long_val(x) ;
     chop_info.y  = Long_val(y) ;
@@ -1709,22 +1556,22 @@ CAMLprim value imper_spliceimage(
     new_image = SpliceImage(
             (Image *) Field(image_bloc,1),
             &chop_info,
-            &exception) ;
+            exception) ;
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image ) ;
         }
 
-        failwith( exception.reason ) ;
+        caml_failwith( exception->reason ) ;
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) ) ;
     Field(image_bloc,1) = (value) new_image ;
 
-    DestroyExceptionInfo(&exception) ;
+    DestroyExceptionInfo(exception) ;
 
     CAMLreturn (Val_unit) ;
 }
@@ -1778,219 +1625,6 @@ ChannelType_val( value param )
 }
 
 /* }}} */
-/* {{{ imper_blurimagechannel()
- *
- * Image *BlurImageChannel(const Image *image, const ChannelType channel,
- *                const double radius, const double sigma, ExceptionInfo *exception)
- */
-CAMLprim value imper_blurimagechannel(
-        value image_bloc,
-        value channel,
-        value radius,
-        value sigma )
-{
-    CAMLparam4(image_bloc, channel, radius, sigma);
-
-    Image
-        *new_image;
-
-    ExceptionInfo
-        exception;
-
-    GetExceptionInfo(&exception);
-
-    new_image = BlurImageChannel(
-            (Image *) Field(image_bloc,1),
-            ChannelType_val(channel),
-            Double_val(radius),
-            Double_val(sigma),
-            &exception );
-
-    if (exception.severity != UndefinedException)
-    {
-        if ( new_image )
-        {
-            DestroyImage( new_image );
-        }
-
-        failwith( exception.reason );
-    }
-
-    DestroyImage( (Image *) Field(image_bloc,1) );
-    Field(image_bloc,1) = (value) new_image;
-
-    DestroyExceptionInfo(&exception);
-
-    CAMLreturn (Val_unit);
-}
-
-/* }}} */
-/* {{{ imper_radialblurimagechannel()
- *
- * Image *RadialBlurImageChannel(const Image *image, const ChannelType channel, const double angle, ExceptionInfo *exception)
- */
-CAMLprim value imper_radialblurimagechannel(
-        value image_bloc,
-        value channel,
-        value angle )
-{
-    CAMLparam3(image_bloc, channel, angle) ;
-
-    Image
-        *new_image ;
-
-    ExceptionInfo
-        exception ;
-
-    GetExceptionInfo(&exception) ;
-
-    new_image = RadialBlurImageChannel(
-            (Image *) Field(image_bloc,1),
-            ChannelType_val(channel),
-            Double_val(angle),
-            &exception) ;
-
-    if (exception.severity != UndefinedException)
-    {
-        if ( new_image )
-        {
-            DestroyImage( new_image ) ;
-        }
-
-        failwith( exception.reason ) ;
-    }
-
-    DestroyImage( (Image *) Field(image_bloc,1) ) ;
-    Field(image_bloc,1) = (value) new_image ;
-
-    DestroyExceptionInfo(&exception) ;
-
-    CAMLreturn (Val_unit) ;
-}
-
-/* }}} */
-/* {{{ imper_gaussianblurimagechannel()
- *
- * Image *GaussianBlurImageChannel(const Image *image, const ChannelType channel, const double radius, const double sigma, ExceptionInfo *exception)
- */
-CAMLprim value imper_gaussianblurimagechannel(
-        value image_bloc,
-        value channel,
-        value radius,
-        value sigma )
-{
-    CAMLparam4(image_bloc, channel, radius, sigma);
-
-    Image
-        *new_image;
-
-    ExceptionInfo
-        exception;
-
-    GetExceptionInfo(&exception);
-
-    new_image = GaussianBlurImageChannel(
-            (Image *) Field(image_bloc,1),
-            ChannelType_val(channel),
-            Double_val(radius),
-            Double_val(sigma),
-            &exception );
-
-    if (exception.severity != UndefinedException)
-    {
-        if ( new_image )
-        {
-            DestroyImage( new_image );
-        }
-
-        failwith( exception.reason );
-    }
-
-    DestroyImage( (Image *) Field(image_bloc,1) );
-    Field(image_bloc,1) = (value) new_image;
-
-    DestroyExceptionInfo(&exception);
-
-    CAMLreturn (Val_unit);
-}
-
-/* }}} */
-/* {{{ imper_bilevelimagechannel() 
- *
- * MagickBooleanType BilevelImageChannel(Image *image,
- *                         const ChannelType channel, const double threshold)
- */
-CAMLprim value imper_bilevelimagechannel(
-            value image_bloc,
-            value channel,
-            value threshold )
-{
-    CAMLparam3(image_bloc, channel, threshold) ;
-
-    MagickBooleanType
-        ret ;
-
-    ret = BilevelImageChannel(
-                (Image *) Field(image_bloc,1),
-                ChannelType_val(channel),
-                Double_val(threshold) ) ;
-
-    if (ret == MagickFalse) {
-        failwith("bilevelimagechannel failed") ;
-    }
-
-    CAMLreturn (Val_unit) ;
-}
-
-/* }}} */
-/* {{{ imper_sharpenimagechannel()
- *
- * Image *SharpenImageChannel(const Image *image, const ChannelType channel,
- *                            const double radius, const double sigma, ExceptionInfo *exception)
- */
-CAMLprim value imper_sharpenimagechannel(
-            value image_bloc,
-            value channel,
-            value radius,
-            value sigma )
-{
-    CAMLparam4(image_bloc, channel, radius, sigma) ;
-
-    Image
-        *new_image ;
-
-    ExceptionInfo
-        exception ;
-
-    GetExceptionInfo(&exception) ;
-
-    new_image = SharpenImageChannel(
-                (Image *) Field(image_bloc,1),
-                ChannelType_val(channel),
-                Double_val(radius),
-                Double_val(sigma),
-                &exception ) ;
-
-    if (exception.severity != UndefinedException)
-    {
-        if ( new_image )
-        {
-            DestroyImage( new_image ) ;
-        }
-
-        failwith( exception.reason ) ;
-    }
-
-    DestroyImage( (Image *) Field(image_bloc,1) ) ;
-    Field(image_bloc,1) = (value) new_image ;
-
-    DestroyExceptionInfo(&exception) ;
-
-    CAMLreturn (Val_unit) ;
-}
-
-/* }}} */
-
 
 
 /* {{{ imper_negateimage() 
@@ -2003,15 +1637,22 @@ CAMLprim value imper_negateimage(
 {
     CAMLparam2(image_bloc, grayscale) ;
 
+    ExceptionInfo
+        *exc_info;
+
     MagickBooleanType
         ret ;
 
+    exc_info = AcquireExceptionInfo();
+
     ret = NegateImage(
                 (Image *) Field(image_bloc,1),
-                MagickBoolean_val(grayscale) ) ;
+                MagickBoolean_val(grayscale), exc_info ) ;
+
+    DestroyExceptionInfo(exc_info);
 
     if (ret == MagickFalse) {
-        failwith("negate failed") ;
+        caml_failwith("negate failed") ;
     }
 
     CAMLreturn (Val_unit) ;
@@ -2032,24 +1673,22 @@ CAMLprim value imper_contrastimage(
         ret ;
 
     /*
-    ret = ContrastImage(
-                (Image *) Field(image_bloc,1),
-                Int_val(sharpen) ) ;
-    \*
      *  0 increases the contrast
      *  otherwise reduced it
      */
 
+    /* TODO update
     ret = ContrastImage(
                 (Image *) Field(image_bloc,1),
                 MagickBoolean_val(sharpen) ) ;
+    */
     /*
      *  MagickFalse increases the contrast,
      *  otherwise reduced it
      */
 
     if (ret == MagickFalse) {
-        failwith("contrast failed") ;
+        caml_failwith("contrast failed") ;
     }
 
     CAMLreturn (Val_unit) ;
@@ -2067,11 +1706,13 @@ CAMLprim value imper_equalizeimage( value image_bloc )
     MagickBooleanType
         ret ;
 
+    /* TODO update
     ret = EqualizeImage(
                 (Image *) Field(image_bloc,1) ) ;
+    */
 
     if (ret == MagickFalse) {
-        failwith("equalize failed") ;
+        caml_failwith("equalize failed") ;
     }
 
     CAMLreturn (Val_unit) ;
@@ -2089,11 +1730,13 @@ CAMLprim value imper_normalizeimage( value image_bloc )
     MagickBooleanType
         ret ;
 
+    /* TODO update
     ret = NormalizeImage(
                 (Image *) Field(image_bloc,1) ) ;
+    */
 
     if (ret == MagickFalse) {
-        failwith("normalize failed") ;
+        caml_failwith("normalize failed") ;
     }
 
     CAMLreturn (Val_unit) ;
@@ -2111,12 +1754,14 @@ CAMLprim value imper_blackthresholdimage( value image_bloc, value threshold )
     MagickBooleanType
         ret ;
 
+    /* TODO update
     ret = BlackThresholdImage(
                 (Image *) Field(image_bloc,1),
                 String_val(threshold) ) ;
+    */
 
     if (ret == MagickFalse) {
-        failwith("black_threshold failed") ;
+        caml_failwith("black_threshold failed") ;
     }
 
     CAMLreturn (Val_unit) ;
@@ -2134,12 +1779,14 @@ CAMLprim value imper_whitethresholdimage( value image_bloc, value threshold )
     MagickBooleanType
         ret ;
 
+    /* TODO update
     ret = WhiteThresholdImage(
                 (Image *) Field(image_bloc,1),
                 String_val(threshold) ) ;
+    */
 
     if (ret == MagickFalse) {
-        failwith("white_threshold failed") ;
+        caml_failwith("white_threshold failed") ;
     }
 
     CAMLreturn (Val_unit) ;
@@ -2159,12 +1806,14 @@ CAMLprim value imper_cyclecolormapimage(
     MagickBooleanType
         ret ;
 
+    /* TODO update
     ret = CycleColormapImage(
                 (Image *) Field(image_bloc,1),
                 Long_val(displace) ) ;
+    */
 
     if (ret == MagickFalse) {
-        failwith("cyclecolormap failed") ;
+        caml_failwith("cyclecolormap failed") ;
     }
 
     CAMLreturn (Val_unit) ;
@@ -2184,12 +1833,14 @@ CAMLprim value imper_modulateimage(
     MagickBooleanType
         ret ;
 
+    /* TODO update
     ret = ModulateImage(
                 (Image *) Field(image_bloc,1),
                 String_val(modulate) ) ;
+    */
 
     if (ret == MagickFalse) {
-        failwith("modulate failed") ;
+        caml_failwith("modulate failed") ;
     }
 
     CAMLreturn (Val_unit) ;
@@ -2209,12 +1860,14 @@ CAMLprim value imper_solarizeimage(
     MagickBooleanType
         ret ;
 
+    /* TODO update
     ret = SolarizeImage(
                 (Image *) Field(image_bloc,1),
                 Double_val(threshold) ) ;
+    */
 
     if (ret == MagickFalse) {
-        failwith("solarize failed") ;
+        caml_failwith("solarize failed") ;
     }
 
     CAMLreturn (Val_unit) ;
@@ -2234,11 +1887,13 @@ CAMLprim value imper_stripimage(
     MagickBooleanType
         ret ;
 
+    /* TODO update
     ret = StripImage(
                 (Image *) Field(image_bloc,1) ) ;
+    */
 
     if (ret == MagickFalse) {
-        failwith("strip failed") ;
+        caml_failwith("strip failed") ;
     }
 
     CAMLreturn (Val_unit) ;
@@ -2246,34 +1901,14 @@ CAMLprim value imper_stripimage(
 
 /* }}} */
 
-/* {{{ imper_gammaimagechannel() 
- *
- * MagickBooleanType GammaImageChannel(Image *image, const ChannelType channel, const double gamma)
- */
-CAMLprim value imper_gammaimagechannel( value image_bloc, value channel, value gamma )
-{
-    CAMLparam3(image_bloc, channel, gamma) ;
-
-    MagickBooleanType
-        ret ;
-
-    ret = GammaImageChannel(
-                (Image *) Field(image_bloc,1),
-                ChannelType_val(channel),
-                Double_val(gamma) ) ;
-
-    if (ret == MagickFalse) {
-        failwith("gamma_channel failed") ;
-    }
-
-    CAMLreturn (Val_unit) ;
-}
-
-/* }}} */
 
 /* {{{ imper_levelimage() 
  *
- * MagickBooleanType LevelImage(Image *image, const char *levels)
+ * MagickBooleanType
+ *    LevelImage(Image *image, const char *levels)
+ *
+ * MagickBooleanType
+ *    LevelImage(Image *, const double, const double, const double, ExceptionInfo *)
  */
 CAMLprim value imper_levelimage( value image_bloc, value levels )
 {
@@ -2282,70 +1917,20 @@ CAMLprim value imper_levelimage( value image_bloc, value levels )
     MagickBooleanType
         ret ;
 
+    /* TODO update
     ret = LevelImage(
                 (Image *) Field(image_bloc,1),
                 String_val(levels) ) ;
+    */
 
     if (ret == MagickFalse) {
-        failwith("level failed") ;
+        caml_failwith("level failed") ;
     }
 
     CAMLreturn (Val_unit) ;
 }
 
 /* }}} */
-/* {{{ imper_levelimagechannel() 
- *
- * MagickBooleanType LevelImageChannel(Image *image, const ChannelType channel,
- *                          const double black_point, const double white_point, const double gamma)
- */
-CAMLprim value imper_levelimagechannel( value image_bloc, value channel, value black_point, value white_point, value gamma )
-{
-    CAMLparam5(image_bloc, channel, black_point, white_point, gamma) ;
-
-    MagickBooleanType
-        ret ;
-
-    ret = LevelImageChannel(
-                (Image *) Field(image_bloc,1),
-                ChannelType_val(channel),
-                Double_val(black_point),
-                Double_val(white_point),
-                Double_val(gamma) ) ;
-
-    if (ret == MagickFalse) {
-        failwith("level_channel failed") ;
-    }
-
-    CAMLreturn (Val_unit) ;
-}
-
-/* }}} */
-/* {{{ imper_negateimagechannel() 
- *
- * MagickBooleanType NegateImageChannel(Image *image, const ChannelType channel, const MagickBooleanType grayscale)
- */
-CAMLprim value imper_negateimagechannel( value image_bloc, value channel, value grayscale )
-{
-    CAMLparam3(image_bloc, channel, grayscale) ;
-
-    MagickBooleanType
-        ret ;
-
-    ret = NegateImageChannel(
-                (Image *) Field(image_bloc,1),
-                ChannelType_val(channel),
-                MagickBoolean_val(grayscale) ) ;
-
-    if (ret == MagickFalse) {
-        failwith("negate_channel failed") ;
-    }
-
-    CAMLreturn (Val_unit) ;
-}
-
-/* }}} */
-
 
 
 
@@ -2398,29 +1983,31 @@ CAMLprim value imper_addnoiseimage(
         *new_image;
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
+    /* TODO update
     new_image = AddNoiseImage(
             (Image *) Field(image_bloc,1),
             NoiseType_val(noise_type),
-            &exception );
+            exception );
+    */
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) );
     Field(image_bloc,1) = (value) new_image;
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn (Val_unit);
 }
@@ -2430,7 +2017,7 @@ CAMLprim value imper_addnoiseimage(
 
 /* {{{ FilterType_val() */
 
-static FilterTypes
+static FilterType
 FilterType_val( value param )
 {
 #if CAML_FRAME
@@ -2459,6 +2046,41 @@ FilterType_val( value param )
         case 13: return LanczosFilter;
         case 14: return BesselFilter;
         case 15: return SincFilter;
+
+ /* TODO update
+  UndefinedFilter;
+  PointFilter;
+  BoxFilter;
+  TriangleFilter;
+  HermiteFilter;
+  HannFilter;
+  HammingFilter;
+  BlackmanFilter;
+  GaussianFilter;
+  QuadraticFilter;
+  CubicFilter;
+  CatromFilter;
+  MitchellFilter;
+  JincFilter;
+  SincFilter;
+  SincFastFilter;
+  KaiserFilter;
+  WelchFilter;
+  ParzenFilter;
+  BohmanFilter;
+  BartlettFilter;
+  LagrangeFilter;
+  LanczosFilter;
+  LanczosSharpFilter;
+  Lanczos2Filter;
+  Lanczos2SharpFilter;
+  RobidouxFilter;
+  RobidouxSharpFilter;
+  CosineFilter;
+  SplineFilter;
+  LanczosRadiusFilter;
+  CubicSplineFilter;
+  */
         default:
 #if DEBUG
             fprintf(stderr, " Error in FilterType_val()\n"); fflush(stderr);
@@ -2489,32 +2111,34 @@ CAMLprim value imper_resizeimage(
         *new_image;
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
+    /* TODO update
     new_image = ResizeImage(
             (Image *) Field(image_bloc,1),
             Long_val(columns),
             Long_val(rows),
             FilterType_val(filter),
             Double_val(blur),
-            &exception );
+            exception );
+    */
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( new_image )
         {
             DestroyImage( new_image );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
     DestroyImage( (Image *) Field(image_bloc,1) );
     Field(image_bloc,1) = (value) new_image;
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn (Val_unit);
 }
@@ -2545,11 +2169,13 @@ imper_orderedditherimage( value image_bloc )
     MagickBooleanType
         ret ;
 
+    /* TODO update
     ret = OrderedDitherImage(
                 (Image *) Field(image_bloc,1) ) ;
+    */
 
     if (ret == MagickFalse) {
-        failwith("ordered_dither failed") ;
+        caml_failwith("ordered_dither failed") ;
     }
 
     CAMLreturn (Val_unit) ;
@@ -2566,8 +2192,10 @@ imper_compressimagecolormap( value image_bloc )
 {
     CAMLparam1(image_bloc) ;
 
+    /* TODO update
     CompressImageColormap(
                 (Image *) Field(image_bloc,1) ) ;
+    */
 
     CAMLreturn (Val_unit) ;
 }
@@ -2585,14 +2213,16 @@ imper_posterizeimage(value image_bloc, value levels, value dither)
     MagickBooleanType
         ret;
 
+    /* TODO update
     ret = PosterizeImage(
                 (Image *) Field(image_bloc,1),
                 Long_val(levels),
                 MagickBoolean_val(dither)
                 );
+    */
 
     if (ret == MagickFalse) {
-        failwith("posterize failed");
+        caml_failwith("posterize failed");
     }
 
     CAMLreturn (Val_unit);
@@ -2626,14 +2256,16 @@ imper_mapimage(value image_bloc, value map_image_bloc, value dither)
 
     QuantizeInfo quantize_info;
     GetQuantizeInfo( &quantize_info );
+    /* TODO update
     quantize_info.dither = MagickBoolean_val(dither);
     RemapImage( &quantize_info,
                 (Image *) Field(image_bloc,1),
                 (Image *) Field(map_image_bloc,1)
                 );
+    */
 
     if (ret == MagickFalse) {
-        failwith("map_image failed");
+        caml_failwith("map_image failed");
     }
 
     CAMLreturn (Val_unit);
@@ -2659,117 +2291,31 @@ fun_blurimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         BlurImage(
             (Image *) Field(image_bloc,1),
             Double_val(radius),
             Double_val(sigma),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
-
-    CAMLreturn( new_image_bloc );
-}
-
-/* }}} */
-/* {{{ fun_radialblurimage()
- *
- * Image *RadialBlurImage(const Image *image, const double angle, ExceptionInfo *exception)
- */
-CAMLprim value
-fun_radialblurimage(
-        value image_bloc,
-        value angle )
-{
-    CAMLparam2(image_bloc, angle);
-    CAMLlocal1(new_image_bloc);
-
-    ExceptionInfo
-        exception;
-
-    GetExceptionInfo(&exception);
-
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
-
-    Field(new_image_bloc,1) = (value)
-        RadialBlurImage(
-            (Image *) Field(image_bloc,1),
-            Double_val(angle),
-            &exception );
-
-
-    if (exception.severity != UndefinedException)
-    {
-        if ( Field(new_image_bloc,1) )
-        {
-            DestroyImage( (Image *) Field(new_image_bloc,1) );
-        }
-
-        failwith( exception.reason );
-    }
-
-    DestroyExceptionInfo(&exception);
-
-    CAMLreturn( new_image_bloc );
-}
-
-/* }}} */
-/* {{{ fun_radialblurimagechannel()
- *
- * Image *RadialBlurImageChannel(const Image *image, const ChannelType channel, const double angle, ExceptionInfo *exception)
- */
-CAMLprim value
-fun_radialblurimagechannel(
-        value image_bloc,
-        value channel,
-        value angle )
-{
-    CAMLparam3(image_bloc, channel, angle);
-    CAMLlocal1(new_image_bloc);
-
-    ExceptionInfo
-        exception;
-
-    GetExceptionInfo(&exception);
-
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
-
-    Field(new_image_bloc,1) = (value)
-        RadialBlurImageChannel(
-            (Image *) Field(image_bloc,1),
-            ChannelType_val(channel),
-            Double_val(angle),
-            &exception );
-
-
-    if (exception.severity != UndefinedException)
-    {
-        if ( Field(new_image_bloc,1) )
-        {
-            DestroyImage( (Image *) Field(new_image_bloc,1) );
-        }
-
-        failwith( exception.reason );
-    }
-
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -2789,31 +2335,31 @@ fun_charcoalimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         CharcoalImage(
             (Image *) Field(image_bloc,1),
             Double_val(radius),
             Double_val(sigma),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -2832,30 +2378,30 @@ fun_edgeimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         EdgeImage(
             (Image *) Field(image_bloc,1),
             Double_val(radius),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -2875,31 +2421,31 @@ fun_embossimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         EmbossImage(
             (Image *) Field(image_bloc,1),
             Double_val(radius),
             Double_val(sigma),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -2919,31 +2465,31 @@ fun_gaussianblurimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         GaussianBlurImage(
             (Image *) Field(image_bloc,1),
             Double_val(radius),
             Double_val(sigma),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -2962,72 +2508,32 @@ fun_implodeimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
+    /* TODO update
     Field(new_image_bloc,1) = (value)
         ImplodeImage(
             (Image *) Field(image_bloc,1),
             Double_val(amount),
-            &exception );
+            exception );
+    */
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
-
-    CAMLreturn( new_image_bloc );
-}
-
-/* }}} */
-/* {{{ fun_medianfilterimage()
- *
- * Image *MedianFilterImage(const Image *image, const double radius, ExceptionInfo *exception)
- */
-CAMLprim value
-fun_medianfilterimage(
-        value image_bloc,
-        value radius )
-{
-    CAMLparam2(image_bloc, radius);
-    CAMLlocal1(new_image_bloc);
-
-    ExceptionInfo
-        exception;
-
-    GetExceptionInfo(&exception);
-
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
-
-    Field(new_image_bloc,1) = (value)
-        MedianFilterImage(
-            (Image *) Field(image_bloc,1),
-            Double_val(radius),
-            &exception );
-
-
-    if (exception.severity != UndefinedException)
-    {
-        if ( Field(new_image_bloc,1) )
-        {
-            DestroyImage( (Image *) Field(new_image_bloc,1) );
-        }
-
-        failwith( exception.reason );
-    }
-
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3048,11 +2554,11 @@ fun_motionblurimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         MotionBlurImage(
@@ -3060,20 +2566,20 @@ fun_motionblurimage(
             Double_val(radius),
             Double_val(sigma),
             Double_val(angle),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3092,72 +2598,32 @@ fun_oilpaintimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
+    /* TODO update
     Field(new_image_bloc,1) = (value)
         OilPaintImage(
             (Image *) Field(image_bloc,1),
             Double_val(radius),
-            &exception );
+            exception );
+    */
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
-
-    CAMLreturn( new_image_bloc );
-}
-
-/* }}} */
-/* {{{ fun_reducenoiseimage()
- *
- * Image *ReduceNoiseImage(const Image *image, const double radius, ExceptionInfo *exception)
- */
-CAMLprim value
-fun_reducenoiseimage(
-        value image_bloc,
-        value radius )
-{
-    CAMLparam2(image_bloc, radius);
-    CAMLlocal1(new_image_bloc);
-
-    ExceptionInfo
-        exception;
-
-    GetExceptionInfo(&exception);
-
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
-
-    Field(new_image_bloc,1) = (value)
-        ReduceNoiseImage(
-            (Image *) Field(image_bloc,1),
-            Double_val(radius),
-            &exception );
-
-
-    if (exception.severity != UndefinedException)
-    {
-        if ( Field(new_image_bloc,1) )
-        {
-            DestroyImage( (Image *) Field(new_image_bloc,1) );
-        }
-
-        failwith( exception.reason );
-    }
-
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3177,31 +2643,31 @@ fun_rollimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         RollImage(
             (Image *) Field(image_bloc,1),
             Long_val(x_offset),
             Long_val(y_offset),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3222,11 +2688,11 @@ fun_shadeimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         ShadeImage(
@@ -3234,20 +2700,20 @@ fun_shadeimage(
             Int_val(color_shading),
             Double_val(azimuth),
             Double_val(elevation),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3267,31 +2733,31 @@ fun_sharpenimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         SharpenImage(
             (Image *) Field(image_bloc,1),
             Double_val(radius),
             Double_val(sigma),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3310,30 +2776,32 @@ fun_spreadimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
+    /* TODO update
     Field(new_image_bloc,1) = (value)
         SpreadImage(
             (Image *) Field(image_bloc,1),
             Double_val(radius),
-            &exception );
+            exception );
+    */
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3352,30 +2820,32 @@ fun_swirlimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
+    /* TODO update
     Field(new_image_bloc,1) = (value)
         SwirlImage(
             (Image *) Field(image_bloc,1),
             Double_val(degrees),
-            &exception );
+            exception );
+    */
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3397,11 +2867,11 @@ fun_unsharpmaskimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         UnsharpMaskImage(
@@ -3410,20 +2880,20 @@ fun_unsharpmaskimage(
             Double_val(sigma),
             Double_val(amount),
             Double_val(threshold),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3443,31 +2913,33 @@ fun_waveimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
+    /* TODO update
     Field(new_image_bloc,1) = (value)
         WaveImage(
             (Image *) Field(image_bloc,1),
             Double_val(amplitude),
             Double_val(wave_length),
-            &exception );
+            exception );
+    */
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3486,30 +2958,30 @@ fun_rotateimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         RotateImage(
             (Image *) Field(image_bloc,1),
             Double_val(degrees),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3529,31 +3001,31 @@ fun_shearimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         ShearImage(
             (Image *) Field(image_bloc,1),
             Double_val(x_shear),
             Double_val(y_shear),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3573,31 +3045,31 @@ fun_sampleimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         SampleImage(
             (Image *) Field(image_bloc,1),
             Long_val(columns),
             Long_val(rows),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3617,31 +3089,31 @@ fun_scaleimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         ScaleImage(
             (Image *) Field(image_bloc,1),
             Long_val(columns),
             Long_val(rows),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3661,31 +3133,31 @@ fun_thumbnailimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         ThumbnailImage(
             (Image *) Field(image_bloc,1),
             Long_val(columns),
             Long_val(rows),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3706,11 +3178,11 @@ fun_adaptivethresholdimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         AdaptiveThresholdImage(
@@ -3718,116 +3190,20 @@ fun_adaptivethresholdimage(
             Long_val(width),
             Long_val(height),
             Long_val(offset),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
-
-    CAMLreturn( new_image_bloc );
-}
-
-/* }}} */
-/* {{{ fun_blurimagechannel()
- *
- * Image *BlurImageChannel(const Image *image, const ChannelType channel, const double radius, const double sigma, ExceptionInfo *exception)
- */
-CAMLprim value
-fun_blurimagechannel(
-        value image_bloc,
-        value channel,
-        value radius,
-        value sigma )
-{
-    CAMLparam4(image_bloc, channel, radius, sigma);
-    CAMLlocal1(new_image_bloc);
-
-    ExceptionInfo
-        exception;
-
-    GetExceptionInfo(&exception);
-
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
-
-#if DEBUG
-    printf(" ChannelType_val() returns %d\n", ChannelType_val(channel)); fflush(stdout);
-#endif
-
-    Field(new_image_bloc,1) = (value)
-        BlurImageChannel(
-            (Image *) Field(image_bloc,1),
-            ChannelType_val(channel),
-            Double_val(radius),
-            Double_val(sigma),
-            &exception );
-
-
-    if (exception.severity != UndefinedException)
-    {
-        if ( Field(new_image_bloc,1) )
-        {
-            DestroyImage( (Image *) Field(new_image_bloc,1) );
-        }
-
-        failwith( exception.reason );
-    }
-
-    DestroyExceptionInfo(&exception);
-
-    CAMLreturn( new_image_bloc );
-}
-
-/* }}} */
-/* {{{ fun_gaussianblurimagechannel()
- *
- * Image *GaussianBlurImageChannel(const Image *image, const ChannelType channel, const double radius, const double sigma, ExceptionInfo *exception)
- */
-CAMLprim value
-fun_gaussianblurimagechannel(
-        value image_bloc,
-        value channel,
-        value radius,
-        value sigma )
-{
-    CAMLparam4(image_bloc, channel, radius, sigma);
-    CAMLlocal1(new_image_bloc);
-
-    ExceptionInfo
-        exception;
-
-    GetExceptionInfo(&exception);
-
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
-
-    Field(new_image_bloc,1) = (value)
-        GaussianBlurImageChannel(
-            (Image *) Field(image_bloc,1),
-            ChannelType_val(channel),
-            Double_val(radius),
-            Double_val(sigma),
-            &exception );
-
-
-    if (exception.severity != UndefinedException)
-    {
-        if ( Field(new_image_bloc,1) )
-        {
-            DestroyImage( (Image *) Field(new_image_bloc,1) );
-        }
-
-        failwith( exception.reason );
-    }
-
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3846,30 +3222,32 @@ fun_addnoiseimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
+    /* TODO update
     Field(new_image_bloc,1) = (value)
         AddNoiseImage(
             (Image *) Field(image_bloc,1),
             NoiseType_val(noise_type),
-            &exception );
+            exception );
+    */
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3891,12 +3269,13 @@ fun_resizeimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
+    /* TODO update
     Field(new_image_bloc,1) = (value)
         ResizeImage(
             (Image *) Field(image_bloc,1),
@@ -3904,20 +3283,21 @@ fun_resizeimage(
             Long_val(rows),
             FilterType_val(filter),
             Double_val(blur),
-            &exception );
+            exception );
+    */
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3936,29 +3316,29 @@ fun_enhanceimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         EnhanceImage(
             (Image *) Field(image_bloc,1),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -3976,29 +3356,29 @@ fun_despeckleimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         DespeckleImage(
             (Image *) Field(image_bloc,1),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -4020,14 +3400,14 @@ fun_cropimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
     RectangleInfo 
         geometry;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     geometry.x  = Long_val(x);
     geometry.y  = Long_val(y);
@@ -4038,20 +3418,20 @@ fun_cropimage(
         CropImage(
             (Image *) Field(image_bloc,1),
             &geometry,
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -4069,29 +3449,29 @@ fun_minifyimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         MinifyImage(
             (Image *) Field(image_bloc,1),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -4109,29 +3489,29 @@ fun_magnifyimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         MagnifyImage(
             (Image *) Field(image_bloc,1),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -4149,29 +3529,29 @@ fun_flipimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         FlipImage(
             (Image *) Field(image_bloc,1),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -4189,29 +3569,29 @@ fun_flopimage(
     CAMLlocal1(new_image_bloc);
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value)
         FlopImage(
             (Image *) Field(image_bloc,1),
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -4237,11 +3617,11 @@ fun_spliceimage(
         chop_info;
 
     ExceptionInfo
-        exception;
+        *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     chop_info.x = Long_val(x);
     chop_info.y = Long_val(y);
@@ -4252,20 +3632,20 @@ fun_spliceimage(
         SpliceImage(
             (Image *) Field(image_bloc,1),
             &chop_info,
-            &exception );
+            exception );
 
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
 
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( new_image_bloc );
 }
@@ -4282,36 +3662,38 @@ fun_orderedditherimage( value image_bloc )
     CAMLparam1(image_bloc);
     CAMLlocal1(new_image_bloc);
 
-    ExceptionInfo exception;
-    GetExceptionInfo(&exception);
+    ExceptionInfo *exception;
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value) CloneImage(
             (Image *) Field(image_bloc,1),
             0, 0, 1,
-            &exception );
+            exception );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
 
     MagickBooleanType status;
+    /* TODO update
     status = OrderedDitherImage(
                 (Image *) Field(new_image_bloc,1) );
+    */
 
     if (status == MagickFalse) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith("ordered_dither failed");
+        caml_failwith("ordered_dither failed");
     }
 
     CAMLreturn( new_image_bloc );
@@ -4330,37 +3712,39 @@ fun_negateimage(
     CAMLparam2(image_bloc, grayscale);
     CAMLlocal1(new_image_bloc);
 
-    ExceptionInfo exception;
-    GetExceptionInfo(&exception);
+    ExceptionInfo *exception;
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value) CloneImage(
             (Image *) Field(image_bloc,1),
             0, 0, 1,
-            &exception );
+            exception );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {
         if ( Field(new_image_bloc,1) )
         {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
-    DestroyExceptionInfo(&exception);
 
 
     MagickBooleanType status;
+
     status = NegateImage(
                 (Image *) Field(new_image_bloc,1),
-                MagickBoolean_val(grayscale) );
+                MagickBoolean_val(grayscale), exception );
+
+    DestroyExceptionInfo(exception);
 
     if (status == MagickFalse) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith("negate failed");
+        caml_failwith("negate failed");
     }
 
     CAMLreturn( new_image_bloc );
@@ -4378,34 +3762,35 @@ fun_contrastimage(
     CAMLparam2(image_bloc, sharpen);
     CAMLlocal1(new_image_bloc);
 
-    ExceptionInfo exception;
-    GetExceptionInfo(&exception);
+    ExceptionInfo *exception;
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value) CloneImage(
             (Image *) Field(image_bloc,1),
-            0, 0, 1, &exception );
+            0, 0, 1, exception );
 
-    if (exception.severity != UndefinedException) {
+    if (exception->severity != UndefinedException) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
-    DestroyExceptionInfo(&exception);
-
 
     MagickBooleanType status;
+
     status = ContrastImage(
                 (Image *) Field(new_image_bloc,1),
-                MagickBoolean_val(sharpen) );
+                MagickBoolean_val(sharpen), exception );
+
+    DestroyExceptionInfo(exception);
 
     if (status == MagickFalse) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith("Magick.Fun.contrast failed");
+        caml_failwith("Magick.Fun.contrast failed");
     }
 
     CAMLreturn( new_image_bloc );
@@ -4422,34 +3807,36 @@ fun_equalizeimage(
     CAMLparam1(image_bloc);
     CAMLlocal1(new_image_bloc);
 
-    ExceptionInfo exception;
-    GetExceptionInfo(&exception);
+    ExceptionInfo *exception;
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value) CloneImage(
             (Image *) Field(image_bloc,1),
-            0, 0, 1, &exception );
+            0, 0, 1, exception );
 
-    if (exception.severity != UndefinedException) {
+    if (exception->severity != UndefinedException) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
 
     MagickBooleanType status;
+    /* TODO update
     status = EqualizeImage(
                 (Image *) Field(new_image_bloc,1)
                 );
+    */
 
     if (status == MagickFalse) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith("Magick.Fun.equalize failed");
+        caml_failwith("Magick.Fun.equalize failed");
     }
 
     CAMLreturn( new_image_bloc );
@@ -4466,34 +3853,36 @@ fun_normalizeimage(
     CAMLparam1(image_bloc);
     CAMLlocal1(new_image_bloc);
 
-    ExceptionInfo exception;
-    GetExceptionInfo(&exception);
+    ExceptionInfo *exception;
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value) CloneImage(
             (Image *) Field(image_bloc,1),
-            0, 0, 1, &exception );
+            0, 0, 1, exception );
 
-    if (exception.severity != UndefinedException) {
+    if (exception->severity != UndefinedException) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
 
     MagickBooleanType status;
+    /* TODO update
     status = NormalizeImage(
                 (Image *) Field(new_image_bloc,1)
                 );
+    */
 
     if (status == MagickFalse) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith("Magick.Fun.normalize failed");
+        caml_failwith("Magick.Fun.normalize failed");
     }
 
     CAMLreturn( new_image_bloc );
@@ -4511,34 +3900,36 @@ fun_blackthresholdimage(
     CAMLparam2(image_bloc, threshold);
     CAMLlocal1(new_image_bloc);
 
-    ExceptionInfo exception;
-    GetExceptionInfo(&exception);
+    ExceptionInfo *exception;
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value) CloneImage(
             (Image *) Field(image_bloc,1),
-            0, 0, 1, &exception );
+            0, 0, 1, exception );
 
-    if (exception.severity != UndefinedException) {
+    if (exception->severity != UndefinedException) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
 
     MagickBooleanType status;
+    /* TODO update
     status = BlackThresholdImage(
                 (Image *) Field(new_image_bloc,1),
                 String_val(threshold) );
+    */
 
     if (status == MagickFalse) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith("Magick.Fun.black_threshold failed");
+        caml_failwith("Magick.Fun.black_threshold failed");
     }
 
     CAMLreturn( new_image_bloc );
@@ -4556,34 +3947,36 @@ fun_whitethresholdimage(
     CAMLparam2(image_bloc, threshold);
     CAMLlocal1(new_image_bloc);
 
-    ExceptionInfo exception;
-    GetExceptionInfo(&exception);
+    ExceptionInfo *exception;
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value) CloneImage(
             (Image *) Field(image_bloc,1),
-            0, 0, 1, &exception );
+            0, 0, 1, exception );
 
-    if (exception.severity != UndefinedException) {
+    if (exception->severity != UndefinedException) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
 
     MagickBooleanType status;
+    /* TODO update
     status = WhiteThresholdImage(
                 (Image *) Field(new_image_bloc,1),
                 String_val(threshold) );
+    */
 
     if (status == MagickFalse) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith("Magick.Fun.white_threshold failed");
+        caml_failwith("Magick.Fun.white_threshold failed");
     }
 
     CAMLreturn( new_image_bloc );
@@ -4601,34 +3994,36 @@ fun_cyclecolormapimage(
     CAMLparam2(image_bloc, displace);
     CAMLlocal1(new_image_bloc);
 
-    ExceptionInfo exception;
-    GetExceptionInfo(&exception);
+    ExceptionInfo *exception;
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value) CloneImage(
             (Image *) Field(image_bloc,1),
-            0, 0, 1, &exception );
+            0, 0, 1, exception );
 
-    if (exception.severity != UndefinedException) {
+    if (exception->severity != UndefinedException) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
 
     MagickBooleanType status;
+    /* TODO update
     status = CycleColormapImage(
                 (Image *) Field(new_image_bloc,1),
                 Long_val(displace) );
+    */
 
     if (status == MagickFalse) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith("Magick.Fun.cyclecolormap failed");
+        caml_failwith("Magick.Fun.cyclecolormap failed");
     }
 
     CAMLreturn( new_image_bloc );
@@ -4646,34 +4041,36 @@ fun_modulateimage(
     CAMLparam2(image_bloc, modulate);
     CAMLlocal1(new_image_bloc);
 
-    ExceptionInfo exception;
-    GetExceptionInfo(&exception);
+    ExceptionInfo *exception;
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value) CloneImage(
             (Image *) Field(image_bloc,1),
-            0, 0, 1, &exception );
+            0, 0, 1, exception );
 
-    if (exception.severity != UndefinedException) {
+    if (exception->severity != UndefinedException) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
 
     MagickBooleanType status;
+    /* TODO update
     status = ModulateImage(
                 (Image *) Field(new_image_bloc,1),
                 String_val(modulate) );
+    */
 
     if (status == MagickFalse) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith("Magick.Fun.modulate failed");
+        caml_failwith("Magick.Fun.modulate failed");
     }
 
     CAMLreturn( new_image_bloc );
@@ -4691,34 +4088,36 @@ fun_solarizeimage(
     CAMLparam2(image_bloc, threshold);
     CAMLlocal1(new_image_bloc);
 
-    ExceptionInfo exception;
-    GetExceptionInfo(&exception);
+    ExceptionInfo *exception;
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value) CloneImage(
             (Image *) Field(image_bloc,1),
-            0, 0, 1, &exception );
+            0, 0, 1, exception );
 
-    if (exception.severity != UndefinedException) {
+    if (exception->severity != UndefinedException) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
 
     MagickBooleanType status;
+    /* TODO update
     status = SolarizeImage(
                 (Image *) Field(new_image_bloc,1),
                 Double_val(threshold) );
+    */
 
     if (status == MagickFalse) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith("Magick.Fun.solarize failed");
+        caml_failwith("Magick.Fun.solarize failed");
     }
 
     CAMLreturn( new_image_bloc );
@@ -4735,81 +4134,36 @@ fun_stripimage(
     CAMLparam1(image_bloc);
     CAMLlocal1(new_image_bloc);
 
-    ExceptionInfo exception;
-    GetExceptionInfo(&exception);
+    ExceptionInfo *exception;
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value) CloneImage(
             (Image *) Field(image_bloc,1),
-            0, 0, 1, &exception );
+            0, 0, 1, exception );
 
-    if (exception.severity != UndefinedException) {
+    if (exception->severity != UndefinedException) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
 
     MagickBooleanType status;
+    /* TODO update
     status = StripImage(
                 (Image *) Field(new_image_bloc,1)
                 );
+    */
 
     if (status == MagickFalse) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith("Magick.Fun.strip failed");
-    }
-
-    CAMLreturn( new_image_bloc );
-}
-/* }}} */
-/* {{{ fun_gammaimagechannel() 
- *
- * MagickBooleanType GammaImageChannel(Image *image, const ChannelType channel, const double gamma)
- */
-CAMLprim value
-fun_gammaimagechannel(
-            value image_bloc,
-            value channel,
-            value gamma )
-{
-    CAMLparam3(image_bloc, channel, gamma);
-    CAMLlocal1(new_image_bloc);
-
-    ExceptionInfo exception;
-    GetExceptionInfo(&exception);
-
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
-
-    Field(new_image_bloc,1) = (value) CloneImage(
-            (Image *) Field(image_bloc,1),
-            0, 0, 1, &exception );
-
-    if (exception.severity != UndefinedException) {
-        if ( Field(new_image_bloc,1) ) {
-            DestroyImage( (Image *) Field(new_image_bloc,1) );
-        }
-        failwith( exception.reason );
-    }
-    DestroyExceptionInfo(&exception);
-
-
-    MagickBooleanType status;
-    status = GammaImageChannel(
-                (Image *) Field(new_image_bloc,1),
-                ChannelType_val(channel),
-                Double_val(gamma) );
-
-    if (status == MagickFalse) {
-        if ( Field(new_image_bloc,1) ) {
-            DestroyImage( (Image *) Field(new_image_bloc,1) );
-        }
-        failwith("Magick.Fun.gamma_channel failed");
+        caml_failwith("Magick.Fun.strip failed");
     }
 
     CAMLreturn( new_image_bloc );
@@ -4827,133 +4181,36 @@ fun_levelimage(
     CAMLparam2(image_bloc, levels);
     CAMLlocal1(new_image_bloc);
 
-    ExceptionInfo exception;
-    GetExceptionInfo(&exception);
+    ExceptionInfo *exception;
+    exception = AcquireExceptionInfo();
 
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
+    new_image_bloc = caml_alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 
     Field(new_image_bloc,1) = (value) CloneImage(
             (Image *) Field(image_bloc,1),
-            0, 0, 1, &exception );
+            0, 0, 1, exception );
 
-    if (exception.severity != UndefinedException) {
+    if (exception->severity != UndefinedException) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
 
     MagickBooleanType status;
+    /* TODO update
     status = LevelImage(
                 (Image *) Field(new_image_bloc,1),
                 String_val(levels) );
+    */
 
     if (status == MagickFalse) {
         if ( Field(new_image_bloc,1) ) {
             DestroyImage( (Image *) Field(new_image_bloc,1) );
         }
-        failwith("Magick.Fun.level failed");
-    }
-
-    CAMLreturn( new_image_bloc );
-}
-/* }}} */
-/* {{{ fun_levelimagechannel() 
- *
- * MagickBooleanType LevelImageChannel(Image *image, const ChannelType channel,
- *                          const double black_point, const double white_point, const double gamma)
- */
-CAMLprim value
-fun_levelimagechannel(
-            value image_bloc,
-            value channel,
-            value black_point,
-            value white_point,
-            value gamma )
-{
-    CAMLparam5(image_bloc, channel, black_point, white_point, gamma);
-    CAMLlocal1(new_image_bloc);
-
-    ExceptionInfo exception;
-    GetExceptionInfo(&exception);
-
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
-
-    Field(new_image_bloc,1) = (value) CloneImage(
-            (Image *) Field(image_bloc,1),
-            0, 0, 1, &exception );
-
-    if (exception.severity != UndefinedException) {
-        if ( Field(new_image_bloc,1) ) {
-            DestroyImage( (Image *) Field(new_image_bloc,1) );
-        }
-        failwith( exception.reason );
-    }
-    DestroyExceptionInfo(&exception);
-
-
-    MagickBooleanType status;
-    status = LevelImageChannel(
-                (Image *) Field(new_image_bloc,1),
-                ChannelType_val(channel),
-                Double_val(black_point),
-                Double_val(white_point),
-                Double_val(gamma) );
-
-    if (status == MagickFalse) {
-        if ( Field(new_image_bloc,1) ) {
-            DestroyImage( (Image *) Field(new_image_bloc,1) );
-        }
-        failwith("Magick.Fun.level_channel failed");
-    }
-
-    CAMLreturn( new_image_bloc );
-}
-/* }}} */
-/* {{{ fun_negateimagechannel() 
- *
- * MagickBooleanType NegateImageChannel(Image *image, const ChannelType channel, const MagickBooleanType grayscale)
- */
-CAMLprim value
-fun_negateimagechannel(
-            value image_bloc,
-            value channel,
-            value grayscale )
-{
-    CAMLparam3(image_bloc, channel, grayscale);
-    CAMLlocal1(new_image_bloc);
-
-    ExceptionInfo exception;
-    GetExceptionInfo(&exception);
-
-    new_image_bloc = alloc_final(2, finalize_image, sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
-
-    Field(new_image_bloc,1) = (value) CloneImage(
-            (Image *) Field(image_bloc,1),
-            0, 0, 1, &exception );
-
-    if (exception.severity != UndefinedException) {
-        if ( Field(new_image_bloc,1) ) {
-            DestroyImage( (Image *) Field(new_image_bloc,1) );
-        }
-        failwith( exception.reason );
-    }
-    DestroyExceptionInfo(&exception);
-
-
-    MagickBooleanType status;
-    status = NegateImageChannel(
-                (Image *) Field(new_image_bloc,1),
-                ChannelType_val(channel),
-                MagickBoolean_val(grayscale) );
-
-    if (status == MagickFalse) {
-        if ( Field(new_image_bloc,1) ) {
-            DestroyImage( (Image *) Field(new_image_bloc,1) );
-        }
-        failwith("Magick.Fun.negate_channel failed");
+        caml_failwith("Magick.Fun.level failed");
     }
 
     CAMLreturn( new_image_bloc );

@@ -5,15 +5,28 @@
  * +-----------------------------------------------------------------+
  * | This binding aims to provide the ImageMagick methods to OCaml.  |
  * +-----------------------------------------------------------------+
- * | This software is provided 'as-is', without any express or       |
- * | implied warranty.  In no event will the authors be held liable  |
- * | for any damages arising from the use of this software.          |
- * |                                                                 |
- * | Permission is granted to anyone to use this software for any    |
- * | purpose, including commercial applications, and to alter it and |
- * | redistribute it freely.                                         |
+ * |
+ * | Permission is hereby granted, free of charge, to any person obtaining a
+ * | copy of this software and associated files (the "Software"), to deal in
+ * | the Software without restriction, including without limitation the rights
+ * | to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * | copies of the Software, and to permit persons to whom the Software is
+ * | furnished to do so, subject to the following requests:
+ * | 
+ * | The above copyright notice and this permission notice may be included in
+ * | all copies or substantial portions of the Software.
+ * | 
+ * | The Software is provided "AS IS", without warranty of any kind, express or
+ * | implied, including but not limited to the warranties of merchantability,
+ * | fitness for a particular purpose and noninfringement.  In no event shall
+ * | the authors or copyright holders be liable for any claim, damages or other
+ * | liability, whether in an action of contract, tort or otherwise, arising
+ * | from, out of or in connection with the Software or the use or other
+ * | dealings in the Software.
+ * |
  * +-----------------------------------------------------------------+
- * | Author: Florent Monnier <fmonnier@linux-nantes.fr.eu.org>       |
+ * | Author: Florent Monnier                                         |
+ * | Contact::email: 'fmonnie'+'r@linux-nantes.org'                  |
  * | Thanks to Matthieu Dubuget for his help with OCamlMakefile use. |
  * +-----------------------------------------------------------------+
  *
