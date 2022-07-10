@@ -14,7 +14,6 @@
  * | redistribute it freely.                                         |
  * +-----------------------------------------------------------------+
  * | Author: Florent Monnier <monnier.florent (at) gmail.com>        |
- * | Thanks to Matthieu Dubuget for his help with OCamlMakefile use. |
  * +-----------------------------------------------------------------+
  *
  * }}} */

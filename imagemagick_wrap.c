@@ -14,7 +14,6 @@
  * | and redistribute it freely.                                   |
  * +---------------------------------------------------------------+
  * | Author: Florent Monnier <monnier.florent (at) gmail.com>      |
- * | Thanks to Matthieu Dubuget for his help with OCamlMakefile.   |
  * +---------------------------------------------------------------+
  *
  * }}} */
@@ -6401,12 +6400,12 @@ __imper_appendimages(
 
     Image *new_image;
 
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
     MagickBooleanType stack;
     stack = MagickBoolean_val( ml_stack );
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     image_bloc = caml_alloc_final(2, (*finalize_image), sizeof(Image), MAX_AMOUNT);  /* finalize_image() */
 #if CAML_ALLOC_WITH_0_SIZE
@@ -6415,19 +6414,19 @@ __imper_appendimages(
     new_image = AppendImages(
             (Image *) Field(image_list_bloc,1),
             stack,
-            &exception );
+            exception );
 
-    if (exception.severity != UndefinedException)
+    if (exception->severity != UndefinedException)
     {   if ( new_image )
         {
             DestroyImage( new_image );
         }
-        caml_failwith( exception.reason );
+        caml_failwith( exception->reason );
     }
 
     Field(image_bloc,1) = (value) new_image;
 
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 
     CAMLreturn( Val_unit );
 }
@@ -6448,7 +6447,6 @@ imper_appendimages(
     Image *new_image;
 
     ExceptionInfo *exception;
-
 
     exception = AcquireExceptionInfo();
 

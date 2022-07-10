@@ -1,0 +1,28 @@
+opam-version: "2.0"
+authors: ["Florent Monnier"]
+maintainer: "jvouillon@besport.com"
+license: "Zlib"
+homepage: "http://decapode314.free.fr/ocaml/ImageMagick/"
+doc: "http://decapode314.free.fr/ocaml/ImageMagick/doc/"
+dev-repo: "git+https://github.com/besport/ocaml-imagemagick.git"
+bug-reports: "https://github.com/besport/ocaml-imagemagick/issues"
+tags: ["graphics" "2D" "image"]
+synopsis: "Bindings for ImageMagick"
+description: """
+ImageMagick Bindings for OCaml.
+"""
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+]
+depexts: [
+  ["libmagickcore-dev"] {os-family = "debian"}
+  ["libmagickcore-dev"] {os-distribution = "ubuntu"}
+  ["imagemagick"] {os-distribution = "homebrew" & os = "macos"}
+]
+build: [[make]]
+install: [[make "install"]]
+
+run-test: [
+  [make "test"]
+]

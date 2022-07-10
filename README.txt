@@ -1,6 +1,6 @@
 
 WHAT:
-      This binding is an ImageMagick interface for Objective Caml.
+      This binding is an ImageMagick interface for OCaml.
 
 AUTHOR:
       Copyright (C) 2004 2005 2006 2010 Florent Monnier
@@ -12,25 +12,28 @@ NOTICE:
 
 
 REQUISITES:
-      Objective Caml, which can be obtained from:
-       - http://caml.inria.fr/ocaml/
+      OCaml, which can be obtained from:
+        https://ocaml.org/
+
       ImageMagick, which you will find at:
-       - http://www.imagemagick.org/script/download.php
+        https://imagemagick.org/archive/releases/
+
       A build environment with:
        - bash, make, sed, install
 
 
 VERSIONS:
       This binding (this current verison) has been tested with OCaml version
-        '3.11.2' and ImageMagick version '6.6.1-5'.
+        '4.14.0' and ImageMagick version '7.0.8'.
+
       Previous versions of this binding have been tested with OCaml versions
-        '3.08.4', '3.09.0', '3.09.2' and '3.11.1' and ImageMagick versions
-        '6.2.4', '6.2.5', '6.2.6' and '6.5.7'.
+        '3.08.4', '3.09.0', '3.09.2', '3.11.1' and '3.11.2' and ImageMagick versions
+        '6.2.4', '6.2.5', '6.2.6', '6.5.7' and '6.6.1'.
+
       The old versions of this binding are still available at:
-        http://www.linux-nantes.fr.eu.org/~fmonnier/OCaml/IM-old.php
+        http://decapode314.free.fr/ocaml/ImageMagick/IM-old.html
+
       Please report success or failure with other versions.
-      If you encounter problems to compile from sources, email me and
-        I will make a static binary available.
 
 BETA:
       The interface to ImageMagick for OCaml is still in beta developement
@@ -47,8 +50,9 @@ BUGS:
 INSTALL:
       Run "make" to build the library, and "make install" to install it.
 
-STATIC:
-      If you wish a static version, just follow the instructions in the Makefile.
+OPAM:
+      Install with opam with the command:
+        opam install . --working-dir
 
 TEST:
       Run "make test" to run the examples in the 'examples' directory,
@@ -59,17 +63,14 @@ DOCUMENTATION:
       Run "make doc" to produce the HTML documentation.
 
       You can also find the html documentation of the last release at:
-      http://www.linux-nantes.org/~fmonnier/OCaml/ImageMagick/IM-doc/
+        http://decapode314.free.fr/ocaml/ImageMagick/doc/
 
-THREADS:
-      For threads issues, read this:
-      http://www.imagemagick.org/script/architecture.php#threads
 
 TODO:
       Next steps with OCaml-libMagick will be to improve the functional module.
       Enhance the scripts to generate the 'imagemagick_list.c' file.
       Wrapping not just the MagickCore but the MagickWand API too (well maybe...)
-      Trying to make this interface compatible with GraphicsMagick.
+      Trying to make this interface compatible with GraphicsMagick?
       Use the OCaml BigArray module to improve the interoperability between 
       the OCaml and the ImageMagick worlds.
 
@@ -83,9 +84,11 @@ WIZARD:
       He is also interested in receiving currency or stamps from around the world
       for his collection.
 
-THANKS:
+
+CONTRIBUTORS:
       Thanks to Matthieu Dubuget for his help to write the first Makefile with 
         OCamlMakefile, and for his help to resolve the dependencies of compilation.
+      Thanks to Hugo Heuzard for various fixes for the Makefile.
       Thanks to John Cristy for answering ALL my questions about the MagickCore API.
       Thanks to Fabrice Le Fessant <fabrissimo@gmail.com> for having found bugs
         with allocated values not registered with CAMLlocal.
@@ -93,23 +96,23 @@ THANKS:
         with big arrays.
       Thanks to Bruspal for his book about the C language.
       Thanks to all the guys of fr.comp.lang.caml who have answered to my questions.
-      Thanks to the authors of Objective Caml for this wonderfull language and 
+      Thanks to the authors of OCaml for this wonderfull language and
         thanks to the authors of ImageMagick for this wonderfull library.
 
 
 
 HOW TO USE IN THE BUILD DIRECTORY:
   Use in byte-code:
-        ocamlc bigarray.cma magick.cma  test.ml -o test.run
+        ocamlc -I . magick.cma  test.ml -o test.byte
 
   Use in native-code:
-        ocamlopt bigarray.cmxa magick.cmxa test.ml -o test.opt
+        ocamlopt -I . magick.cmxa test.ml -o test.opt
 
   Use in interactive-mode:
-        ocaml bigarray.cma magick.cma
+        ocaml -I . magick.cma
 
   Use in script-mode:
-        ocaml bigarray.cma magick.cma  test.ml image.png
+        ocaml -I . magick.cma  test.ml image.png
      or
         chmod u+x test.ml
         ./test.ml image.png
@@ -121,23 +124,23 @@ HOW TO USE IN THE BUILD DIRECTORY:
 
 HOW TO USE WITH THIS LIBRARY INSTALLED:
   Use in byte-code:
-        ocamlc -I +libMagick bigarray.cma magick.cma  test.ml -o test.run
+        ocamlc -I $(ocamlfind query magick)  magick.cma  test.ml -o test.byte
 
   Use in native-code:
-        ocamlopt -I +libMagick bigarray.cma magick.cmxa test.ml -o test.opt
+        ocamlopt -I $(ocamlfind query magick)  magick.cmxa test.ml -o test.opt
 
   Use in interactive-mode:
-        ocaml -I +libMagick bigarray.cma magick.cma
+        ocaml -I $(ocamlfind query magick)  magick.cma
 
   Use in script-mode:
-        ocaml -I +libMagick bigarray.cma magick.cma  test.ml image.png
+        ocaml -I $(ocamlfind query magick)  magick.cma  test.ml image.png
      or
         chmod u+x test.ml
         ./test.ml image.png
      with the 3 first lines:
         #!/usr/bin/env ocaml
-        #directory "+libMagick" ;;
-        #load "magick.cma" ;;
+        #directory "+magick"
+        #load "magick.cma"
 
 
 
@@ -177,13 +180,5 @@ KNOWN BUGS:
       It is possible to enable the free() of the (DrawInfo *) structures with 
       setting MAKE_DESTROY_DRAWINFO to 1.
       Please report success or failure related to this issue.
-
-   MEDIUM:
-      Imper in french sounds close to "impaire" which could be understood like
-      odd or the cloth you wear when it's raining out, so you can stay behind 
-      the computer ;)
-      If you really prefer fun programming, you won't understand why this part
-      of the binding, since for imperative the wand api should be chosen.
-      When to fix all this arround, just put your hands in ;)
 
 
