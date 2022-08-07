@@ -521,6 +521,25 @@ caml_ShaveImage(value _image, value _shave_info)
 }
 
 CAMLprim value
+caml_RollImage(value _image, value x_offset, value y_offset)
+{
+    CAMLparam3(_image, x_offset, y_offset);
+
+    ExceptionInfo exception;
+    GetExceptionInfo(&exception);
+
+    Image *image = (Image *) NULL;
+    image = RollImage(Image_val(_image), Long_val(x_offset), Long_val(y_offset), &exception);
+
+    if (image == (Image *) NULL)
+    {
+        CatchException(&exception);
+        caml_failwith("Magick.roll");
+    }
+    CAMLreturn(Val_Image(image));
+}
+
+CAMLprim value
 caml_MagnifyImage(value _image)
 {
     CAMLparam1(_image);

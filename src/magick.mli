@@ -101,6 +101,9 @@ external crop: image -> rectangle_info -> image = "caml_CropImage"
 
 val shave: image -> int * int -> image
 
+external roll: image -> x_offset:int -> y_offset:int -> image
+  = "caml_RollImage"
+
 
 (** {3 Resize} *)
 

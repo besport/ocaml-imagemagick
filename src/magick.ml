@@ -98,6 +98,9 @@ let shave img (width, height) =
   shave img { x=0; y=0; width; height };
 ;;
 
+external roll: image -> x_offset:int -> y_offset:int -> image
+  = "caml_RollImage"
+
 
 (* resize *)
 
