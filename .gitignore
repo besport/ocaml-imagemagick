@@ -2,3 +2,7 @@
 *.cm[ioxat]
 *.cmx[as]
 *.so
+*.opt
+*.byte
+*.exe
+_*
