@@ -8,7 +8,7 @@ AUTHOR:
 
 NOTICE:
       We switched these bindings from ImageMagick to GraphicsMagick
-      because GraphicsMagick is beleaved to have a more stable API.
+      because GraphicsMagick is beleaved to be a fork with a more stable API.
 
 
 REQUISITES:
