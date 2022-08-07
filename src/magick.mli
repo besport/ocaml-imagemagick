@@ -238,6 +238,8 @@ module ImgList: sig
 end
 
 
+(** {3 Draw} *)
+
 module Draw: sig
   (** {3 Draw} *)
 
