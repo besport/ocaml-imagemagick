@@ -26,8 +26,6 @@
 all: magick.cma
 opt: magick.cmxa
 
-magick.mli: magick.ml
-	ocamlc -i $< > $@
 
 magick.cmi: magick.mli
 	ocamlc -c $<

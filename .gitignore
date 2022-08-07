@@ -5,4 +5,5 @@
 *.opt
 *.byte
 *.exe
+src/doc
 _*
