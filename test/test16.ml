@@ -61,7 +61,7 @@ let () =
   let img = Magick.read_image ~filename:"image.png" in
   let img2 = Magick.blur img ~radius:0.0 ~sigma:6.0 () in
   Printf.printf "composite_operator: %s\n%!"
-    (Magick.string_of_composite_operator compose);
+    (Magick.CompositeOp.to_string compose);
   Magick.composite img ~compose img2 ~x_offset:0 ~y_offset:0 ();
   Magick.display img;
   Magick.destroy ();
