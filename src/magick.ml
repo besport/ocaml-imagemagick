@@ -358,5 +358,10 @@ external render: context -> unit
 end
 
 
+(* describe *)
+
+external describe: image -> unit = "caml_DescribeImage"
+
+
 (* vim: sw=2 ts=2 sts=2 et
  *)

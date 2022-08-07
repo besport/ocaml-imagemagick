@@ -268,3 +268,9 @@ module Draw: sig
     = "caml_DrawRender"
 end
 
+
+(** {3 describe} *)
+
+external describe: image -> unit = "caml_DescribeImage"
+(** {{:http://www.graphicsmagick.org/api/describe.html}api doc} *)
+

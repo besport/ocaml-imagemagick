@@ -878,5 +878,12 @@ caml_DrawRender(value context)
     return Val_unit;
 }
 
+CAMLprim value
+caml_DescribeImage(value image)
+{
+    DescribeImage(Image_val(image), stdout, MagickTrue);
+    return Val_unit;
+}
+
 /* vim: sw=4 ts=4 sts=4 et
  */
