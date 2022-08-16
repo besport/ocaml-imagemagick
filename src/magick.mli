@@ -231,8 +231,12 @@ val composite: image -> compose:CompositeOp.composite_operator ->
 (** {{:http://www.graphicsmagick.org/api/composite.html}api doc} *)
 
 
+(** {3 Image Lists} *)
+
 module ImgList: sig
   (** {3 Image Lists} *)
+
+  (** {{:http://www.graphicsmagick.org/api/list.html}api doc} *)
 
   type img_list = images
 
