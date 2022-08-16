@@ -16,7 +16,9 @@ REQUISITES:
         https://ocaml.org/
 
       A build environment with:
-       - bash, make, sed, install
+       - bash, make
+
+      And ocamlfind to install.
 
       GraphicsMagick, which you can find at:
         http://www.graphicsmagick.org/
@@ -80,7 +82,7 @@ LICENSE:
       This library is distributed under the terms of the Zlib license:
 
       Permission is granted to anyone to use this software for any purpose,
-      including commercial applications, and to alter it and redistribute it
+      including commercial applications, and to modify it and redistribute it
       freely.
     
       This software is provided "AS-IS", without any express or implied

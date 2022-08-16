@@ -3,3 +3,4 @@ all:
 
 clean:
 	$(RM) _out.*
+	$(RM) _lst.gif

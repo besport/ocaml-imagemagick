@@ -98,6 +98,43 @@ caml_ReadImage(value img_filename)
 }
 
 CAMLprim value
+caml_CanvasImage(value width, value height, value color)
+{
+    CAMLparam3(width, height, color);
+
+    Image *image = (Image *) NULL;
+    char sbuf[MaxTextExtent];
+    unsigned int str_len;
+    ImageInfo *imageInfo;
+    ExceptionInfo exception;
+
+    imageInfo = CloneImageInfo((ImageInfo *) NULL);
+    GetExceptionInfo(&exception);
+
+    /* give image size */
+    str_len = snprintf(sbuf, MaxTextExtent, "%ldx%ld", Long_val(width), Long_val(height));
+    (void) CloneString(&imageInfo->size, sbuf);
+
+    /* give image color */
+    str_len = snprintf(sbuf, MaxTextExtent, "xc:%s", String_val(color));
+    strncpy(imageInfo->filename, sbuf, str_len);
+
+    image = ReadImage(imageInfo, &exception);
+
+    if (imageInfo != (ImageInfo *) NULL)
+        DestroyImageInfo(imageInfo);
+
+    if (image == (Image *) NULL)
+    {
+        CatchException(&exception);
+        DestroyExceptionInfo(&exception);
+        caml_failwith("Magick.canvas_image");
+    }
+
+    CAMLreturn(Val_Image(image));
+}
+
+CAMLprim value
 caml_WriteImage(value _image, value out_filename)
 {
     CAMLparam2(_image, out_filename);
@@ -329,6 +366,120 @@ caml_EdgeImage(value _image, value radius)
     {
         CatchException(&exception);
         caml_failwith("Magick.edge");
+    }
+    CAMLreturn(Val_Image(image));
+}
+
+CAMLprim value
+caml_CharcoalImage(value _image, value radius, value sigma)
+{
+    CAMLparam3(_image, radius, sigma);
+
+    ExceptionInfo exception;
+    GetExceptionInfo(&exception);
+
+    Image *image = (Image *) NULL;
+    image = CharcoalImage(Image_val(_image), Double_val(radius), Double_val(sigma), &exception);
+
+    if (image == (Image *) NULL)
+    {
+        CatchException(&exception);
+        caml_failwith("Magick.charcoal");
+    }
+    CAMLreturn(Val_Image(image));
+}
+
+CAMLprim value
+caml_ImplodeImage(value _image, value amount)
+{
+    CAMLparam2(_image, amount);
+
+    ExceptionInfo exception;
+    GetExceptionInfo(&exception);
+
+    Image *image = (Image *) NULL;
+    image = ImplodeImage(Image_val(_image), Double_val(amount), &exception);
+
+    if (image == (Image *) NULL)
+    {
+        CatchException(&exception);
+        caml_failwith("Magick.implode");
+    }
+    CAMLreturn(Val_Image(image));
+}
+
+CAMLprim value
+caml_MorphImages(value _image, value number_frames)
+{
+    CAMLparam2(_image, number_frames);
+
+    ExceptionInfo exception;
+    GetExceptionInfo(&exception);
+
+    Image *image = (Image *) NULL;
+    image = MorphImages(Image_val(_image), Long_val(number_frames), &exception);
+
+    if (image == (Image *) NULL)
+    {
+        CatchException(&exception);
+        caml_failwith("Magick.morph");
+    }
+    CAMLreturn(Val_Image(image));
+}
+
+CAMLprim value
+caml_OilPaintImage(value _image, value radius)
+{
+    CAMLparam2(_image, radius);
+
+    ExceptionInfo exception;
+    GetExceptionInfo(&exception);
+
+    Image *image = (Image *) NULL;
+    image = OilPaintImage(Image_val(_image), Double_val(radius), &exception);
+
+    if (image == (Image *) NULL)
+    {
+        CatchException(&exception);
+        caml_failwith("Magick.oil_paint");
+    }
+    CAMLreturn(Val_Image(image));
+}
+
+CAMLprim value
+caml_SwirlImage(value _image, value degrees)
+{
+    CAMLparam2(_image, degrees);
+
+    ExceptionInfo exception;
+    GetExceptionInfo(&exception);
+
+    Image *image = (Image *) NULL;
+    image = SwirlImage(Image_val(_image), Double_val(degrees), &exception);
+
+    if (image == (Image *) NULL)
+    {
+        CatchException(&exception);
+        caml_failwith("Magick.swirl");
+    }
+    CAMLreturn(Val_Image(image));
+}
+
+CAMLprim value
+caml_WaveImage(value _image, value amplitude, value length)
+{
+    CAMLparam3(_image, amplitude, length);
+
+    ExceptionInfo exception;
+    GetExceptionInfo(&exception);
+
+    Image *image = (Image *) NULL;
+    image = WaveImage(Image_val(_image), Double_val(amplitude), Double_val(length), &exception);
+
+    if (image == (Image *) NULL)
+    {
+        CatchException(&exception);
+        caml_failwith("Magick.wave");
     }
     CAMLreturn(Val_Image(image));
 }
@@ -867,6 +1018,23 @@ caml_DrawRectangle(value context, value x1, value y1, value x2, value y2)
             DrawContext_val(context),
             Double_val(x1), Double_val(y1),
             Double_val(x2), Double_val(y2));
+
+    return Val_unit;
+}
+
+CAMLprim value
+caml_DrawArc(value context, value p1, value p2, value rot)
+{
+    double sx = Double_val(Field(p1, 0));
+    double sy = Double_val(Field(p1, 1));
+    double ex = Double_val(Field(p2, 0));
+    double ey = Double_val(Field(p2, 1));
+    double sd = Double_val(Field(rot, 0));
+    double ed = Double_val(Field(rot, 1));
+
+    DrawArc(
+          DrawContext_val(context),
+          sx, sy, ex, ey, sd, ed);
 
     return Val_unit;
 }

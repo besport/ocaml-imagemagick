@@ -14,11 +14,14 @@ external initialize: unit -> unit = "caml_InitializeMagick"
 external destroy: unit -> unit = "caml_DestroyMagick"
 
 type image
+type images
 
 external read_image: filename:string -> image = "caml_ReadImage"
 external write_image: image -> filename:string -> unit = "caml_WriteImage"
 
 external blob_to_image: blob:string -> image = "caml_BlobToImage"
+
+external get_canvas: width:int -> height:int -> color:string -> image = "caml_CanvasImage"
 
 external clone: image -> image = "caml_CloneImage"
 
@@ -43,6 +46,19 @@ external shade: image -> gray:int -> azimuth:float -> elevation:float -> image =
 let blur image ?(radius = 0.0) ~sigma () =
   blur image ~radius ~sigma;
 ;;
+
+
+(* fx *)
+
+external charcoal: image -> radius:float -> sigma:float -> image = "caml_CharcoalImage"
+external implode: image -> amount:float -> image = "caml_ImplodeImage"
+
+external morph: images -> frames:int -> images = "caml_MorphImages"
+
+external oil_paint: image -> radius:float -> image = "caml_OilPaintImage"
+external swirl: image -> degrees :float -> image = "caml_SwirlImage"
+
+external wave: image -> amplitude:float -> length:float -> image = "caml_WaveImage"
 
 
 (* enhance *)
@@ -292,7 +308,7 @@ let of_string = function
   | "VividLight"  -> VividLight
   | "PinLight"    -> PinLight
   | "HardMix"     -> HardMix
-  | _ -> invalid_arg "Magick.composite_operator_of_string"
+  | _ -> invalid_arg "Magick.CompositeOp.of_string"
 
 end
 
@@ -307,7 +323,7 @@ let composite image1 ~compose image2 ?(x_offset=0) ?(y_offset=0) () =
 
 module ImgList = struct
 
-type img_list
+type img_list = images
 
 external new_image_list: unit -> img_list = "caml_NewImageList"
 
@@ -346,11 +362,14 @@ external fill_color_string: context -> string -> unit
 external stroke_width: context -> float -> unit
   = "caml_DrawSetStrokeWidth"
 
-external draw_circle: context -> ox:float -> oy:float -> px:float -> py:float -> unit
+external circle: context -> ox:float -> oy:float -> px:float -> py:float -> unit
   = "caml_DrawCircle"
 
-external draw_rectangle: context -> x1:float -> y1:float -> x2:float -> y2:float -> unit
+external rectangle: context -> x1:float -> y1:float -> x2:float -> y2:float -> unit
   = "caml_DrawRectangle"
+
+external arc: context -> p1:float * float -> p2:float * float -> rot:float * float -> unit
+  = "caml_DrawArc"
 
 external render: context -> unit
   = "caml_DrawRender"

@@ -1,3 +1,4 @@
+ocaml -I ../src magick.cma test00.ml && echo "test 00: OK!" || echo "test 00: Arg"
 ocaml -I ../src magick.cma test01.ml && echo "test 01: OK!" || echo "test 01: Arg"
 ocaml -I ../src magick.cma test02.ml && echo "test 02: OK!" || echo "test 02: Arg"
 ocaml -I ../src magick.cma test03.ml && echo "test 03: Arg" || echo "test 03: OK!"
@@ -33,3 +34,6 @@ ocaml -I ../src magick.cma test32.ml && echo "test 32: OK!" || echo "test 32: Ar
 ocaml -I ../src magick.cma test33.ml && echo "test 33: OK!" || echo "test 33: Arg"
 ocaml -I ../src magick.cma test34.ml && echo "test 34: OK!" || echo "test 34: Arg"
 ocaml -I ../src magick.cma test35.ml && echo "test 35: OK!" || echo "test 35: Arg"
+ocaml -I ../src magick.cma test36.ml && echo "test 36: OK!" || echo "test 36: Arg"
+ocaml -I ../src magick.cma test37.ml && echo "test 37: OK!" || echo "test 37: Arg"
+ocaml -I ../src magick.cma test38.ml && echo "test 38: OK!" || echo "test 38: Arg"

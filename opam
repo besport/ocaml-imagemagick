@@ -16,6 +16,7 @@ depends: [
   "ocamlfind" {build}
 ]
 depexts: [
+  ["libgraphicsmagick-dev"] {os-family = "debian"}
   ["libgraphicsmagick-devel"] {os-distribution = "mageia"}
 ]
 build: [[make "all" "opt"]]

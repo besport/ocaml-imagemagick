@@ -70,6 +70,10 @@ doc: magick.mli
 	mkdir -p doc
 	ocamldoc -d doc -html magick.mli
 
+.PHONY: edit
+edit:
+	vim magick.ml magick.mli magick_stubs.c
+
 clean:
 	$(RM) *.[oa] *.so *.cm[ixoat] *.cmx[as]
 
