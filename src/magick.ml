@@ -380,6 +380,9 @@ external arc: context -> p1:float * float -> p2:float * float -> rot:float * flo
 external ellipse: context -> o:float * float -> r:float * float -> rot:float * float -> unit
   = "caml_DrawEllipse"
 
+external bezier: context -> coords:(float * float) array -> unit
+  = "caml_DrawBezier"
+
 external render: context -> unit
   = "caml_DrawRender"
 

@@ -1080,6 +1080,30 @@ caml_DrawEllipse(value context, value o, value r, value rot)
 }
 
 CAMLprim value
+caml_DrawBezier(value context, value coords)
+{
+    unsigned long num_coords, i;
+    PointInfo * coordinates;
+
+    num_coords = Wosize_val(coords);
+    coordinates = malloc(sizeof(PointInfo) * num_coords);
+
+    for (i = 0; i < num_coords; i++)
+    {
+        value pnt = Field(coords, i);
+
+        coordinates[i].x = Double_val(Field(pnt, 0));
+        coordinates[i].y = Double_val(Field(pnt, 1));
+    }
+
+    DrawBezier(DrawContext_val(context), num_coords, coordinates);
+
+    free(coordinates);
+
+    return Val_unit;
+}
+
+CAMLprim value
 caml_DrawRender(value context)
 {
     DrawRender(DrawContext_val(context));
