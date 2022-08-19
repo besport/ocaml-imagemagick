@@ -377,6 +377,9 @@ external line: context -> x1:float -> y1:float -> x2:float -> y2:float -> unit
 external arc: context -> p1:float * float -> p2:float * float -> rot:float * float -> unit
   = "caml_DrawArc"
 
+external ellipse: context -> o:float * float -> r:float * float -> rot:float * float -> unit
+  = "caml_DrawEllipse"
+
 external render: context -> unit
   = "caml_DrawRender"
 

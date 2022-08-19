@@ -1063,6 +1063,23 @@ caml_DrawArc(value context, value p1, value p2, value rot)
 }
 
 CAMLprim value
+caml_DrawEllipse(value context, value o, value r, value rot)
+{
+    double ox = Double_val(Field(o, 0));
+    double oy = Double_val(Field(o, 1));
+    double rx = Double_val(Field(r, 0));
+    double ry = Double_val(Field(r, 1));
+    double st = Double_val(Field(rot, 0));
+    double en = Double_val(Field(rot, 1));
+
+    DrawEllipse(
+          DrawContext_val(context),
+          ox, oy, rx, ry, st, en);
+
+    return Val_unit;
+}
+
+CAMLprim value
 caml_DrawRender(value context)
 {
     DrawRender(DrawContext_val(context));
