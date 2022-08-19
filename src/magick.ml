@@ -368,6 +368,12 @@ external circle: context -> ox:float -> oy:float -> px:float -> py:float -> unit
 external rectangle: context -> x1:float -> y1:float -> x2:float -> y2:float -> unit
   = "caml_DrawRectangle"
 
+external round_rectangle: context -> p1:float * float -> p2:float * float -> r:float * float -> unit
+  = "caml_DrawRoundRectangle"
+
+external line: context -> x1:float -> y1:float -> x2:float -> y2:float -> unit
+  = "caml_DrawLine"
+
 external arc: context -> p1:float * float -> p2:float * float -> rot:float * float -> unit
   = "caml_DrawArc"
 

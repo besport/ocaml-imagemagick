@@ -1012,12 +1012,35 @@ caml_DrawCircle(value context, value ox, value oy, value px, value py)
 }
 
 CAMLprim value
+caml_DrawLine(value context, value x1, value y1, value x2, value y2)
+{
+    DrawLine(
+            DrawContext_val(context),
+            Double_val(x1), Double_val(y1),
+            Double_val(x2), Double_val(y2));
+
+    return Val_unit;
+}
+
+CAMLprim value
 caml_DrawRectangle(value context, value x1, value y1, value x2, value y2)
 {
     DrawRectangle(
             DrawContext_val(context),
             Double_val(x1), Double_val(y1),
             Double_val(x2), Double_val(y2));
+
+    return Val_unit;
+}
+
+CAMLprim value
+caml_DrawRoundRectangle(value context, value p1, value p2, value r)
+{
+    DrawRoundRectangle(
+            DrawContext_val(context),
+            Double_val(Field(p1,0)), Double_val(Field(p1,1)),
+            Double_val(Field(p2,0)), Double_val(Field(p2,1)),
+            Double_val(Field(r,0)), Double_val(Field(r,1)));
 
     return Val_unit;
 }
