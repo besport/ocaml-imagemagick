@@ -1117,5 +1117,36 @@ caml_DescribeImage(value image)
     return Val_unit;
 }
 
+CAMLprim value
+caml_SetImageAttribute(value image, value key, value value)
+{
+    MagickPassFail r;
+    r = SetImageAttribute(Image_val(image), String_val(key), String_val(value));
+    if (r == MagickFail)
+    {
+        caml_failwith("Magick.set_image_attribute");
+    }
+    return Val_unit;
+}
+
+CAMLprim value
+caml_GetImageAttribute(value image, value key)
+{
+    CAMLparam2(image, key);
+    CAMLlocal1(attr);
+
+    const ImageAttribute *imgAttr;
+
+    imgAttr = GetImageAttribute(Image_val(image), String_val(key));
+
+    if (imgAttr == NULL) {
+        caml_failwith("Magick.get_image_attribute");
+    } else {
+        attr = caml_alloc_initialized_string(imgAttr->length, imgAttr->value);
+    }
+
+    CAMLreturn(attr);
+}
+
 /* vim: sw=4 ts=4 sts=4 et
  */

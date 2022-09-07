@@ -394,5 +394,13 @@ end
 external describe: image -> unit = "caml_DescribeImage"
 
 
+(* attribute *)
+
+external set_image_attribute: image -> key:string -> value:string -> unit
+  = "caml_SetImageAttribute"
+
+external get_image_attribute: image -> key:string -> string
+  = "caml_GetImageAttribute"
+
 (* vim: sw=2 ts=2 sts=2 et
  *)

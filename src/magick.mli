@@ -306,8 +306,19 @@ module Draw: sig
 end
 
 
-(** {3 describe} *)
+(** {3 Describe} *)
 
 external describe: image -> unit = "caml_DescribeImage"
 (** {{:http://www.graphicsmagick.org/api/describe.html}api doc} *)
+
+
+(** {3 Attribute} *)
+
+(** {{:http://www.graphicsmagick.org/api/attribute.html}api doc} *)
+
+external set_image_attribute: image -> key:string -> value:string -> unit
+  = "caml_SetImageAttribute"
+
+external get_image_attribute: image -> key:string -> string
+  = "caml_GetImageAttribute"
 
