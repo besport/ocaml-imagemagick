@@ -17,6 +17,7 @@ let () =
   |];
   Magick.Draw.line ctx ~x1:20.0 ~y1:20.0 ~x2:20.0 ~y2:140.0;
   Magick.Draw.render ctx;
+  Magick.Draw.destroy_context ctx;
 
   Magick.display img;
   Magick.destroy_image img;
