@@ -11,25 +11,26 @@ let () =
 
 let () =
   Magick.initialize ();
-  let t_img = Magick.read_image Sys.argv.(1) in
+  let filename = Sys.argv.(1) in
+  let t_img = Magick.read_image ~filename in
   let u_img = Magick.clone t_img in
 
   print_endline " Here is the original image";
   Magick.display t_img;
 
-  let u_img = Magick.blur  u_img  2.4 () in
-  Magick.modulate  u_img "70,100,100";
-  Magick.negate  u_img 0;
+  let u_img = Magick.blur u_img  ~sigma:2.4 () in
+  Magick.modulate u_img "70,100,100";
+  Magick.negate u_img 0;
 
   print_endline " Intermediate processing";
-  Magick.display  u_img;
+  Magick.display u_img;
 
-  let t_img = Magick.blur  t_img 0.3 () in  (* smooth the path a little *)
-  let u_img = Magick.roll  u_img 2 1 in
-  Magick.composite  t_img u_img ~compose:CompositeOp.Lighten ();
+  let t_img = Magick.blur t_img ~sigma:0.3 () in  (* smooth the path a little *)
+  let u_img = Magick.roll u_img ~x_offset:2 ~y_offset:1 in
+  Magick.composite t_img u_img ~compose:CompositeOp.Lighten ();
 
   print_endline " Here is the result\n";
-  Magick.display  t_img;
+  Magick.display t_img;
 
   Magick.destroy_image t_img;
   Magick.destroy_image u_img;
