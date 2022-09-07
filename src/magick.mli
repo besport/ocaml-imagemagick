@@ -271,6 +271,8 @@ module Draw: sig
 
   external allocate_context: image -> context = "caml_DrawAllocateContext"
 
+  external destroy_context: context -> unit = "caml_DrawDestroyContext"
+
   external stroke_color_string: context -> string -> unit
     = "caml_DrawSetStrokeColorString"
 
@@ -312,7 +314,7 @@ external describe: image -> unit = "caml_DescribeImage"
 (** {{:http://www.graphicsmagick.org/api/describe.html}api doc} *)
 
 
-(** {3 Attribute} *)
+(** {3 Attributes} *)
 
 (** {{:http://www.graphicsmagick.org/api/attribute.html}api doc} *)
 

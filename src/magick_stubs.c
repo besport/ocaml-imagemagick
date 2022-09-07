@@ -980,6 +980,13 @@ caml_DrawAllocateContext(value image)
 }
 
 CAMLprim value
+caml_DrawDestroyContext(value context)
+{
+    DrawDestroyContext(DrawContext_val(context));
+    return Val_unit;
+}
+
+CAMLprim value
 caml_DrawSetStrokeColorString(value context, value stroke_color)
 {
     DrawSetStrokeColorString(DrawContext_val(context), String_val(stroke_color));

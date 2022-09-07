@@ -353,6 +353,9 @@ type context
 external allocate_context: image -> context
   = "caml_DrawAllocateContext"
 
+external destroy_context: context -> unit
+  = "caml_DrawDestroyContext"
+
 external stroke_color_string: context -> string -> unit
   = "caml_DrawSetStrokeColorString"
 
