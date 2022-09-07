@@ -1,6 +1,6 @@
 name = "magick"
 description = "OCaml interface for GraphicsMagick"
-version = "0.40"
+version = "0.42"
 license = "Zlib"
 requires = "bigarray"
 archive(byte) = "magick.cma"
