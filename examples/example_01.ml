@@ -1,39 +1,41 @@
 #!/usr/bin/env ocaml
-(* #directory "+libMagick" ;; *)
-#load "magick.cma" ;;
-open Magick ;;
-open Imper ;;
-
-
-let argc = Array.length Sys.argv in
-if (argc < 2) then begin
-  prerr_endline("Usage:\n" ^ Sys.argv.(0) ^ " <black & white image file>");
-  exit 1
-end
-;;
-
+#load "magick.cma"
+open Magick
 
 let () =
-  let t_img = read_image Sys.argv.(1) in
-  let u_img = clone_image t_img in
+  let argc = Array.length Sys.argv in
+  if (argc < 2) then begin
+    prerr_endline ("Usage:\n" ^ Sys.argv.(0) ^ " <black & white image file>");
+    exit 1
+  end
+
+let () =
+  Magick.initialize ();
+  let filename = Sys.argv.(1) in
+  let t_img = Magick.read_image ~filename in
+  let u_img = Magick.clone t_img in
 
   print_endline " Here is the original image";
-  display t_img;
+  Magick.display t_img;
 
-  blur  u_img  2.4 ();
-  modulate  u_img ~brightness:70 ();
-  negate  u_img ();
+  let u_img = Magick.blur u_img  ~sigma:2.4 () in
+  Magick.modulate u_img "70,100,100";
+  Magick.negate u_img 0;
 
   print_endline " Intermediate processing";
-  display  u_img;
+  Magick.display u_img;
 
-  blur  t_img 0.3 ();  (* smooth the path a little *)
-  roll  u_img 2 1;
-  composite_image  t_img u_img Lighten ();
+  let t_img = Magick.blur t_img ~sigma:0.3 () in  (* smooth the path a little *)
+  let u_img = Magick.roll u_img ~x_offset:2 ~y_offset:1 in
+  Magick.composite t_img u_img ~compose:CompositeOp.Lighten ();
 
   print_endline " Here is the result\n";
-  display  t_img;
+  Magick.display t_img;
+
+  Magick.destroy_image t_img;
+  Magick.destroy_image u_img;
+  Magick.destroy ();
 ;;
 
-(*  vim: sw=2 ts=2 sts=2 et fdm=marker
+(* vim: sw=2 ts=2 sts=2 et
  *)

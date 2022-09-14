@@ -1,0 +1,23 @@
+opam-version: "2.0"
+authors: ["Florent Monnier"]
+maintainer: "https://github.com/fccm/"
+license: "Zlib"
+homepage: "http://decapode314.free.fr/ocaml/GraphicsMagick/"
+doc: "http://decapode314.free.fr/ocaml/GraphicsMagick/doc/"
+dev-repo: "git+https://github.com/fccm/ocaml-graphicsmagick.git"
+bug-reports: "https://github.com/fccm/ocaml-graphicsmagick/issues"
+tags: ["graphics" "2D" "image"]
+synopsis: "Bindings for GraphicsMagick"
+description: """
+GraphicsMagick Bindings for OCaml.
+"""
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+]
+depexts: [
+  ["libgraphicsmagick-dev"] {os-family = "debian"}
+  ["libgraphicsmagick-devel"] {os-distribution = "mageia"}
+]
+build: [[make "all" "opt"]]
+install: [[make "install"]]
